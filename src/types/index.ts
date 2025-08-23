@@ -11,6 +11,12 @@ export interface Category {
 export interface SanityImageAsset {
   _ref: string;
   _type: 'reference';
+  metadata?: {
+    dimensions?: {
+      width: number;
+      height: number;
+    }
+  }
 }
 
 // Interface for a Sanity image object, including the asset reference
@@ -70,6 +76,10 @@ export interface Project {
   name: string;
   slug: string;
   mainImage: string;
+  mainImageDimensions?: {
+    width: number;
+    height: number;
+  },
   categories: Category[];
   description: PortableTextBlock[];
   client?: string;

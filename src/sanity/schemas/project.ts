@@ -54,6 +54,7 @@ export default defineType({
       type: 'image',
       options: {
         hotspot: true,
+        metadata: ['dimensions'] // Important for OG images
       },
       validation: (Rule) => Rule.required(),
     }),

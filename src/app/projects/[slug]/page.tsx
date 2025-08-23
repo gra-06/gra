@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { ProjectCard } from '@/components/ProjectCard';
 import imageUrlBuilder from '@sanity/image-url';
 import { ProjectPageClient } from '@/components/ProjectPageClient';
+import type { Metadata } from 'next';
 
 const builder = imageUrlBuilder(client);
 
@@ -28,6 +29,7 @@ async function getProject(slug: string): Promise<Project | null> {
     name,
     "slug": slug.current,
     "mainImage": mainImage.asset->url,
+    "mainImageDimensions": mainImage.asset->metadata.dimensions,
     categories[]->{
       _id,
       title,
@@ -77,6 +79,51 @@ async function getProject(slug: string): Promise<Project | null> {
   }`;
   const project = await client.fetch(query, { slug });
   return project;
+}
+
+export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
+  const project = await getProject(params.slug);
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+
+  if (!project) {
+    return {
+      title: 'Project Not Found'
+    };
+  }
+
+  const overviewText = project.overview?.map(block => block.children.map(child => child.text).join('')).join('\n') || project.name;
+  const pageUrl = `${BASE_URL}/projects/${project.slug}`;
+  const imageUrl = project.mainImage;
+
+  return {
+    title: `${project.name} | DesignFlow Portfolio`,
+    description: overviewText,
+    alternates: {
+      canonical: pageUrl,
+    },
+    openGraph: {
+      title: `${project.name} | DesignFlow Portfolio`,
+      description: overviewText,
+      url: pageUrl,
+      siteName: 'DesignFlow Portfolio',
+      images: [
+        {
+          url: imageUrl,
+          width: project.mainImageDimensions?.width || 1200,
+          height: project.mainImageDimensions?.height || 630,
+          alt: project.name,
+        },
+      ],
+      locale: 'en_US', // Or your specific locale
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${project.name} | DesignFlow Portfolio`,
+      description: overviewText,
+      images: [imageUrl],
+    },
+  };
 }
 
 
