@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Alegreya, Azeret_Mono as Teller } from 'next/font/google';
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 const alegreya = Alegreya({
   subsets: ['latin'],
@@ -31,14 +32,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("scroll-smooth", alegreya.variable, teller.variable)}>
+    <html lang="en" className={cn("scroll-smooth", alegreya.variable, teller.variable)} suppressHydrationWarning>
       <body className={cn("font-body antialiased", "min-h-screen bg-background")}>
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </div>
-        <Toaster />
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+        >
+            <div className="flex flex-col min-h-screen">
+                <Header />
+                <main className="flex-grow">{children}</main>
+                <Footer />
+            </div>
+            <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

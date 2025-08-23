@@ -12,6 +12,7 @@ import { usePathname } from 'next/navigation';
 import { Brush, Menu, X, Instagram, Linkedin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export function Header() {
   const pathname = usePathname();
@@ -55,17 +56,19 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Sosyal Medya İkonları (Masaüstü) */}
+        {/* Sosyal Medya İkonları ve Tema Değiştirici (Masaüstü) */}
         <div className="hidden md:flex items-center space-x-4">
             {socialLinks.map((link, index) => (
                 <a key={index} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                     <link.icon className="h-5 w-5" />
                 </a>
             ))}
+            <ThemeToggle />
         </div>
 
         {/* Mobil Menü Butonu */}
-        <div className="md:hidden">
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
           <Button onClick={() => setIsMenuOpen(!isMenuOpen)} variant="ghost" size="icon">
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
