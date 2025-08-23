@@ -59,7 +59,15 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
     visible: { opacity: 1, y: 0 }
   };
   
-  const overviewText = project.overview?.map(block => block.children.map(child => child.text).join('')).join('\n') || project.name;
+  const overviewText = Array.isArray(project.overview)
+    ? project.overview
+        .map(block => 
+            Array.isArray(block.children) 
+                ? block.children.map(child => child.text).join('')
+                : ''
+        )
+        .join('\n')
+    : project.name;
 
   const jsonLd = {
     '@context': 'https://schema.org',

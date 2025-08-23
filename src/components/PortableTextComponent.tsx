@@ -1,4 +1,6 @@
 
+'use client';
+
 import type { PortableTextComponents } from '@portabletext/react';
 import Image from 'next/image';
 import { client } from '@/lib/sanity';

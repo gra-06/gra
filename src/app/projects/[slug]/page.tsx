@@ -91,7 +91,16 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
     };
   }
 
-  const overviewText = project.overview?.map(block => block.children.map(child => child.text).join('')).join('\n') || project.name;
+  const overviewText = Array.isArray(project.overview)
+    ? project.overview
+        .map(block => 
+            Array.isArray(block.children) 
+                ? block.children.map(child => child.text).join('')
+                : ''
+        )
+        .join('\n')
+    : project.name;
+
   const pageUrl = `${BASE_URL}/projects/${project.slug}`;
   const imageUrl = project.mainImage;
 
