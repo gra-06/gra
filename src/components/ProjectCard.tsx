@@ -9,7 +9,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { Project } from '@/types';
 import { Badge } from '@/components/ui/badge';
-import { motion } from 'framer-motion';
 
 interface ProjectCardProps {
   project: Partial<Project>;
@@ -22,15 +21,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   }
   
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -50 }}
-      transition={{ duration: 0.5, ease: 'easeInOut' }}
-      className="group"
-    >
-      <Link href={`/projects/${project.slug}`} className="block">
+      <Link href={`/projects/${project.slug}`} className="group block">
         <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 bg-card">
           <div className="relative aspect-w-4 aspect-h-3 w-full overflow-hidden">
             <Image
@@ -58,6 +49,5 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </div>
         </div>
       </Link>
-    </motion.div>
   );
 }

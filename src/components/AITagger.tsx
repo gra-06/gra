@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { AnimatePresence, motion } from 'framer-motion';
 
 const initialState = {
   tags: undefined,
@@ -22,7 +21,7 @@ function SubmitButton({ imagePreview }: { imagePreview: string | null }) {
     <Button
       type="submit"
       disabled={pending || !imagePreview}
-      className="w-full text-lg py-6 bg-accent hover:bg-accent/90"
+      className="w-full text-lg py-6"
     >
       {pending ? (
         <>
@@ -139,18 +138,9 @@ export function AITagger() {
                 <div className="min-h-[200px] bg-secondary/50 rounded-lg p-4 flex items-center justify-center">
                 {state.tags && state.tags.length > 0 ? (
                     <div className="flex flex-wrap gap-3 justify-center">
-                    <AnimatePresence>
-                        {state.tags.map((tag, index) => (
-                        <motion.div
-                            key={tag}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                        >
-                            <Badge className="text-base px-4 py-2" variant="default">{tag}</Badge>
-                        </motion.div>
+                        {state.tags.map((tag) => (
+                            <Badge key={tag} className="text-base px-4 py-2" variant="default">{tag}</Badge>
                         ))}
-                    </AnimatePresence>
                     </div>
                 ) : (
                     <p className="text-muted-foreground text-center">Tags will appear here after analysis.</p>

@@ -2,7 +2,7 @@
 'use client';
 
 import Image from 'next/image';
-import type { CaseStudyEntry, Project } from '@/types';
+import type { Project } from '@/types';
 import { PortableText } from '@portabletext/react';
 import { PortableTextComponent } from '@/components/PortableTextComponent';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +13,6 @@ import { format } from 'date-fns';
 import { ProjectCard } from '@/components/ProjectCard';
 import imageUrlBuilder from '@sanity/image-url';
 import React, { useState, useEffect } from 'react';
-import { ImageLightbox } from '@/components/ImageLightbox';
 
 const builder = imageUrlBuilder(client);
 
@@ -31,7 +30,6 @@ async function getProject(slug: string): Promise<Project | null> {
     name,
     "slug": slug.current,
     "mainImage": mainImage.asset->url,
-    "mainImageObject": mainImage,
     categories[]->{
       _id,
       title,
@@ -48,10 +46,7 @@ async function getProject(slug: string): Promise<Project | null> {
       _key,
       stage,
       description,
-      'image': image.asset->{
-        url,
-        'metadata': metadata
-      }
+      'image': image.asset->url
     },
     contentSections[]{
       ...,
@@ -59,15 +54,13 @@ async function getProject(slug: string): Promise<Project | null> {
         'images': images[]{
           ...,
           'asset': asset->{
-            url,
-            'metadata': metadata
+            url
           }
         }
       },
       _type == 'fullWidthImage' => {
         'image': image.asset->{
-          url,
-          'metadata': metadata
+          url
         }
       }
     },
@@ -84,27 +77,16 @@ async function getProject(slug: string): Promise<Project | null> {
     },
     tags
   }`;
-  const fetchedProject = await client.fetch(query, { slug });
-  return fetchedProject;
+  const project = await client.fetch(query, { slug });
+  return project;
 }
 
-// We are fetching data on the client side in this component.
-// In a real-world scenario with App Router, you'd likely fetch data in a server component
-// and pass it down, or use the `generateStaticParams` with `getProject` for SSG.
-// For this interactive prototype, client-side fetching simplifies state management for the lightbox.
 export default function ProjectPage({ params }: ProjectPageProps) {
   const [project, setProject] = useState<Project | null>(null);
-  const [lightboxImageUrl, setLightboxImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    // This is the correct way to access params in a client component effect
-    // to avoid the Next.js warning.
-    const slug = params.slug;
-    if (slug) {
-        getProject(slug).then(setProject);
-    }
-  }, [params]);
-
+    getProject(params.slug).then(setProject);
+  }, [params.slug]);
 
   if (!project) {
     // You might want a more sophisticated loading state here
@@ -115,21 +97,14 @@ export default function ProjectPage({ params }: ProjectPageProps) {
       notFound();
   }
 
-
   return (
-    <>
-    <ImageLightbox 
-        imageUrl={lightboxImageUrl} 
-        onClose={() => setLightboxImageUrl(null)} 
-        imageAlt={project.name || 'Project image'}
-    />
     <article className="bg-background">
       {/* Hero Section */}
       <header className="relative h-[70vh] min-h-[400px] w-full flex items-end p-8 md:p-12 text-white">
         <div className="absolute inset-0 z-0">
           <Image
             src={project.mainImage}
-            alt={project.name || 'Project image'}
+            alt={project.name}
             fill
             style={{objectFit: 'cover'}}
             priority
@@ -141,7 +116,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           <div className="max-w-4xl">
             <div className="flex flex-wrap gap-2 mb-3">
               {project.categories?.map((category) => (
-                <Badge key={category._id} variant="secondary" className="text-sm backdrop-blur-sm bg-white/20 border-0">
+                <Badge key={category._id} variant="secondary" className="text-sm">
                   {category.title}
                 </Badge>
               ))}
@@ -191,7 +166,32 @@ export default function ProjectPage({ params }: ProjectPageProps) {
             <Section title="Case Study">
                 <div className="relative">
                     {project.caseStudy.map((item, index) => (
-                        <TimelineItem key={item._key} item={item} isLast={index === project.caseStudy.length - 1} onImageClick={setLightboxImageUrl}/>
+                        <div key={item._key} className="flex">
+                            <div className="flex flex-col items-center mr-6">
+                                <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-full text-primary-foreground font-bold">
+                                    <Check className="w-6 h-6" />
+                                </div>
+                                {index < project.caseStudy.length - 1 && <div className="w-px h-full bg-border" />}
+                            </div>
+                            <div className="pb-16 w-full">
+                                <h3 className="font-headline text-2xl font-bold mb-2">{item.stage}</h3>
+                                <div className="grid md:grid-cols-2 gap-8 items-start">
+                                  <div className="prose prose-lg max-w-none font-body text-muted-foreground">
+                                     <PortableText value={item.description} components={PortableTextComponent} />
+                                  </div>
+                                  {item.image && (
+                                      <Image
+                                          src={urlFor(item.image).width(800).height(600).url()}
+                                          alt={item.stage}
+                                          width={800}
+                                          height={600}
+                                          className="rounded-lg shadow-lg w-full object-cover"
+                                          data-ai-hint="case study step"
+                                      />
+                                  )}
+                                </div>
+                            </div>
+                        </div>
                     ))}
                 </div>
             </Section>
@@ -210,7 +210,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                   <div key={key}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {section.images.map((img) => (
-                        <figure key={img._key} onClick={() => setLightboxImageUrl(urlFor(img).url())} className="cursor-pointer">
+                        <figure key={img._key}>
                           <Image src={urlFor(img).width(800).height(600).url()} alt={img.alt || ''} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover" data-ai-hint="portfolio gallery" />
                           {img.caption && <figcaption className="text-center text-sm text-muted-foreground mt-2">{img.caption}</figcaption>}
                         </figure>
@@ -219,8 +219,8 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                   </div>
                 );
               }
-              if (section._type === 'fullWidthImage' && section.image?.asset) {
-                return <Image key={key} src={urlFor(section.image).url()} alt={section.alt || ''} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="project detail" onClick={() => setLightboxImageUrl(urlFor(section.image).url())} />;
+              if (section._type === 'fullWidthImage' && section.image) {
+                return <Image key={key} src={urlFor(section.image).url()} alt={section.alt || ''} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover" data-ai-hint="project detail" />;
               }
               if (section._type === 'twoColumnText' && section.leftContent && section.rightContent) {
                 return (
@@ -261,7 +261,6 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         </div>
       </div>
     </article>
-    </>
   );
 }
 
@@ -274,33 +273,3 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
       </div>
     </div>
   );
-  
-const TimelineItem: React.FC<{ item: CaseStudyEntry, isLast: boolean, onImageClick: (url: string) => void }> = ({ item, isLast, onImageClick }) => (
-      <div className="flex">
-          <div className="flex flex-col items-center mr-6">
-              <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-full text-primary-foreground font-bold">
-                  <Check className="w-6 h-6" />
-              </div>
-              {!isLast && <div className="w-px h-full bg-border" />}
-          </div>
-          <div className="pb-16 w-full">
-              <h3 className="font-headline text-2xl font-bold mb-2">{item.stage}</h3>
-              <div className="grid md:grid-cols-2 gap-8 items-start">
-                <div className="prose prose-lg max-w-none font-body text-muted-foreground">
-                   {item.description && <PortableText value={item.description} components={PortableTextComponent} />}
-                </div>
-                {item.image?.asset && (
-                    <Image
-                        src={urlFor(item.image).width(800).height(600).url()}
-                        alt={item.stage || 'Case study image'}
-                        width={800}
-                        height={600}
-                        className="rounded-lg shadow-lg w-full object-cover cursor-pointer"
-                        data-ai-hint="case study step"
-                        onClick={() => onImageClick(urlFor(item.image).url())}
-                    />
-                )}
-              </div>
-          </div>
-      </div>
-  );  
