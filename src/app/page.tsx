@@ -167,6 +167,7 @@ export default async function Home() {
               data-ai-hint="abstract background"
               priority
           />
+          <div className="absolute inset-0 bg-black/50" />
         </div>
         <div className="relative z-10 container mx-auto px-4">
           <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tight mb-4">
