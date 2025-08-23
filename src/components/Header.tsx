@@ -7,7 +7,7 @@
  */
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Brush, Menu, X, Instagram, Linkedin } from 'lucide-react';
@@ -18,6 +18,12 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 export function Header() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
 
   const navLinks = [
     { href: '/', label: 'Home' },
@@ -43,7 +49,7 @@ export function Header() {
         </Link>
 
         {/* Masaüstü Navigasyon */}
-        <nav className="hidden md:flex items-center space-x-8" aria-label="Ana navigasyon">
+        <nav className="hidden md:flex items-center space-x-8" aria-label={isClient ? "Ana navigasyon" : undefined}>
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -52,7 +58,7 @@ export function Header() {
                 'text-lg font-medium transition-colors hover:text-primary',
                 pathname === link.href ? 'text-primary' : 'text-muted-foreground'
               )}
-              aria-current={pathname === link.href ? 'page' : undefined}
+              aria-current={isClient && pathname === link.href ? 'page' : undefined}
             >
               {link.label}
             </Link>
@@ -62,7 +68,7 @@ export function Header() {
         {/* Sosyal Medya İkonları ve Tema Değiştirici (Masaüstü) */}
         <div className="hidden md:flex items-center space-x-4">
             {socialLinks.map((link) => (
-                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={link.label}>
+                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={isClient ? link.label : undefined}>
                     <link.icon className="h-5 w-5" />
                 </a>
             ))}
@@ -76,9 +82,9 @@ export function Header() {
             onClick={() => setIsMenuOpen(!isMenuOpen)} 
             variant="ghost" 
             size="icon" 
-            aria-controls="mobile-menu"
-            aria-expanded={isMenuOpen}
-            aria-label={isMenuOpen ? "Menüyü kapat" : "Menüyü aç"}
+            aria-controls={isClient ? "mobile-menu" : undefined}
+            aria-expanded={isClient ? isMenuOpen : undefined}
+            aria-label={isClient ? (isMenuOpen ? "Menüyü kapat" : "Menüyü aç") : undefined}
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
@@ -88,7 +94,7 @@ export function Header() {
       {/* Mobil Açılır Menü */}
       {isMenuOpen && (
         <div id="mobile-menu" className="md:hidden absolute top-full left-0 w-full bg-background shadow-lg py-4">
-          <nav className="flex flex-col items-center space-y-4" aria-label="Mobil ana navigasyon">
+          <nav className="flex flex-col items-center space-y-4" aria-label={isClient ? "Mobil ana navigasyon" : undefined}>
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -98,14 +104,14 @@ export function Header() {
                   'text-lg font-medium transition-colors hover:text-primary w-full text-center py-2',
                   pathname === link.href ? 'text-primary' : 'text-muted-foreground'
                 )}
-                aria-current={pathname === link.href ? 'page' : undefined}
+                aria-current={isClient && pathname === link.href ? 'page' : undefined}
               >
                 {link.label}
               </Link>
             ))}
              <div className="flex items-center space-x-6 pt-4">
                 {socialLinks.map((link) => (
-                    <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={link.label}>
+                    <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={isClient ? link.label : undefined}>
                         <link.icon className="h-6 w-6" />
                     </a>
                 ))}

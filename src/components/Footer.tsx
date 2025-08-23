@@ -4,12 +4,20 @@
  * 
  * Bu bileşen, telif hakkı bilgisini, bazı önemli linkleri ve sosyal medya ikonlarını içerir.
  */
+'use client';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Brush, Instagram, Linkedin, Twitter, Facebook, Mail } from 'lucide-react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 
 export function Footer() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  
   const socialLinks = [
     { href: 'https://twitter.com', icon: Twitter, label: 'Twitter' },
     { href: 'https://facebook.com', icon: Facebook, label: 'Facebook' },
@@ -70,7 +78,7 @@ export function Footer() {
             <p className="text-sm">&copy; {currentYear} DesignFlow. Tüm hakları saklıdır.</p>
             <div className="flex items-center space-x-4">
                 {socialLinks.map((link) => (
-                    <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={link.label}>
+                    <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={isClient ? link.label : undefined}>
                         <link.icon className="h-5 w-5" />
                     </a>
                 ))}
