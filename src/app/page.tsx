@@ -4,16 +4,24 @@ import { PortfolioGrid } from '@/components/PortfolioGrid';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Check } from 'lucide-react';
+import { Check, Quote } from 'lucide-react';
 import { client } from '@/lib/sanity';
 import imageUrlBuilder from '@sanity/image-url';
 import { PortableText } from '@portabletext/react';
 import { PortableTextComponent } from '@/components/PortableTextComponent';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Card, CardContent } from '@/components/ui/card';
 
 const builder = imageUrlBuilder(client);
 
 function urlFor(source: any) {
   return builder.image(source);
+}
+
+interface Testimonial {
+  quote: string;
+  author: string;
+  authorRole?: string;
 }
 
 // GROQ query to get homepage data
@@ -49,78 +57,8 @@ async function getHomepageData() {
     },
     testimonialsSection
   }`;
-  // const data = await client.fetch(query);
-  // return data;
-  return {
-    heroSection: {
-      title: 'Creative Digital Studio',
-      subtitle: 'We transform ideas into extraordinary digital experiences.',
-      backgroundImage: 'https://placehold.co/1920x1080.png',
-    },
-    aboutSection: {
-      title: 'About DesignFlow',
-      content: [
-        {
-          _type: 'block',
-          style: 'normal',
-          _key: '123',
-          children: [
-            {
-              _type: 'span',
-              _key: '123-1',
-              text: 'We are a passionate team of designers and developers dedicated to crafting beautiful, functional, and user-centered digital experiences. With a focus on collaboration and innovation, we partner with clients to bring their visions to life.',
-            },
-          ],
-        },
-        {
-          _type: 'block',
-          style: 'normal',
-          _key: '456',
-          children: [
-            {
-              _type: 'span',
-              _key: '456-1',
-              text: 'Our process is built on a foundation of research, strategy, and meticulous execution, ensuring every project not only looks stunning but also achieves its goals.',
-            },
-          ],
-        },
-      ],
-    },
-    servicesSection: {
-      title: 'Our Services',
-      servicesList: [
-        { _id: '1', title: 'Brand Identity & Logo Design' },
-        { _id: '2', title: 'Web & Mobile App Design' },
-        { _id: '3', title: 'UI/UX Research and Strategy' },
-        { _id: '4', title: 'Illustration & Iconography' },
-        { _id: '5', title: 'Marketing & Social Media Assets' },
-        { _id: '6', title: 'Packaging & Print Design' },
-      ],
-    },
-    featuredProjects: [
-      {
-        _id: 'proj1',
-        name: 'Project One',
-        slug: 'project-one',
-        mainImage: 'https://placehold.co/600x400.png',
-        categories: [{ _id: 'cat1', title: 'Web Design', slug: 'web-design' }],
-      },
-      {
-        _id: 'proj2',
-        name: 'Project Two',
-        slug: 'project-two',
-        mainImage: 'https://placehold.co/600x400.png',
-        categories: [{ _id: 'cat2', title: 'Branding', slug: 'branding' }],
-      },
-      {
-        _id: 'proj3',
-        name: 'Project Three',
-        slug: 'project-three',
-        mainImage: 'https://placehold.co/600x400.png',
-        categories: [{ _id: 'cat1', title: 'Web Design', slug: 'web-design' }],
-      },
-    ]
-  }
+  const data = await client.fetch(query);
+  return data;
 }
 
 async function getCategories(): Promise<Category[]> {
@@ -129,12 +67,8 @@ async function getCategories(): Promise<Category[]> {
     title,
     "slug": slug.current
   }`;
-  // const categories = await client.fetch(query);
-  // return categories;
-  return [
-    { _id: 'cat1', title: 'Web Design', slug: 'web-design' },
-    { _id: 'cat2', title: 'Branding', slug: 'branding' },
-  ];
+  const categories = await client.fetch(query);
+  return categories;
 }
 
 
@@ -152,6 +86,7 @@ export default async function Home() {
   ];
 
   const featuredProjects = homepage?.featuredProjects || [];
+  const testimonials: Testimonial[] = homepage?.testimonialsSection || [];
 
   return (
     <>
@@ -252,6 +187,48 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* Testimonials Section */}
+      {testimonials.length > 0 && (
+        <section className="py-20 bg-secondary">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">What Our Clients Say</h2>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                We are proud to have partnered with amazing brands.
+              </p>
+            </div>
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full max-w-4xl mx-auto"
+            >
+              <CarouselContent>
+                {testimonials.map((testimonial, index) => (
+                  <CarouselItem key={index} className="md:basis-1/2">
+                    <div className="p-1 h-full">
+                      <Card className="h-full">
+                        <CardContent className="flex h-full flex-col justify-center items-center p-6 text-center">
+                          <Quote className="w-12 h-12 text-primary/20 mb-4" />
+                          <p className="font-body text-xl italic text-foreground mb-6">
+                            "{testimonial.quote}"
+                          </p>
+                          <div className="font-headline text-lg font-bold text-foreground">{testimonial.author}</div>
+                          <div className="text-sm text-muted-foreground">{testimonial.authorRole}</div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+          </div>
+        </section>
+      )}
     </>
   );
 }
