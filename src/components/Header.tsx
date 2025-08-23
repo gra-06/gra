@@ -22,7 +22,8 @@ export function Header() {
     { href: '/services', label: 'Services' },
     { href: '/portfolio', label: 'Works' },
     { href: '/about', label: 'About' },
-    { href: '/testimonials', label: 'Testimonials' },
+    { href: '/blog', label: 'Blog' },
+    { href: '/contact', label: 'Testimonials' },
   ];
 
   return (
@@ -33,7 +34,7 @@ export function Header() {
           <span className="font-headline text-3xl font-bold">Grafikerabi</span>
         </Link>
 
-        <nav className="hidden md:flex items-center space-x-6" aria-label={isClient ? "Ana navigasyon" : undefined}>
+        <nav className="hidden md:flex items-center space-x-8" aria-label={isClient ? "Ana navigasyon" : undefined}>
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -51,7 +52,7 @@ export function Header() {
 
         <div className="hidden md:flex items-center space-x-4">
             <Link href="/contact">
-                <Button>Say Hello</Button>
+                <Button>Hire Me</Button>
             </Link>
             <ThemeToggle />
         </div>
@@ -74,7 +75,7 @@ export function Header() {
       {isMenuOpen && (
         <div id="mobile-menu" className="md:hidden absolute top-full left-0 w-full bg-background shadow-lg py-4">
           <nav className="flex flex-col items-center space-y-4" aria-label={isClient ? "Mobil ana navigasyon" : undefined}>
-            {[...navLinks, { href: '/contact', label: 'Say Hello' }].map((link) => (
+            {[...navLinks, { href: '/contact', label: 'Hire Me' }].map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

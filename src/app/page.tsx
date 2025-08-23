@@ -1,10 +1,11 @@
 
+
 import type { Project, Category } from '@/types';
 import { PortfolioGrid } from '@/components/PortfolioGrid';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Check, Quote } from 'lucide-react';
+import { Check, Quote, Mail, ArrowRight } from 'lucide-react';
 import { client } from '@/lib/sanity';
 import imageUrlBuilder from '@sanity/image-url';
 import { PortableText } from '@portabletext/react';
@@ -91,36 +92,46 @@ export default async function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative h-[80vh] min-h-[500px] flex items-center justify-center text-center text-white overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-              src={homepage?.heroSection?.backgroundImage || "https://placehold.co/1920x1080.png"}
-              alt="Hero background"
-              fill
-              style={{objectFit: 'cover'}}
-              className="opacity-40"
-              data-ai-hint="abstract background"
-              priority
-          />
-          <div className="absolute inset-0 bg-black/50" />
-        </div>
-        <div className="relative z-10 container mx-auto px-4">
-          <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tight mb-4">
-            {"Bring your vision to ultimate reality"}
-          </h1>
-          <p className="text-lg md:text-2xl text-white/80 max-w-3xl mx-auto mb-8">
-            {"Specialize in creating unique visual identities for digital products..."}
-          </p>
-          <Link href="/portfolio">
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 py-6">
-              View Portfolio
-            </Button>
-          </Link>
+      <section className="min-h-[calc(100vh-80px)] w-full flex flex-col justify-center bg-background">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="flex flex-col items-start text-left">
+              <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tighter mb-6 leading-tight">
+                Bring your vision to ultimate reality
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-xl mb-8">
+                Specialize in creating unique visual identities for digital products…
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <Link href="/portfolio">
+                  <Button size="lg" className="text-lg px-8 py-6">
+                    View Portfolio
+                  </Button>
+                </Link>
+                <Link href="/contact">
+                  <Button size="lg" variant="outline" className="text-lg px-8 py-6">
+                    Hire Me
+                  </Button>
+                </Link>
+              </div>
+            </div>
+             <div className="flex justify-center items-center">
+                <Image
+                    src="https://placehold.co/500x500.png"
+                    alt="Grafikerabi Profile"
+                    width={500}
+                    height={500}
+                    className="rounded-full object-cover aspect-square"
+                    data-ai-hint="portrait man"
+                    priority
+                />
+            </div>
+          </div>
         </div>
       </section>
 
       {/* About Section */}
-      <section className="py-20 bg-background">
+      <section className="py-20 bg-secondary">
         <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
           <div>
             <Image 
@@ -133,7 +144,7 @@ export default async function Home() {
             />
           </div>
           <div>
-            <h2 className="font-headline text-4xl md:text-5xl font-bold mb-6">{homepage?.aboutSection?.title || "About DesignFlow"}</h2>
+            <h2 className="font-headline text-4xl md:text-5xl font-bold mb-6">{homepage?.aboutSection?.title || "About Grafikerabi"}</h2>
             <div className="prose prose-lg max-w-none font-body text-muted-foreground">
               {homepage?.aboutSection?.content ? (
                 <PortableText value={homepage.aboutSection.content} components={PortableTextComponent} />
@@ -149,7 +160,7 @@ export default async function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 bg-secondary">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">{homepage?.servicesSection?.title || "Our Services"}</h2>
@@ -161,7 +172,7 @@ export default async function Home() {
             {services.map((service: string, index: number) => (
               <div key={index} className="flex items-center gap-4">
                 <Check className="h-6 w-6 text-primary shrink-0"/>
-                <p className="text-lg text-secondary-foreground">{service}</p>
+                <p className="text-lg text-foreground">{service}</p>
               </div>
             ))}
           </div>
@@ -169,7 +180,7 @@ export default async function Home() {
       </section>
 
       {/* Featured Projects Section */}
-      <section className="py-20 bg-background">
+      <section className="py-20 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Featured Work</h2>
@@ -190,7 +201,7 @@ export default async function Home() {
 
       {/* Testimonials Section */}
       {testimonials.length > 0 && (
-        <section className="py-20 bg-secondary">
+        <section className="py-20 bg-background">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">What Our Clients Say</h2>
