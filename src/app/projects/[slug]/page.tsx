@@ -1,76 +1,123 @@
 
 import Image from 'next/image';
-import type { Project, Category } from '@/types'; // We'll expand the Project type
+import type { Project } from '@/types';
 import type { Metadata } from 'next';
 import { PortableText } from '@portabletext/react';
 import { PortableTextComponent } from '@/components/PortableTextComponent';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { notFound } from 'next/navigation';
-import { client } from '@/lib/sanity';
+// import { client } from '@/lib/sanity';
 import { Calendar, User, Tag } from 'lucide-react';
 import { format } from 'date-fns';
 import { ProjectCard } from '@/components/ProjectCard';
+// import imageUrlBuilder from '@sanity/image-url';
 
-// Define more detailed types to match our new schemas
+// const builder = imageUrlBuilder(client);
+
+function urlFor(source: any) {
+  // return builder.image(source);
+  return { url: () => source.url || source.asset?.url || '' };
+}
+
 interface ProjectPageProps {
   params: { slug: string };
 }
 
-// NOTE: This getProject function is a placeholder. 
-// It simulates fetching the detailed project data based on the slug.
-// In a real application, this would fetch data from Sanity.io.
-async function getProject(slug: string): Promise<Project | null> {
-  if (slug === 'unique-design') {
-    return {
-      _id: '1',
-      name: 'Unique Design',
-      slug: 'unique-design',
-      mainImage: 'https://placehold.co/1200x800.png',
-      categories: [{ _id: 'cat-1', title: 'Branding', slug: 'branding' }],
-      client: 'Creative Inc.',
-      date: '2023-10-26',
-      services: ['Branding', 'UI/UX', 'Web Design'],
-      overview: [
-        { _key: '1', _type: 'block', style: 'normal', children: [{ _key: '1a', _type: 'span', text: 'This is a brief but impactful overview of the project. We collaborated with Creative Inc. to redefine their brand identity and create a compelling online presence that resonates with their target audience.' }] }
-      ],
-      challenge: [
-        { _key: '2', _type: 'block', style: 'normal', children: [{ _key: '2a', _type: 'span', text: 'The main challenge was to create a modern and scalable design system that could be applied across all of Creative Inc.\'s digital platforms while staying true to their core values.' }] }
-      ],
-      solution: [
-        { _key: '3', _type: 'block', style: 'normal', children: [{ _key: '3a', _type: 'span', text: 'Our team conducted extensive research and developed a flexible visual language. We delivered a comprehensive style guide, a new component-based website, and a set of marketing templates.' }] }
-      ],
-      result: [
-        { _key: '4', _type: 'block', style: 'normal', children: [{ _key: '4a', _type: 'span', text: 'The new branding led to a 40% increase in user engagement and a 25% increase in conversions. The client was thrilled with the result, which provided a solid foundation for their future growth.' }] }
-      ],
-      contentSections: [
-        {
-          _type: 'imageGallery',
-          images: [
-            { _key: 'gal1', asset: { url: 'https://placehold.co/800x600.png' }, alt: 'Gallery image 1', caption: 'User flow diagrams' },
-            { _key: 'gal2', asset: { url: 'https://placehold.co/800x600.png' }, alt: 'Gallery image 2', caption: 'High-fidelity mockups' },
-          ]
-        },
-        {
-          _type: 'fullWidthImage',
-          image: { asset: { url: 'https://placehold.co/1200x700.png' } },
-          alt: 'Full-width moodboard'
-        },
-        {
-          _type: 'twoColumnText',
-          leftContent: [{ _key: 'l1', _type: 'block', style: 'h3', children: [{_key: 'l1a', _type: 'span', text: 'Left Column Title'}]}, { _key: 'l2', _type: 'block', style: 'normal', children: [{_key: 'l2a', _type: 'span', text: 'This column can contain detailed explanations, lists, or any other rich text content to provide context.'}]}],
-          rightContent: [{ _key: 'r1', _type: 'block', style: 'h3', children: [{_key: 'r1a', _type: 'span', text: 'Right Column Title'}]}, { _key: 'r2', _type: 'block', style: 'normal', children: [{_key: 'r2a', _type: 'span', text: 'Paired with the left column, this creates a balanced and easy-to-read layout for presenting information.'}]}],
-        }
-      ],
-      relatedProjects: [
-        { _id: '2', name: 'Modern Website', slug: 'modern-website', mainImage: 'https://placehold.co/600x400.png', categories: [{ _id: 'cat-2', title: 'Web Design', slug: 'web-design' }], description: [] },
-        { _id: '4', name: 'Corporate Identity', slug: 'corporate-identity', mainImage: 'https://placehold.co/600x400.png', categories: [{ _id: 'cat-1', title: 'Branding', slug: 'branding' }], description: [] },
-      ],
-      tags: ['Branding', 'UI/UX', 'Figma', 'Case Study'],
-      description: [], // Keep for base type compatibility
-    };
+const mockProjects: { [key: string]: Project } = {
+  'marka-kimligi-yenileme': {
+    _id: '1',
+    name: 'Marka Kimliği Yenileme',
+    slug: 'marka-kimligi-yenileme',
+    mainImage: 'https://placehold.co/1200x800.png',
+    categories: [{ _id: 'cat1', title: 'Marka Kimliği', slug: 'branding' }],
+    client: 'Teknoloji A.Ş.',
+    date: '2023-05-15',
+    services: ['Logo Tasarımı', 'Kurumsal Kimlik', 'Marka Stratejisi'],
+    overview: [
+      { _type: 'block', style: 'normal', children: [{ _type: 'span', text: 'Bu projede, Teknoloji A.Ş. için eskiyen marka kimliğini modern ve dinamik bir yapıya kavuşturduk.' }] }
+    ],
+    challenge: [
+      { _type: 'block', style: 'normal', children: [{ _type: 'span', text: 'En büyük zorluk, markanın köklü geçmişini korurken aynı zamanda yenilikçi ve teknoloji odaklı bir imaj yaratmaktı.' }] }
+    ],
+    solution: [
+      { _type: 'block', style: 'normal', children: [{ _type: 'span', text: 'Kapsamlı bir pazar araştırması ve hedef kitle analizi sonrası, markanın temel değerlerini yansıtan yeni bir logo, renk paleti ve tipografi sistemi geliştirdik.' }] }
+    ],
+    result: [
+      { _type: 'block', style: 'normal', children: [{ _type: 'span', text: 'Yeni kimlik, markanın pazar payını %20 artırdı ve müşteri etkileşimini önemli ölçüde yükseltti.' }] }
+    ],
+    contentSections: [
+      { _type: 'fullWidthImage', _key: 'fw1', image: { _type: 'image', asset: { url: 'https://placehold.co/1200x700.png' } }, alt: 'Proje detayı' },
+      { _type: 'twoColumnText', _key: 'tc1', leftContent: [{ _type: 'block', style: 'normal', children: [{ _type: 'span', text: 'Sol sütun metni burada yer alıyor. Projenin detaylarını ve süreçleri anlatıyoruz.' }] }], rightContent: [{ _type: 'block', style: 'normal', children: [{ _type: 'span', text: 'Sağ sütun metni de burada. Teknik detaylar veya farklı bir bakış açısı sunabilir.' }] }] },
+      { _type: 'imageGallery', _key: 'ig1', images: [
+        { _type: 'image', _key: 'img1', asset: { url: 'https://placehold.co/800x600.png' }, caption: 'Galeri görseli 1', alt: 'Galeri 1' },
+        { _type: 'image', _key: 'img2', asset: { url: 'https://placehold.co/800x600.png' }, caption: 'Galeri görseli 2', alt: 'Galeri 2' },
+      ]}
+    ],
+    relatedProjects: [
+      { _id: '2', name: 'E-Ticaret Sitesi Tasarımı', slug: 'e-ticaret-sitesi-tasarimi', mainImage: 'https://placehold.co/600x400.png', categories: [{ _id: 'cat2', title: 'Web Tasarımı', slug: 'web-design' }] },
+      { _id: '3', name: 'Mobil Uygulama Arayüzü', slug: 'mobil-uygulama-arayuzu', mainImage: 'https://placehold.co/600x400.png', categories: [{ _id: 'cat3', title: 'UI/UX', slug: 'ui-ux' }] },
+    ],
+    tags: ['branding', 'logo', 'corporate identity'],
+    description: [],
   }
-  return null; // For any other slug, return null
+};
+
+
+// GROQ query to get a single project by its slug
+async function getProject(slug: string): Promise<Project | null> {
+  // const query = `*[_type == "project" && slug.current == $slug][0]{
+  //   _id,
+  //   name,
+  //   "slug": slug.current,
+  //   "mainImage": mainImage.asset->url,
+  //   "mainImageObject": mainImage,
+  //   categories[]->{
+  //     _id,
+  //     title,
+  //     "slug": slug.current
+  //   },
+  //   client,
+  //   date,
+  //   services,
+  //   overview,
+  //   challenge,
+  //   solution,
+  //   result,
+  //   contentSections[]{
+  //     ...,
+  //     _type == 'imageGallery' => {
+  //       'images': images[]{
+  //         ...,
+  //         'asset': asset->{
+  //           url,
+  //           'metadata': metadata
+  //         }
+  //       }
+  //     },
+  //     _type == 'fullWidthImage' => {
+  //       'image': image.asset->{
+  //         url,
+  //         'metadata': metadata
+  //       }
+  //     }
+  //   },
+  //   "relatedProjects": relatedProjects[]->{
+  //     _id,
+  //     name,
+  //     "slug": slug.current,
+  //     "mainImage": mainImage.asset->url,
+  //     categories[]->{
+  //       _id,
+  //       title,
+  //       "slug": slug.current
+  //     }
+  //   },
+  //   tags
+  // }`;
+  
+  // const project = await client.fetch(query, { slug });
+  const project = mockProjects[slug] || null;
+  return project;
 }
 
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
@@ -108,8 +155,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <Image
             src={project.mainImage}
             alt={project.name}
-            layout="fill"
-            objectFit="cover"
+            fill
+            style={{objectFit: 'cover'}}
             priority
             data-ai-hint="project showcase"
           />
@@ -118,7 +165,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <div className="relative z-10 container mx-auto">
           <div className="max-w-4xl">
             <div className="flex flex-wrap gap-2 mb-3">
-              {project.categories.map((category) => (
+              {project.categories?.map((category) => (
                 <Badge key={category._id} variant="secondary" className="text-sm backdrop-blur-sm bg-white/20 border-0">
                   {category.title}
                 </Badge>
@@ -177,7 +224,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {section.images.map((img) => (
                         <figure key={img._key}>
-                          <Image src={img.asset.url} alt={img.alt || ''} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover" data-ai-hint="portfolio gallery" />
+                          <Image src={urlFor(img).width(800).height(600).url()} alt={img.alt || ''} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover" data-ai-hint="portfolio gallery" />
                           {img.caption && <figcaption className="text-center text-sm text-muted-foreground mt-2">{img.caption}</figcaption>}
                         </figure>
                       ))}
@@ -186,9 +233,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 );
               }
               if (section._type === 'fullWidthImage' && section.image) {
-                return <Image key={key} src={section.image.asset.url} alt={section.alt || ''} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover" data-ai-hint="project detail" />;
+                return <Image key={key} src={urlFor(section.image).url()} alt={section.alt || ''} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover" data-ai-hint="project detail" />;
               }
-              if (section._type === 'twoColumnText') {
+              if (section._type === 'twoColumnText' && section.leftContent && section.rightContent) {
                 return (
                   <div key={key} className="grid md:grid-cols-2 gap-12">
                      <div className="prose prose-lg max-w-none font-body text-muted-foreground"><PortableText value={section.leftContent} components={PortableTextComponent}/></div>

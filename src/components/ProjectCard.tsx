@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 
 interface ProjectCardProps {
-  project: Project;
+  project: Partial<Project>;
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
