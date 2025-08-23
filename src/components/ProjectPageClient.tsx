@@ -41,6 +41,8 @@ const Section: React.FC<{ title: string; children: React.ReactNode, delay?: numb
 
 export function ProjectPageClient({ project }: ProjectPageClientProps) {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const [lightboxAlt, setLightboxAlt] = useState<string>('');
+
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -82,6 +84,11 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
         },
     },
     description: overviewText,
+  };
+
+  const handleImageClick = (imageUrl: string, altText: string = 'Proje görseli') => {
+    setLightboxImage(imageUrl);
+    setLightboxAlt(altText);
   };
 
 
@@ -134,21 +141,21 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
             variants={itemVariants}
             className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 pb-8 border-b">
             <div className="flex items-start gap-3">
-              <User className="h-8 w-8 text-primary mt-1" />
+              <User className="h-8 w-8 text-primary mt-1" aria-hidden="true" />
               <div>
                 <p className="font-bold text-sm text-muted-foreground">Client</p>
                 <p className="font-semibold text-lg">{project.client}</p>
               </div>
             </div>
              <div className="flex items-start gap-3">
-              <Calendar className="h-8 w-8 text-primary mt-1" />
+              <Calendar className="h-8 w-8 text-primary mt-1" aria-hidden="true" />
               <div>
                 <p className="font-bold text-sm text-muted-foreground">Date</p>
                 <p className="font-semibold text-lg">{project.date ? format(new Date(project.date), 'MMMM yyyy') : 'N/A'}</p>
               </div>
             </div>
              <div className="flex items-start gap-3 col-span-2">
-              <Tag className="h-8 w-8 text-primary mt-1" />
+              <Tag className="h-8 w-8 text-primary mt-1" aria-hidden="true"/>
               <div>
                 <p className="font-bold text-sm text-muted-foreground">Services</p>
                 <div className="flex flex-wrap gap-x-3 gap-y-1">
@@ -169,7 +176,7 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
                         <div key={item._key} className="flex">
                             <div className="flex flex-col items-center mr-6">
                                 <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-full text-primary-foreground font-bold">
-                                    <Check className="w-6 h-6" />
+                                    <Check className="w-6 h-6" aria-hidden="true"/>
                                 </div>
                                 {index < project.caseStudy.length - 1 && <div className="w-px h-full bg-border" />}
                             </div>
@@ -183,12 +190,12 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
                                       <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}>
                                         <Image
                                             src={urlFor(item.image).width(800).height(600).url()}
-                                            alt={item.stage}
+                                            alt={item.image.alt || `${item.stage} aşaması görseli`}
                                             width={800}
                                             height={600}
                                             className="rounded-lg shadow-lg w-full object-cover cursor-pointer"
                                             data-ai-hint="case study step"
-                                            onClick={() => setLightboxImage(urlFor(item.image).url())}
+                                            onClick={() => handleImageClick(urlFor(item.image).url(), item.image.alt || `${item.stage} aşaması görseli`)}
                                         />
                                       </motion.div>
                                   )}
@@ -220,7 +227,7 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
                       {section.images.map((img) => (
                         <figure key={img._key}>
                           <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}>
-                            <Image src={urlFor(img).width(800).height(600).url()} alt={img.alt || ''} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="portfolio gallery" onClick={() => setLightboxImage(urlFor(img).url())}/>
+                            <Image src={urlFor(img).width(800).height(600).url()} alt={img.alt || 'Proje galerisinden bir görsel'} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="portfolio gallery" onClick={() => handleImageClick(urlFor(img).url(), img.alt || 'Proje galerisinden bir görsel')}/>
                           </motion.div>
                           {img.caption && <figcaption className="text-center text-sm text-muted-foreground mt-2">{img.caption}</figcaption>}
                         </figure>
@@ -230,7 +237,7 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
                 );
               }
               if (section._type === 'fullWidthImage' && section.image) {
-                return <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}><Image key={key} src={urlFor(section.image).url()} alt={section.alt || ''} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="project detail" onClick={() => setLightboxImage(urlFor(section.image).url())} /></motion.div>;
+                return <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}><Image key={key} src={urlFor(section.image).url()} alt={section.alt || 'Tam genişlik proje görseli'} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="project detail" onClick={() => handleImageClick(urlFor(section.image).url(), section.alt || 'Tam genişlik proje görseli')} /></motion.div>;
               }
               if (section._type === 'twoColumnText' && section.leftContent && section.rightContent) {
                 return (
@@ -270,6 +277,7 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
       </div>
       <ImageLightbox
         imageUrl={lightboxImage}
+        altText={lightboxAlt}
         onClose={() => setLightboxImage(null)}
       />
     </motion.article>

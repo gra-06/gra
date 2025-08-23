@@ -29,8 +29,8 @@ export function Header() {
   ];
 
   const socialLinks = [
-    { href: 'https://instagram.com', icon: Instagram },
-    { href: 'https://linkedin.com', icon: Linkedin },
+    { href: 'https://instagram.com', icon: Instagram, label: 'Instagram' },
+    { href: 'https://linkedin.com', icon: Linkedin, label: 'LinkedIn' },
   ];
 
   return (
@@ -43,7 +43,7 @@ export function Header() {
         </Link>
 
         {/* Masaüstü Navigasyon */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex items-center space-x-8" aria-label="Ana navigasyon">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -52,6 +52,7 @@ export function Header() {
                 'text-lg font-medium transition-colors hover:text-primary',
                 pathname === link.href ? 'text-primary' : 'text-muted-foreground'
               )}
+              aria-current={pathname === link.href ? 'page' : undefined}
             >
               {link.label}
             </Link>
@@ -60,8 +61,8 @@ export function Header() {
 
         {/* Sosyal Medya İkonları ve Tema Değiştirici (Masaüstü) */}
         <div className="hidden md:flex items-center space-x-4">
-            {socialLinks.map((link, index) => (
-                <a key={index} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+            {socialLinks.map((link) => (
+                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={link.label}>
                     <link.icon className="h-5 w-5" />
                 </a>
             ))}
@@ -71,7 +72,14 @@ export function Header() {
         {/* Mobil Menü Butonu */}
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
-          <Button onClick={() => setIsMenuOpen(!isMenuOpen)} variant="ghost" size="icon">
+          <Button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)} 
+            variant="ghost" 
+            size="icon" 
+            aria-controls="mobile-menu"
+            aria-expanded={isMenuOpen}
+            aria-label={isMenuOpen ? "Menüyü kapat" : "Menüyü aç"}
+          >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
         </div>
@@ -79,8 +87,8 @@ export function Header() {
 
       {/* Mobil Açılır Menü */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-background shadow-lg py-4">
-          <nav className="flex flex-col items-center space-y-4">
+        <div id="mobile-menu" className="md:hidden absolute top-full left-0 w-full bg-background shadow-lg py-4">
+          <nav className="flex flex-col items-center space-y-4" aria-label="Mobil ana navigasyon">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -90,13 +98,14 @@ export function Header() {
                   'text-lg font-medium transition-colors hover:text-primary w-full text-center py-2',
                   pathname === link.href ? 'text-primary' : 'text-muted-foreground'
                 )}
+                aria-current={pathname === link.href ? 'page' : undefined}
               >
                 {link.label}
               </Link>
             ))}
              <div className="flex items-center space-x-6 pt-4">
-                {socialLinks.map((link, index) => (
-                    <a key={index} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                {socialLinks.map((link) => (
+                    <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={link.label}>
                         <link.icon className="h-6 w-6" />
                     </a>
                 ))}

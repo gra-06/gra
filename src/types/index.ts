@@ -22,6 +22,7 @@ export interface SanityImageAsset {
 // Interface for a Sanity image object, including the asset reference
 export interface SanityImage {
   _type: 'image';
+  _key: string;
   asset: {
     _ref?: string;
     url?: string; // May be added by GROQ query
@@ -34,7 +35,7 @@ export interface SanityImage {
 export interface ImageGallerySection {
   _type: 'imageGallery';
   _key: string;
-  images: (SanityImage & { _key: string })[];
+  images: SanityImage[];
 }
 
 export interface FullWidthImageSection {
