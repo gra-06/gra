@@ -49,8 +49,78 @@ async function getHomepageData() {
     },
     testimonialsSection
   }`;
-  const data = await client.fetch(query);
-  return data;
+  // const data = await client.fetch(query);
+  // return data;
+  return {
+    heroSection: {
+      title: 'Creative Digital Studio',
+      subtitle: 'We transform ideas into extraordinary digital experiences.',
+      backgroundImage: 'https://placehold.co/1920x1080.png',
+    },
+    aboutSection: {
+      title: 'About DesignFlow',
+      content: [
+        {
+          _type: 'block',
+          style: 'normal',
+          _key: '123',
+          children: [
+            {
+              _type: 'span',
+              _key: '123-1',
+              text: 'We are a passionate team of designers and developers dedicated to crafting beautiful, functional, and user-centered digital experiences. With a focus on collaboration and innovation, we partner with clients to bring their visions to life.',
+            },
+          ],
+        },
+        {
+          _type: 'block',
+          style: 'normal',
+          _key: '456',
+          children: [
+            {
+              _type: 'span',
+              _key: '456-1',
+              text: 'Our process is built on a foundation of research, strategy, and meticulous execution, ensuring every project not only looks stunning but also achieves its goals.',
+            },
+          ],
+        },
+      ],
+    },
+    servicesSection: {
+      title: 'Our Services',
+      servicesList: [
+        { _id: '1', title: 'Brand Identity & Logo Design' },
+        { _id: '2', title: 'Web & Mobile App Design' },
+        { _id: '3', title: 'UI/UX Research and Strategy' },
+        { _id: '4', title: 'Illustration & Iconography' },
+        { _id: '5', title: 'Marketing & Social Media Assets' },
+        { _id: '6', title: 'Packaging & Print Design' },
+      ],
+    },
+    featuredProjects: [
+      {
+        _id: 'proj1',
+        name: 'Project One',
+        slug: 'project-one',
+        mainImage: 'https://placehold.co/600x400.png',
+        categories: [{ _id: 'cat1', title: 'Web Design', slug: 'web-design' }],
+      },
+      {
+        _id: 'proj2',
+        name: 'Project Two',
+        slug: 'project-two',
+        mainImage: 'https://placehold.co/600x400.png',
+        categories: [{ _id: 'cat2', title: 'Branding', slug: 'branding' }],
+      },
+      {
+        _id: 'proj3',
+        name: 'Project Three',
+        slug: 'project-three',
+        mainImage: 'https://placehold.co/600x400.png',
+        categories: [{ _id: 'cat1', title: 'Web Design', slug: 'web-design' }],
+      },
+    ]
+  }
 }
 
 async function getCategories(): Promise<Category[]> {
@@ -59,8 +129,12 @@ async function getCategories(): Promise<Category[]> {
     title,
     "slug": slug.current
   }`;
-  const categories = await client.fetch(query);
-  return categories;
+  // const categories = await client.fetch(query);
+  // return categories;
+  return [
+    { _id: 'cat1', title: 'Web Design', slug: 'web-design' },
+    { _id: 'cat2', title: 'Branding', slug: 'branding' },
+  ];
 }
 
 
@@ -98,7 +172,7 @@ export default async function Home() {
           <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tight mb-4 animate-fade-in-up">
             {homepage?.heroSection?.title || "Creative Digital Studio"}
           </h1>
-          <p className="text-lg md:text-2xl text-white/80 max-w-3xl mx-auto mb-8 animate-fade-in-up animation-delay-300">
+          <p className="text-lg md:text-2xl text-white/80 max-w-3xl mx-auto mb-8 animate-fade-in-up [animation-delay:300ms]">
             {homepage?.heroSection?.subtitle || "We transform ideas into extraordinary digital experiences."}
           </p>
           <Link href="/portfolio">

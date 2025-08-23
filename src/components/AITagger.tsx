@@ -59,9 +59,14 @@ export function AITagger() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
-        formRef.current?.reset();
-        state.tags = undefined;
-        state.error = undefined;
+        if (formRef.current) {
+            formRef.current.reset();
+        }
+        // Manually reset form state for tags and errors
+        if (state) {
+            state.tags = undefined;
+            state.error = undefined;
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -72,8 +77,10 @@ export function AITagger() {
     if (inputRef.current) {
       inputRef.current.value = '';
     }
-    state.tags = undefined;
-    state.error = undefined;
+    if (state) {
+        state.tags = undefined;
+        state.error = undefined;
+    }
   };
 
   return (
@@ -97,7 +104,7 @@ export function AITagger() {
             >
               {imagePreview ? (
                 <>
-                  <Image src={imagePreview} alt="Image preview" fill objectFit="contain" className="rounded-md p-2" />
+                  <Image src={imagePreview} alt="Image preview" fill style={{objectFit: "contain"}} className="rounded-md p-2" />
                   <Button
                     type="button"
                     variant="destructive"
