@@ -96,8 +96,10 @@ export default function ProjectPage({ params }: ProjectPageProps) {
       const fetchedProject = await client.fetch(query, { slug });
       return fetchedProject;
     }
-
-    getProject(params.slug).then(setProject);
+    const slug = params.slug;
+    if (slug) {
+        getProject(slug).then(setProject);
+    }
   }, [params]);
 
 
@@ -300,5 +302,7 @@ const TimelineItem: React.FC<{ item: CaseStudyEntry, isLast: boolean, onImageCli
       </div>
   );
   
+
+    
 
     
