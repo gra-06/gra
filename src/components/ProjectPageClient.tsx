@@ -25,23 +25,43 @@ interface ProjectPageClientProps {
   project: Project;
 }
 
-const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-    <div className="mb-16">
+const Section: React.FC<{ title: string; children: React.ReactNode, delay?: number }> = ({ title, children, delay=0.2 }) => (
+    <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay }}
+        className="mb-16">
       <h2 className="font-headline text-3xl font-bold mb-6 border-l-4 border-primary pl-4">{title}</h2>
       <div className="prose prose-lg max-w-none font-body text-muted-foreground">
         {children}
       </div>
-    </div>
+    </motion.div>
   );
 
 export function ProjectPageClient({ project }: ProjectPageClientProps) {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   return (
     <motion.article 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
         className="bg-background">
 
       {/* Hero Section */}
@@ -57,7 +77,7 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
         </div>
-        <div className="relative z-10 container mx-auto">
+        <motion.div variants={itemVariants} className="relative z-10 container mx-auto">
           <div className="max-w-4xl">
             <div className="flex flex-wrap gap-2 mb-3">
               {project.categories?.map((category) => (
@@ -70,14 +90,16 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
               {project.name}
             </h1>
           </div>
-        </div>
+        </motion.div>
       </header>
 
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-5xl mx-auto">
         
           {/* Project Meta Info */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 pb-8 border-b">
+          <motion.div 
+            variants={itemVariants}
+            className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 pb-8 border-b">
             <div className="flex items-start gap-3">
               <User className="h-8 w-8 text-primary mt-1" />
               <div>
@@ -101,14 +123,14 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
           
           {/* Overview */}
           {project.overview && <Section title="Overview"><PortableText value={project.overview} components={PortableTextComponent} /></Section>}
           
           {/* Case Study Timeline */}
           {project.caseStudy && project.caseStudy.length > 0 && (
-            <Section title="Case Study">
+            <Section title="Case Study" delay={0.3}>
                 <div className="relative">
                     {project.caseStudy.map((item, index) => (
                         <div key={item._key} className="flex">
@@ -125,15 +147,17 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
                                      <PortableText value={item.description} components={PortableTextComponent} />
                                   </div>
                                   {item.image && (
-                                      <Image
-                                          src={urlFor(item.image).width(800).height(600).url()}
-                                          alt={item.stage}
-                                          width={800}
-                                          height={600}
-                                          className="rounded-lg shadow-lg w-full object-cover cursor-pointer"
-                                          data-ai-hint="case study step"
-                                          onClick={() => setLightboxImage(urlFor(item.image).url())}
-                                      />
+                                      <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}>
+                                        <Image
+                                            src={urlFor(item.image).width(800).height(600).url()}
+                                            alt={item.stage}
+                                            width={800}
+                                            height={600}
+                                            className="rounded-lg shadow-lg w-full object-cover cursor-pointer"
+                                            data-ai-hint="case study step"
+                                            onClick={() => setLightboxImage(urlFor(item.image).url())}
+                                        />
+                                      </motion.div>
                                   )}
                                 </div>
                             </div>
@@ -143,12 +167,17 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
             </Section>
           )}
 
-          {project.challenge && <Section title="The Challenge"><PortableText value={project.challenge} components={PortableTextComponent} /></Section>}
-          {project.solution && <Section title="The Solution"><PortableText value={project.solution} components={PortableTextComponent} /></Section>}
-          {project.result && <Section title="The Result"><PortableText value={project.result} components={PortableTextComponent} /></Section>}
+          {project.challenge && <Section title="The Challenge" delay={0.2}><PortableText value={project.challenge} components={PortableTextComponent} /></Section>}
+          {project.solution && <Section title="The Solution" delay={0.3}><PortableText value={project.solution} components={PortableTextComponent} /></Section>}
+          {project.result && <Section title="The Result" delay={0.4}><PortableText value={project.result} components={PortableTextComponent} /></Section>}
 
           {/* Dynamic Content Sections */}
-          <div className="space-y-16">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="space-y-16">
             {project.contentSections?.map((section, index) => {
               const key = `${section._type}-${index}`;
               if (section._type === 'imageGallery' && section.images) {
@@ -157,7 +186,9 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {section.images.map((img) => (
                         <figure key={img._key}>
-                          <Image src={urlFor(img).width(800).height(600).url()} alt={img.alt || ''} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="portfolio gallery" onClick={() => setLightboxImage(urlFor(img).url())}/>
+                          <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}>
+                            <Image src={urlFor(img).width(800).height(600).url()} alt={img.alt || ''} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="portfolio gallery" onClick={() => setLightboxImage(urlFor(img).url())}/>
+                          </motion.div>
                           {img.caption && <figcaption className="text-center text-sm text-muted-foreground mt-2">{img.caption}</figcaption>}
                         </figure>
                       ))}
@@ -166,7 +197,7 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
                 );
               }
               if (section._type === 'fullWidthImage' && section.image) {
-                return <Image key={key} src={urlFor(section.image).url()} alt={section.alt || ''} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="project detail" onClick={() => setLightboxImage(urlFor(section.image).url())} />;
+                return <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}><Image key={key} src={urlFor(section.image).url()} alt={section.alt || ''} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="project detail" onClick={() => setLightboxImage(urlFor(section.image).url())} /></motion.div>;
               }
               if (section._type === 'twoColumnText' && section.leftContent && section.rightContent) {
                 return (
@@ -179,30 +210,28 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
               // Add videoBlock renderer when needed
               return null;
             })}
-          </div>
+          </motion.div>
 
           {/* Tags */}
           {project.tags && project.tags.length > 0 && (
-            <section className="mt-16 border-t pt-8">
-              <h3 className="font-headline text-2xl font-bold mb-4">Project Tags</h3>
+            <Section title="Project Tags" delay={0.2}>
               <div className="flex flex-wrap gap-2">
                 {project.tags.map((tag, index) => (
                   <Badge key={index} variant="outline">{tag}</Badge>
                 ))}
               </div>
-            </section>
+            </Section>
           )}
 
           {/* Related Projects */}
           {project.relatedProjects && project.relatedProjects.length > 0 && (
-            <section className="mt-20 border-t pt-12">
-              <h2 className="font-headline text-4xl font-bold text-center mb-12">Related Projects</h2>
+            <Section title="Related Projects" delay={0.3}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {project.relatedProjects.map((p) => (
                   <ProjectCard key={p._id} project={p as Project} />
                 ))}
               </div>
-            </section>
+            </Section>
           )}
         </div>
       </div>

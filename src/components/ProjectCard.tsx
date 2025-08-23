@@ -5,8 +5,11 @@
  * Kartın üzerine gelindiğinde (hover) animasyon efekti uygular.
  * Karta tıklandığında ilgili projenin detay sayfasına yönlendirir.
  */
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 import type { Project } from '@/types';
 import { Badge } from '@/components/ui/badge';
 
@@ -22,20 +25,23 @@ export function ProjectCard({ project }: ProjectCardProps) {
   
   return (
       <Link href={`/projects/${project.slug}`} className="group block">
-        <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 bg-card">
+        <motion.div 
+            whileHover={{ y: -8 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+            className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 bg-card h-full flex flex-col">
           <div className="relative aspect-w-4 aspect-h-3 w-full overflow-hidden">
             <Image
               src={project.mainImage || 'https://placehold.co/600x400.png'}
               alt={project.name || 'Proje görseli'}
               width={600}
               height={450}
-              className="object-cover w-full h-full transform transition-transform duration-500 ease-in-out group-hover:scale-110"
+              className="object-cover w-full h-full transform transition-transform duration-500 ease-in-out group-hover:scale-105"
               data-ai-hint="project design"
             />
              {/* Hover efekti için overlay */}
             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
           </div>
-          <div className="p-6">
+          <div className="p-6 flex flex-col flex-grow">
             <div className="flex flex-wrap gap-2 mb-3">
               {project.categories?.map((category) => (
                 <Badge key={category._id} variant="secondary">
@@ -43,11 +49,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 </Badge>
               ))}
             </div>
-            <h3 className="font-headline text-2xl font-bold text-card-foreground leading-tight">
+            <h3 className="font-headline text-2xl font-bold text-card-foreground leading-tight mt-auto">
               {project.name}
             </h3>
           </div>
-        </div>
+        </motion.div>
       </Link>
   );
 }
