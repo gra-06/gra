@@ -1,3 +1,4 @@
+
 import type { PortableTextComponents } from '@portabletext/react';
 import Image from 'next/image';
 import { client } from '@/lib/sanity';
@@ -35,7 +36,7 @@ export const PortableTextComponent: PortableTextComponents = {
         <a
           href={value?.href}
           target={target}
-          rel={target === '_blank' ? 'noindex nofollow' : ''}
+          rel={target === '_blank' ? 'noopener noreferrer' : ''}
           className="text-primary hover:underline"
         >
           {children}
@@ -45,7 +46,7 @@ export const PortableTextComponent: PortableTextComponents = {
   },
   types: {
     image: ({ value }) => {
-      if (!value?.asset?._ref) {
+      if (!value?.asset?._ref && !value?.asset?.url) {
         return null;
       }
       return (

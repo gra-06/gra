@@ -1,4 +1,5 @@
-import type { PortableTextBlock } from '@portabletext/react';
+
+import type { PortableTextBlock, PortableTextComponentProps } from '@portabletext/react';
 
 export interface Category {
   _id: string;
@@ -6,13 +7,71 @@ export interface Category {
   slug: string;
 }
 
+// Interface for a Sanity image asset reference
+export interface SanityImageAsset {
+  _ref: string;
+  _type: 'reference';
+}
+
+// Interface for a Sanity image object, including the asset reference
+export interface SanityImage {
+  _type: 'image';
+  asset: {
+    _ref?: string;
+    url?: string; // May be added by GROQ query
+  };
+  alt?: string;
+  caption?: string;
+}
+
+// Specific content section types
+export interface ImageGallerySection {
+  _type: 'imageGallery';
+  _key: string;
+  images: (SanityImage & { _key: string })[];
+}
+
+export interface FullWidthImageSection {
+  _type: 'fullWidthImage';
+  _key: string;
+  image: SanityImage;
+  alt?: string;
+}
+
+export interface TwoColumnTextSection {
+    _type: 'twoColumnText';
+    _key: string;
+    leftContent: PortableTextBlock[];
+    rightContent: PortableTextBlock[];
+}
+
+export interface VideoBlockSection {
+    _type: 'videoBlock';
+    _key: string;
+    videoFile: any; // Define further if needed
+    caption?: string;
+}
+
+
+// A union type for all possible content sections
+export type ContentSection = ImageGallerySection | FullWidthImageSection | TwoColumnTextSection | VideoBlockSection;
+
+
 export interface Project {
   _id: string;
   name: string;
   slug: string;
   mainImage: string;
-  images?: string[];
   categories: Category[];
   description: PortableTextBlock[];
+  client?: string;
+  date?: string;
+  services?: string[];
+  overview?: PortableTextBlock[];
+  challenge?: PortableTextBlock[];
+  solution?: PortableTextBlock[];
+  result?: PortableTextBlock[];
+  contentSections?: ContentSection[];
+  relatedProjects?: Partial<Project>[];
   tags?: string[];
 }
