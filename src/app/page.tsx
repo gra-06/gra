@@ -106,14 +106,14 @@ export default async function Home() {
         </div>
         <div className="relative z-10 container mx-auto px-4">
           <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tight mb-4">
-            {homepage?.heroSection?.title || "Creative Digital Studio"}
+            {"Bring your vision to ultimate reality"}
           </h1>
           <p className="text-lg md:text-2xl text-white/80 max-w-3xl mx-auto mb-8">
-            {homepage?.heroSection?.subtitle || "We transform ideas into extraordinary digital experiences."}
+            {"Specialize in creating unique visual identities for digital products..."}
           </p>
           <Link href="/portfolio">
             <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 py-6">
-              View Our Work
+              View Portfolio
             </Button>
           </Link>
         </div>

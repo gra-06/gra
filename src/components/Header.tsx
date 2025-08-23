@@ -1,16 +1,10 @@
 
-/**
- * Header.tsx: Site başlığı bileşeni.
- * 
- * Bu bileşen, site logosunu, ana navigasyon linklerini ve sosyal medya ikonlarını içerir.
- * Mobil cihazlar için açılır menü (hamburger menü) işlevselliğine sahiptir.
- */
 'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Brush, Menu, X, Instagram, Linkedin } from 'lucide-react';
+import { Brush, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -24,32 +18,22 @@ export function Header() {
     setIsClient(true);
   }, []);
 
-
   const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/portfolio', label: 'Portfolio' },
-    { href: '/blog', label: 'Blog' },
+    { href: '/services', label: 'Services' },
+    { href: '/portfolio', label: 'Works' },
     { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' },
-    { href: '/ai-tagger', label: 'AI Tagger' },
-  ];
-
-  const socialLinks = [
-    { href: 'https://instagram.com', icon: Instagram, label: 'Instagram' },
-    { href: 'https://linkedin.com', icon: Linkedin, label: 'LinkedIn' },
+    { href: '/testimonials', label: 'Testimonials' },
   ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-20 items-center justify-between">
-        {/* Site Logosu */}
         <Link href="/" className="flex items-center space-x-2">
           <Brush className="h-8 w-8 text-primary" />
-          <span className="font-headline text-3xl font-bold">DesignFlow</span>
+          <span className="font-headline text-3xl font-bold">Grafikerabi</span>
         </Link>
 
-        {/* Masaüstü Navigasyon */}
-        <nav className="hidden md:flex items-center space-x-8" aria-label={isClient ? "Ana navigasyon" : undefined}>
+        <nav className="hidden md:flex items-center space-x-6" aria-label={isClient ? "Ana navigasyon" : undefined}>
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -65,17 +49,13 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Sosyal Medya İkonları ve Tema Değiştirici (Masaüstü) */}
         <div className="hidden md:flex items-center space-x-4">
-            {socialLinks.map((link) => (
-                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={isClient ? link.label : undefined}>
-                    <link.icon className="h-5 w-5" />
-                </a>
-            ))}
+            <Link href="/contact">
+                <Button>Say Hello</Button>
+            </Link>
             <ThemeToggle />
         </div>
 
-        {/* Mobil Menü Butonu */}
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
           <Button 
@@ -91,11 +71,10 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobil Açılır Menü */}
       {isMenuOpen && (
         <div id="mobile-menu" className="md:hidden absolute top-full left-0 w-full bg-background shadow-lg py-4">
           <nav className="flex flex-col items-center space-y-4" aria-label={isClient ? "Mobil ana navigasyon" : undefined}>
-            {navLinks.map((link) => (
+            {[...navLinks, { href: '/contact', label: 'Say Hello' }].map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -109,13 +88,6 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-             <div className="flex items-center space-x-6 pt-4">
-                {socialLinks.map((link) => (
-                    <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={isClient ? link.label : undefined}>
-                        <link.icon className="h-6 w-6" />
-                    </a>
-                ))}
-            </div>
           </nav>
         </div>
       )}

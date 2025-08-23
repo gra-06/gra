@@ -1,9 +1,4 @@
 
-/**
- * Footer.tsx: Sitenin alt bilgi bileşeni.
- * 
- * Bu bileşen, telif hakkı bilgisini, bazı önemli linkleri ve sosyal medya ikonlarını içerir.
- */
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -32,18 +27,19 @@ export function Footer() {
       <div className="container py-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           
-          {/* Logo ve Hakkında */}
           <div className="md:col-span-4 flex flex-col items-center text-center md:items-start md:text-left">
-             <Link href="/" className="flex items-center space-x-2 mb-4" aria-label="DesignFlow Ana Sayfa">
+             <Link href="/" className="flex items-center space-x-2 mb-4" aria-label="Grafikerabi Ana Sayfa">
                 <Brush className="h-8 w-8 text-primary" />
-                <span className="font-headline text-3xl font-bold">DesignFlow</span>
+                <span className="font-headline text-3xl font-bold">Grafikerabi</span>
             </Link>
-            <p className="max-w-xs text-muted-foreground">
+            <p className="max-w-xs text-muted-foreground mb-4">
               Yaratıcı tasarımlarla markanıza değer katıyoruz.
             </p>
+             <a href="mailto:info@grafikerabi.com" className="font-semibold text-primary hover:underline">
+                info@grafikerabi.com
+              </a>
           </div>
 
-          {/* Hızlı Linkler */}
           <div className="md:col-span-2 text-center md:text-left">
             <h3 className="font-headline text-xl font-semibold mb-4">Hızlı Linkler</h3>
             <nav className="flex flex-col space-y-2" aria-label="Alt bilgi hızlı linkleri">
@@ -54,7 +50,6 @@ export function Footer() {
             </nav>
           </div>
           
-          {/* Bülten */}
           <div className="md:col-span-6 text-center md:text-left">
              <h3 className="font-headline text-xl font-semibold mb-4" id="newsletter-heading">Bültenimize Abone Olun</h3>
              <p className="text-muted-foreground mb-4">
@@ -73,9 +68,8 @@ export function Footer() {
           </div>
         </div>
         
-        {/* Alt Kısım */}
         <div className="mt-12 pt-8 border-t border-border/40 text-muted-foreground flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm">&copy; {currentYear} DesignFlow. Tüm hakları saklıdır.</p>
+            <p className="text-sm">&copy; {currentYear} Grafikerabi. Tüm hakları saklıdır.</p>
             <div className="flex items-center space-x-4">
                 {socialLinks.map((link) => (
                     <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={isClient ? link.label : undefined}>
