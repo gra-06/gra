@@ -25,6 +25,69 @@ interface ProjectPageProps {
   params: { slug: string };
 }
 
+async function getProject(slug: string): Promise<Project | null> {
+  const query = `*[_type == "project" && slug.current == $slug][0]{
+    _id,
+    name,
+    "slug": slug.current,
+    "mainImage": mainImage.asset->url,
+    "mainImageObject": mainImage,
+    categories[]->{
+      _id,
+      title,
+      "slug": slug.current
+    },
+    client,
+    date,
+    services,
+    overview,
+    challenge,
+    solution,
+    result,
+    caseStudy[]{
+      _key,
+      stage,
+      description,
+      'image': image.asset->{
+        url,
+        'metadata': metadata
+      }
+    },
+    contentSections[]{
+      ...,
+      _type == 'imageGallery' => {
+        'images': images[]{
+          ...,
+          'asset': asset->{
+            url,
+            'metadata': metadata
+          }
+        }
+      },
+      _type == 'fullWidthImage' => {
+        'image': image.asset->{
+          url,
+          'metadata': metadata
+        }
+      }
+    },
+    "relatedProjects": *[_type == "project" && slug.current != $slug && count(categories[@._ref in ^.^.categories[]._ref]) > 0] | order(date desc) [0...2] {
+      _id,
+      name,
+      "slug": slug.current,
+      "mainImage": mainImage.asset->url,
+      categories[]->{
+        _id,
+        title,
+        "slug": slug.current
+      }
+    },
+    tags
+  }`;
+  const fetchedProject = await client.fetch(query, { slug });
+  return fetchedProject;
+}
+
 // We are fetching data on the client side in this component.
 // In a real-world scenario with App Router, you'd likely fetch data in a server component
 // and pass it down, or use the `generateStaticParams` with `getProject` for SSG.
@@ -34,71 +97,11 @@ export default function ProjectPage({ params }: ProjectPageProps) {
   const [lightboxImageUrl, setLightboxImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    async function getProject(slug: string): Promise<Project | null> {
-      const query = `*[_type == "project" && slug.current == $slug][0]{
-        _id,
-        name,
-        "slug": slug.current,
-        "mainImage": mainImage.asset->url,
-        "mainImageObject": mainImage,
-        categories[]->{
-          _id,
-          title,
-          "slug": slug.current
-        },
-        client,
-        date,
-        services,
-        overview,
-        challenge,
-        solution,
-        result,
-        caseStudy[]{
-          _key,
-          stage,
-          description,
-          'image': image.asset->{
-            url,
-            'metadata': metadata
-          }
-        },
-        contentSections[]{
-          ...,
-          _type == 'imageGallery' => {
-            'images': images[]{
-              ...,
-              'asset': asset->{
-                url,
-                'metadata': metadata
-              }
-            }
-          },
-          _type == 'fullWidthImage' => {
-            'image': image.asset->{
-              url,
-              'metadata': metadata
-            }
-          }
-        },
-        "relatedProjects": *[_type == "project" && slug.current != $slug && count(categories[@._ref in ^.^.categories[]._ref]) > 0] | order(date desc) [0...2] {
-          _id,
-          name,
-          "slug": slug.current,
-          "mainImage": mainImage.asset->url,
-          categories[]->{
-            _id,
-            title,
-            "slug": slug.current
-          }
-        },
-        tags
-      }`;
-      const fetchedProject = await client.fetch(query, { slug });
-      return fetchedProject;
-    }
-    
-    if (params.slug) {
-        getProject(params.slug).then(setProject);
+    // This is the correct way to access params in a client component effect
+    // to avoid the Next.js warning.
+    const slug = params.slug;
+    if (slug) {
+        getProject(slug).then(setProject);
     }
   }, [params.slug]);
 
@@ -306,5 +309,8 @@ const TimelineItem: React.FC<{ item: CaseStudyEntry, isLast: boolean, onImageCli
     
 
     
+
+    
+
 
     
