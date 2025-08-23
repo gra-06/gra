@@ -1,4 +1,5 @@
 
+
 import Image from 'next/image';
 import type { CaseStudyEntry, Project } from '@/types';
 import type { Metadata, ResolvingMetadata } from 'next';
@@ -7,7 +8,7 @@ import { PortableTextComponent } from '@/components/PortableTextComponent';
 import { Badge } from '@/components/ui/badge';
 import { notFound } from 'next/navigation';
 import { client } from '@/lib/sanity';
-import { Calendar, User, Tag } from 'lucide-react';
+import { Calendar, User, Tag, CheckIcon as Check } from 'lucide-react';
 import { format } from 'date-fns';
 import { ProjectCard } from '@/components/ProjectCard';
 import imageUrlBuilder from '@sanity/image-url';
@@ -42,6 +43,7 @@ async function getProject(slug: string): Promise<Project | null> {
     solution,
     result,
     caseStudy[]{
+      _key,
       stage,
       description,
       'image': image.asset->{
@@ -98,7 +100,7 @@ const TimelineItem: React.FC<{ item: CaseStudyEntry, isLast: boolean }> = ({ ite
     <div className="flex">
         <div className="flex flex-col items-center mr-6">
             <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-full text-primary-foreground font-bold">
-                <CheckIcon className="w-6 h-6" />
+                <Check className="w-6 h-6" />
             </div>
             {!isLast && <div className="w-px h-full bg-border" />}
         </div>
@@ -122,25 +124,6 @@ const TimelineItem: React.FC<{ item: CaseStudyEntry, isLast: boolean }> = ({ ite
         </div>
     </div>
 );
-
-function CheckIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
-  )
-}
 
 export async function generateMetadata({ params }: ProjectPageProps, parent: ResolvingMetadata): Promise<Metadata> {
   const slug = params.slug;
@@ -182,7 +165,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <div className="absolute inset-0 z-0">
           <Image
             src={project.mainImage}
-            alt={project.name}
+            alt={project.name || 'Project image'}
             fill
             style={{objectFit: 'cover'}}
             priority
