@@ -1,67 +1,49 @@
 
 import Image from 'next/image';
 import type { Project } from '@/types';
-import type { Metadata } from 'next';
+import type { Metadata, ResolvingMetadata } from 'next';
 import { PortableText } from '@portabletext/react';
 import { PortableTextComponent } from '@/components/PortableTextComponent';
 import { Badge } from '@/components/ui/badge';
 import { notFound } from 'next/navigation';
-// import { client } from '@/lib/sanity';
+import { client } from '@/lib/sanity';
 import { Calendar, User, Tag } from 'lucide-react';
 import { format } from 'date-fns';
 import { ProjectCard } from '@/components/ProjectCard';
-// import imageUrlBuilder from '@sanity/image-url';
+import imageUrlBuilder from '@sanity/image-url';
 
-// const builder = imageUrlBuilder(client);
+const builder = imageUrlBuilder(client);
 
 function urlFor(source: any) {
-  // return builder.image(source);
-  return { url: () => source.url || source.asset?.url || '' };
+  return builder.image(source);
 }
 
 interface ProjectPageProps {
   params: { slug: string };
 }
 
-const mockProjects: { [key: string]: Project } = {
-  'marka-kimligi-yenileme': {
-    _id: '1',
-    name: 'Marka Kimliği Yenileme',
-    slug: 'marka-kimligi-yenileme',
-    mainImage: 'https://placehold.co/1200x800.png',
-    categories: [{ _id: 'cat1', title: 'Marka Kimliği', slug: 'branding' }],
-    client: 'Teknoloji A.Ş.',
-    date: '2023-05-15',
-    services: ['Logo Tasarımı', 'Kurumsal Kimlik', 'Marka Stratejisi'],
-    overview: [
-      { _type: 'block', style: 'normal', children: [{ _type: 'span', text: 'Bu projede, Teknoloji A.Ş. için eskiyen marka kimliğini modern ve dinamik bir yapıya kavuşturduk.' }] }
-    ],
-    challenge: [
-      { _type: 'block', style: 'normal', children: [{ _type: 'span', text: 'En büyük zorluk, markanın köklü geçmişini korurken aynı zamanda yenilikçi ve teknoloji odaklı bir imaj yaratmaktı.' }] }
-    ],
-    solution: [
-      { _type: 'block', style: 'normal', children: [{ _type: 'span', text: 'Kapsamlı bir pazar araştırması ve hedef kitle analizi sonrası, markanın temel değerlerini yansıtan yeni bir logo, renk paleti ve tipografi sistemi geliştirdik.' }] }
-    ],
-    result: [
-      { _type: 'block', style: 'normal', children: [{ _type: 'span', text: 'Yeni kimlik, markanın pazar payını %20 artırdı ve müşteri etkileşimini önemli ölçüde yükseltti.' }] }
-    ],
-    contentSections: [
-      { _type: 'fullWidthImage', _key: 'fw1', image: { _type: 'image', asset: { url: 'https://placehold.co/1200x700.png' } }, alt: 'Proje detayı' },
-      { _type: 'twoColumnText', _key: 'tc1', leftContent: [{ _type: 'block', style: 'normal', children: [{ _type: 'span', text: 'Sol sütun metni burada yer alıyor. Projenin detaylarını ve süreçleri anlatıyoruz.' }] }], rightContent: [{ _type: 'block', style: 'normal', children: [{ _type: 'span', text: 'Sağ sütun metni de burada. Teknik detaylar veya farklı bir bakış açısı sunabilir.' }] }] },
-      { _type: 'imageGallery', _key: 'ig1', images: [
-        { _type: 'image', _key: 'img1', asset: { url: 'https://placehold.co/800x600.png' }, caption: 'Galeri görseli 1', alt: 'Galeri 1' },
-        { _type: 'image', _key: 'img2', asset: { url: 'https://placehold.co/800x600.png' }, caption: 'Galeri görseli 2', alt: 'Galeri 2' },
-      ]}
-    ],
-    relatedProjects: [
-      { _id: '2', name: 'E-Ticaret Sitesi Tasarımı', slug: 'e-ticaret-sitesi-tasarimi', mainImage: 'https://placehold.co/600x400.png', categories: [{ _id: 'cat2', title: 'Web Tasarımı', slug: 'web-design' }] },
-      { _id: '3', name: 'Mobil Uygulama Arayüzü', slug: 'mobil-uygulama-arayuzu', mainImage: 'https://placehold.co/600x400.png', categories: [{ _id: 'cat3', title: 'UI/UX', slug: 'ui-ux' }] },
-    ],
-    tags: ['branding', 'logo', 'corporate identity'],
-    description: [],
-  }
-};
-
+const mockProjects: Project[] = [
+    { 
+        _id: '1', 
+        name: 'Marka Kimliği Yenileme', 
+        slug: 'marka-kimligi-yenileme', 
+        mainImage: 'https://placehold.co/1200x800.png', 
+        categories: [{ _id: 'cat1', title: 'Marka Kimliği', slug: 'branding' }] , 
+        description:[],
+        client: 'TechCorp',
+        date: '2023-05-15',
+        services: ['Logo Design', 'Brand Guide', 'Marketing Materials'],
+        overview: [{ _key: '1', _type: 'block', style: 'normal', children: [{ _key: '1.1', _type: 'span', text: 'A complete brand identity overhaul for a leading tech company.' }] }],
+        challenge: [{ _key: '1', _type: 'block', style: 'normal', children: [{ _key: '1.1', _type: 'span', text: 'The existing brand was outdated and did not reflect the company\'s innovative spirit.' }] }],
+        solution: [{ _key: '1', _type: 'block', style: 'normal', children: [{ _key: '1.1', _type: 'span', text: 'We developed a modern, dynamic brand identity that included a new logo, color palette, and typography system.' }] }],
+        result: [{ _key: '1', _type: 'block', style: 'normal', children: [{ _key: '1.1', _type: 'span', text: 'The new branding increased market perception and contributed to a 20% rise in lead generation.' }] }],
+        tags: ['branding', 'logo', 'identity'],
+        relatedProjects: [
+            { _id: '2', name: 'E-Ticaret Sitesi Tasarımı', slug: 'e-ticaret-sitesi-tasarimi', mainImage: 'https://placehold.co/600x400.png', categories: [{ _id: 'cat2', title: 'Web Tasarımı', slug: 'web-design' }]},
+            { _id: '3', name: 'Mobil Uygulama Arayüzü', slug: 'mobil-uygulama-arayuzu', mainImage: 'https://placehold.co/600x400.png', categories: [{ _id: 'cat3', title: 'UI/UX', slug: 'ui-ux' }]},
+        ]
+    },
+];
 
 // GROQ query to get a single project by its slug
 async function getProject(slug: string): Promise<Project | null> {
@@ -101,7 +83,7 @@ async function getProject(slug: string): Promise<Project | null> {
   //       }
   //     }
   //   },
-  //   "relatedProjects": relatedProjects[]->{
+  //   "relatedProjects": *[_type == "project" && slug.current != $slug && count(categories[@._ref in ^.^.categories[]._ref]) > 0] | order(date desc) [0...2] {
   //     _id,
   //     name,
   //     "slug": slug.current,
@@ -116,8 +98,8 @@ async function getProject(slug: string): Promise<Project | null> {
   // }`;
   
   // const project = await client.fetch(query, { slug });
-  const project = mockProjects[slug] || null;
-  return project;
+  // return project;
+  return mockProjects.find(p => p.slug === slug) || null;
 }
 
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
@@ -129,15 +111,27 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
   </div>
 );
 
-export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
-  const project = await getProject(params.slug);
+export async function generateMetadata({ params }: ProjectPageProps, parent: ResolvingMetadata): Promise<Metadata> {
+  const slug = params.slug;
+  const project = await getProject(slug);
+
   if (!project) {
-    return { title: 'Project Not Found' };
+    return {
+      title: 'Project Not Found'
+    }
   }
+
+  const previousImages = (await parent).openGraph?.images || []
+
   return {
     title: `${project.name} | DesignFlow Portfolio`,
-    description: `Details about the ${project.name} project.`,
-  };
+    description: project.overview ? "A project overview" : `Details about the ${project.name} project.`,
+    openGraph: {
+      title: `${project.name} | DesignFlow Portfolio`,
+      description: project.overview ? "A project overview" : `Details about the ${project.name} project.`,
+      images: [project.mainImage, ...previousImages],
+    },
+  }
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
@@ -232,7 +226,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   </div>
                 );
               }
-              if (section._type === 'fullWidthImage' && section.image) {
+              if (section._type === 'fullWidthImage' && section.image?.asset) {
                 return <Image key={key} src={urlFor(section.image).url()} alt={section.alt || ''} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover" data-ai-hint="project detail" />;
               }
               if (section._type === 'twoColumnText' && section.leftContent && section.rightContent) {

@@ -98,9 +98,9 @@ export default function AboutPage() {
                     <Image
                     src={member.image}
                     alt={member.name}
-                    layout="fill"
-                    objectFit="cover"
-                    className="rounded-full"
+                    width={160}
+                    height={160}
+                    className="rounded-full object-cover"
                     data-ai-hint={member.aiHint}
                     />
                 </div>

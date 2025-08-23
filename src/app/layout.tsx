@@ -6,8 +6,8 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'DesignFlow Portfolio',
-  description: 'A modern portfolio for creative professionals.',
+  title: 'DesignFlow Portfolio | Creative Digital Studio',
+  description: 'A modern portfolio for creative professionals. We transform ideas into extraordinary digital experiences.',
 };
 
 export default function RootLayout({

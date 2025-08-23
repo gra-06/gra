@@ -97,7 +97,7 @@ export function AITagger() {
             >
               {imagePreview ? (
                 <>
-                  <Image src={imagePreview} alt="Image preview" layout="fill" objectFit="contain" className="rounded-md p-2" />
+                  <Image src={imagePreview} alt="Image preview" fill objectFit="contain" className="rounded-md p-2" />
                   <Button
                     type="button"
                     variant="destructive"
