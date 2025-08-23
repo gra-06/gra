@@ -98,7 +98,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     }
 
     getProject(params.slug).then(setProject);
-  }, [params.slug]);
+  }, [params]);
 
 
   if (!project) {
@@ -300,3 +300,5 @@ const TimelineItem: React.FC<{ item: CaseStudyEntry, isLast: boolean, onImageCli
       </div>
   );
   
+
+    
