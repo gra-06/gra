@@ -1,6 +1,7 @@
 
 'use client';
 
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 import type { Project } from '@/types';
 import { PortableText } from '@portabletext/react';
@@ -13,6 +14,7 @@ import { format } from 'date-fns';
 import { ProjectCard } from '@/components/ProjectCard';
 import imageUrlBuilder from '@sanity/image-url';
 import React, { useState, useEffect } from 'react';
+import { ImageLightbox } from '@/components/ImageLightbox';
 
 const builder = imageUrlBuilder(client);
 
@@ -83,10 +85,16 @@ async function getProject(slug: string): Promise<Project | null> {
 
 export default function ProjectPage({ params }: ProjectPageProps) {
   const [project, setProject] = useState<Project | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
   useEffect(() => {
-    getProject(params.slug).then(setProject);
-  }, [params.slug]);
+    // This is the correct way to access params in a client component effect
+    // to avoid the Next.js warning.
+    const slug = params.slug;
+    if (slug) {
+        getProject(slug).then(setProject);
+    }
+  }, [params]);
 
   if (!project) {
     // You might want a more sophisticated loading state here
@@ -98,7 +106,12 @@ export default function ProjectPage({ params }: ProjectPageProps) {
   }
 
   return (
-    <article className="bg-background">
+    <motion.article 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="bg-background">
+
       {/* Hero Section */}
       <header className="relative h-[70vh] min-h-[400px] w-full flex items-end p-8 md:p-12 text-white">
         <div className="absolute inset-0 z-0">
@@ -185,8 +198,9 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                                           alt={item.stage}
                                           width={800}
                                           height={600}
-                                          className="rounded-lg shadow-lg w-full object-cover"
+                                          className="rounded-lg shadow-lg w-full object-cover cursor-pointer"
                                           data-ai-hint="case study step"
+                                          onClick={() => setLightboxImage(urlFor(item.image).url())}
                                       />
                                   )}
                                 </div>
@@ -211,7 +225,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {section.images.map((img) => (
                         <figure key={img._key}>
-                          <Image src={urlFor(img).width(800).height(600).url()} alt={img.alt || ''} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover" data-ai-hint="portfolio gallery" />
+                          <Image src={urlFor(img).width(800).height(600).url()} alt={img.alt || ''} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="portfolio gallery" onClick={() => setLightboxImage(urlFor(img).url())}/>
                           {img.caption && <figcaption className="text-center text-sm text-muted-foreground mt-2">{img.caption}</figcaption>}
                         </figure>
                       ))}
@@ -220,7 +234,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                 );
               }
               if (section._type === 'fullWidthImage' && section.image) {
-                return <Image key={key} src={urlFor(section.image).url()} alt={section.alt || ''} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover" data-ai-hint="project detail" />;
+                return <Image key={key} src={urlFor(section.image).url()} alt={section.alt || ''} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="project detail" onClick={() => setLightboxImage(urlFor(section.image).url())} />;
               }
               if (section._type === 'twoColumnText' && section.leftContent && section.rightContent) {
                 return (
@@ -260,7 +274,11 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           )}
         </div>
       </div>
-    </article>
+      <ImageLightbox
+        imageUrl={lightboxImage}
+        onClose={() => setLightboxImage(null)}
+      />
+    </motion.article>
   );
 }
 
