@@ -1,6 +1,6 @@
 
 import Image from 'next/image';
-import type { Project } from '@/types';
+import type { CaseStudyEntry, Project } from '@/types';
 import type { Metadata, ResolvingMetadata } from 'next';
 import { PortableText } from '@portabletext/react';
 import { PortableTextComponent } from '@/components/PortableTextComponent';
@@ -41,6 +41,14 @@ async function getProject(slug: string): Promise<Project | null> {
     challenge,
     solution,
     result,
+    caseStudy[]{
+      stage,
+      description,
+      'image': image.asset->{
+        url,
+        'metadata': metadata
+      }
+    },
     contentSections[]{
       ...,
       _type == 'imageGallery' => {
@@ -85,6 +93,54 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
     </div>
   </div>
 );
+
+const TimelineItem: React.FC<{ item: CaseStudyEntry, isLast: boolean }> = ({ item, isLast }) => (
+    <div className="flex">
+        <div className="flex flex-col items-center mr-6">
+            <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-full text-primary-foreground font-bold">
+                <CheckIcon className="w-6 h-6" />
+            </div>
+            {!isLast && <div className="w-px h-full bg-border" />}
+        </div>
+        <div className="pb-16 w-full">
+            <h3 className="font-headline text-2xl font-bold mb-2">{item.stage}</h3>
+            <div className="grid md:grid-cols-2 gap-8 items-start">
+              <div className="prose prose-lg max-w-none font-body text-muted-foreground">
+                 {item.description && <PortableText value={item.description} components={PortableTextComponent} />}
+              </div>
+              {item.image && (
+                  <Image
+                      src={urlFor(item.image).width(800).height(600).url()}
+                      alt={item.stage || 'Case study image'}
+                      width={800}
+                      height={600}
+                      className="rounded-lg shadow-lg w-full object-cover"
+                      data-ai-hint="case study step"
+                  />
+              )}
+            </div>
+        </div>
+    </div>
+);
+
+function CheckIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  )
+}
 
 export async function generateMetadata({ params }: ProjectPageProps, parent: ResolvingMetadata): Promise<Metadata> {
   const slug = params.slug;
@@ -182,6 +238,18 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           
           {/* Overview */}
           {project.overview && <Section title="Overview"><PortableText value={project.overview} components={PortableTextComponent} /></Section>}
+          
+          {/* Case Study Timeline */}
+          {project.caseStudy && project.caseStudy.length > 0 && (
+            <Section title="Case Study">
+                <div className="relative">
+                    {project.caseStudy.map((item, index) => (
+                        <TimelineItem key={item._key} item={item} isLast={index === project.caseStudy.length - 1} />
+                    ))}
+                </div>
+            </Section>
+          )}
+
           {project.challenge && <Section title="The Challenge"><PortableText value={project.challenge} components={PortableTextComponent} /></Section>}
           {project.solution && <Section title="The Solution"><PortableText value={project.solution} components={PortableTextComponent} /></Section>}
           {project.result && <Section title="The Result"><PortableText value={project.result} components={PortableTextComponent} /></Section>}

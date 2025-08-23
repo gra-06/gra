@@ -52,6 +52,14 @@ export interface VideoBlockSection {
     caption?: string;
 }
 
+export interface CaseStudyEntry {
+    _type: 'caseStudyEntry';
+    _key: string;
+    stage: string;
+    description: PortableTextBlock[];
+    image: SanityImage;
+}
+
 
 // A union type for all possible content sections
 export type ContentSection = ImageGallerySection | FullWidthImageSection | TwoColumnTextSection | VideoBlockSection;
@@ -71,6 +79,7 @@ export interface Project {
   challenge?: PortableTextBlock[];
   solution?: PortableTextBlock[];
   result?: PortableTextBlock[];
+  caseStudy?: CaseStudyEntry[];
   contentSections?: ContentSection[];
   relatedProjects?: Partial<Project>[];
   tags?: string[];

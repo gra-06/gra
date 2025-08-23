@@ -78,6 +78,12 @@ export default defineType({
         type: 'portableText',
     }),
     defineField({
+        name: 'caseStudy',
+        title: 'Case Study / Timeline',
+        type: 'array',
+        of: [{ type: 'caseStudyEntry' }],
+    }),
+    defineField({
         name: 'contentSections',
         title: 'Content Sections',
         type: 'array',
