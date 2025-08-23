@@ -6,6 +6,35 @@ import Image from 'next/image';
 import { PenTool, Palette, Waypoints, Camera, Download } from 'lucide-react';
 import { HomeProjectCard } from '@/components/HomeProjectCard';
 import { SkillsChart } from '@/components/SkillsChart';
+import { client } from '@/lib/sanity';
+import type { PortableTextBlock } from '@portabletext/react';
+import imageUrlBuilder from '@sanity/image-url';
+
+const builder = imageUrlBuilder(client);
+
+function urlFor(source: any) {
+  return builder.image(source);
+}
+
+interface HeroData {
+  title: string;
+  subtitle: PortableTextBlock[];
+  profileImage: any;
+  buttons: { _key: string; text: string; url: string }[];
+  socialLinks: { _key: string; platform: string; url: string }[];
+}
+
+async function getHeroData(): Promise<HeroData> {
+  const query = `*[_type == "homepage"][0]{
+    "title": heroSection.title,
+    "subtitle": heroSection.subtitle,
+    "profileImage": heroSection.profileImage,
+    "buttons": heroSection.buttons,
+    "socialLinks": heroSection.socialLinks,
+  }`;
+  const data = await client.fetch(query);
+  return data;
+}
 
 const services = [
     {
@@ -90,47 +119,77 @@ const educations = [
     }
 ]
 
+const Behance = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M4.5 9.5H8M6.25 7v5M15 11h-1a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2zM19 11h-1a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2zM15 7h4"/></svg>
+);
+
+const Dribbble = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"></circle><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"></path></svg>
+);
+
+const Linkedin = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+);
+
+const socialIcons: { [key: string]: React.ElementType } = {
+  behance: Behance,
+  dribbble: Dribbble,
+  linkedin: Linkedin,
+};
+
 
 export default async function Home() {
+  const heroData = await getHeroData();
   
   return (
     <>
       {/* Hero Section */}
-      <section className="min-h-[calc(100vh-80px)] w-full flex flex-col justify-center bg-background">
+      <section className="min-h-[calc(100vh-80px)] w-full flex flex-col justify-center bg-background relative">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="flex flex-col items-start text-left">
               <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tighter mb-6 leading-tight">
-                Bring your vision to ultimate reality
+                {heroData?.title || "Bring your vision to ultimate reality"}
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-xl mb-8">
-                Specialize in creating unique visual identities for digital products…
+                {heroData?.subtitle?.map((block: any) => block.children.map((child: any) => child.text).join('')).join('\n') || "Specialize in creating unique visual identities for digital products…"}
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link href="/portfolio">
-                  <Button size="lg" className="text-lg px-8 py-6">
-                    View Portfolio
-                  </Button>
-                </Link>
-                <Link href="/contact">
-                  <Button size="lg" variant="outline" className="text-lg px-8 py-6">
-                    Hire Me
-                  </Button>
-                </Link>
+                {heroData?.buttons?.map((button, index) => (
+                   <Link key={button._key} href={button.url || '#'}>
+                     <Button size="lg" variant={index === 0 ? 'default' : 'outline'} className="text-lg px-8 py-6">
+                       {button.text}
+                     </Button>
+                   </Link>
+                ))}
               </div>
             </div>
              <div className="flex justify-center items-center">
-                <Image
-                    src="https://placehold.co/500x500.png"
-                    alt="Grafikerabi Profile"
-                    width={500}
-                    height={500}
-                    className="rounded-full object-cover aspect-square"
-                    data-ai-hint="portrait woman"
-                    priority
-                />
+                {heroData?.profileImage && (
+                    <Image
+                        src={urlFor(heroData.profileImage).width(500).height(500).url()}
+                        alt="Olyve Schwarz"
+                        width={500}
+                        height={500}
+                        className="rounded-full object-cover aspect-square"
+                        data-ai-hint="portrait woman"
+                        priority
+                    />
+                )}
             </div>
           </div>
+        </div>
+        <div className="absolute bottom-8 right-8">
+            <div className="flex items-center gap-4">
+                {heroData?.socialLinks?.map((social) => {
+                    const Icon = socialIcons[social.platform.toLowerCase()];
+                    return Icon ? (
+                        <a key={social._key} href={social.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                            <Icon className="h-6 w-6" />
+                        </a>
+                    ) : null;
+                })}
+            </div>
         </div>
       </section>
 

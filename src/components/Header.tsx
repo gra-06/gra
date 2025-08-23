@@ -20,10 +20,9 @@ export function Header() {
 
   const navLinks = [
     { href: '/services', label: 'Services' },
-    { href: '/portfolio', label: 'Works' },
+    { href: '/works', label: 'Works' },
     { href: '/about', label: 'About' },
-    { href: '/blog', label: 'Blog' },
-    { href: '/contact', label: 'Testimonials' },
+    { href: '/testimonials', label: 'Testimonials' },
   ];
 
   return (
@@ -31,7 +30,7 @@ export function Header() {
       <div className="container flex h-20 items-center justify-between">
         <Link href="/" className="flex items-center space-x-2">
           <Brush className="h-8 w-8 text-primary" />
-          <span className="font-headline text-3xl font-bold">Grafikerabi</span>
+          <span className="font-headline text-3xl font-bold">Olyve Schwarz</span>
         </Link>
 
         <nav className="hidden md:flex items-center space-x-8" aria-label={isClient ? "Ana navigasyon" : undefined}>
@@ -52,7 +51,7 @@ export function Header() {
 
         <div className="hidden md:flex items-center space-x-4">
             <Link href="/contact">
-                <Button>Hire Me</Button>
+                <Button>Say Hello</Button>
             </Link>
             <ThemeToggle />
         </div>
@@ -75,7 +74,7 @@ export function Header() {
       {isMenuOpen && (
         <div id="mobile-menu" className="md:hidden absolute top-full left-0 w-full bg-background shadow-lg py-4">
           <nav className="flex flex-col items-center space-y-4" aria-label={isClient ? "Mobil ana navigasyon" : undefined}>
-            {[...navLinks, { href: '/contact', label: 'Hire Me' }].map((link) => (
+            {[...navLinks, { href: '/contact', label: 'Say Hello' }].map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

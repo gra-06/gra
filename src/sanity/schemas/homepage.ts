@@ -19,19 +19,40 @@ export default defineType({
         defineField({
           name: 'subtitle',
           title: 'Subtitle',
-          type: 'string',
+          type: 'portableText',
         }),
         defineField({
-          name: 'backgroundImage',
-          title: 'Background Image',
+          name: 'profileImage',
+          title: 'Profile Image',
           type: 'image',
           options: { hotspot: true },
         }),
         defineField({
-            name: 'backgroundVideo',
-            title: 'Background Video',
-            type: 'file',
-        })
+            name: 'buttons',
+            title: 'Buttons',
+            type: 'array',
+            of: [{
+                type: 'object',
+                fields: [
+                    defineField({ name: 'text', title: 'Button Text', type: 'string' }),
+                    defineField({ name: 'url', title: 'Button URL', type: 'string' }),
+                ]
+            }]
+        }),
+        defineField({
+            name: 'socialLinks',
+            title: 'Social Media Links',
+            type: 'array',
+            of: [
+                {
+                    type: 'object',
+                    fields: [
+                        defineField({ name: 'platform', title: 'Platform (e.g., behance, dribbble, linkedin)', type: 'string' }),
+                        defineField({ name: 'url', title: 'URL', type: 'url' }),
+                    ],
+                },
+            ],
+        }),
       ],
     }),
     defineField({
