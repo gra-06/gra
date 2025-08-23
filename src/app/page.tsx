@@ -18,84 +18,49 @@ function urlFor(source: any) {
 
 // GROQ query to get homepage data
 async function getHomepageData() {
-  // const query = `*[_type == "homepage"][0]{
-  //   heroSection {
-  //     title,
-  //     subtitle,
-  //     "backgroundImage": backgroundImage.asset->url,
-  //     backgroundVideo
-  //   },
-  //   aboutSection {
-  //     title,
-  //     content
-  //   },
-  //   servicesSection {
-  //     title,
-  //     "servicesList": servicesList[]->{
-  //       title,
-  //       _id
-  //     }
-  //   },
-  //   "featuredProjects": featuredProjects[]->{
-  //     _id,
-  //     name,
-  //     "slug": slug.current,
-  //     "mainImage": mainImage.asset->url,
-  //     categories[]->{
-  //       _id,
-  //       title,
-  //       "slug": slug.current
-  //     }
-  //   },
-  //   testimonialsSection
-  // }`;
-  // const data = await client.fetch(query);
-  // return data;
-  return {
-    heroSection: {
-        title: "Creative Digital Studio",
-        subtitle: "We transform ideas into extraordinary digital experiences.",
-        backgroundImage: "https://placehold.co/1920x1080.png"
+  const query = `*[_type == "homepage"][0]{
+    heroSection {
+      title,
+      subtitle,
+      "backgroundImage": backgroundImage.asset->url,
+      backgroundVideo
     },
-    aboutSection: {
-        title: "About DesignFlow",
-        content: [
-            { _key: '1', _type: 'block', style: 'normal', children: [{ _key: '1.1', _type: 'span', text: 'We are a passionate team of designers and developers dedicated to crafting beautiful, functional, and user-centered digital experiences. With a focus on collaboration and innovation, we partner with clients to bring their visions to life.' }] },
-            { _key: '2', _type: 'block', style: 'normal', children: [{ _key: '2.1', _type: 'span', text: 'Our process is built on a foundation of research, strategy, and meticulous execution, ensuring every project not only looks stunning but also achieves its goals.' }] }
-        ]
+    aboutSection {
+      title,
+      content
     },
-    servicesSection: {
-        title: "Our Services",
-        servicesList: [
-            { _id: 's1', title: "Brand Identity & Logo Design" },
-            { _id: 's2', title: "Web & Mobile App Design" },
-            { _id: 's3', title: "UI/UX Research and Strategy" },
-            { _id: 's4', title: "Illustration & Iconography" },
-            { _id: 's5', title: "Marketing & Social Media Assets" },
-            { _id: 's6', title: "Packaging & Print Design" }
-        ]
+    servicesSection {
+      title,
+      "servicesList": servicesList[]->{
+        title,
+        _id
+      }
     },
-    featuredProjects: [
-      { _id: '1', name: 'Marka Kimliği Yenileme', slug: 'marka-kimligi-yenileme', mainImage: 'https://placehold.co/600x400.png', categories: [{ _id: 'cat1', title: 'Marka Kimliği', slug: 'branding' }] , description:[]},
-      { _id: '2', name: 'E-Ticaret Sitesi Tasarımı', slug: 'e-ticaret-sitesi-tasarimi', mainImage: 'https://placehold.co/600x400.png', categories: [{ _id: 'cat2', title: 'Web Tasarımı', slug: 'web-design' }], description:[] },
-      { _id: '3', name: 'Mobil Uygulama Arayüzü', slug: 'mobil-uygulama-arayuzu', mainImage: 'https://placehold.co/600x400.png', categories: [{ _id: 'cat3', title: 'UI/UX', slug: 'ui-ux' }], description:[] },
-    ]
-  }
+    "featuredProjects": featuredProjects[]->{
+      _id,
+      name,
+      "slug": slug.current,
+      "mainImage": mainImage.asset->url,
+      categories[]->{
+        _id,
+        title,
+        "slug": slug.current
+      }
+    },
+    testimonialsSection
+  }`;
+  const data = await client.fetch(query);
+  return data;
 }
 
 async function getCategories(): Promise<Category[]> {
-  // const query = `*[_type == "category"]{
-  //   _id,
-  //   title,
-  //   "slug": slug.current
-  // }`;
-  // const categories = await client.fetch(query);
-  // return categories;
-  return [
-    { _id: 'cat1', title: 'Marka Kimliği', slug: 'branding' },
-    { _id: 'cat2', title: 'Web Tasarımı', slug: 'web-design' },
-    { _id: 'cat3', title: 'UI/UX', slug: 'ui-ux' },
-  ];
+  const query = `*[_type == "category"]{
+    _id,
+    title,
+    "slug": slug.current
+  }`;
+  const categories = await client.fetch(query);
+  return categories;
 }
 
 
@@ -119,27 +84,15 @@ export default async function Home() {
       {/* Hero Section */}
       <section className="relative h-[80vh] min-h-[500px] flex items-center justify-center text-center text-white overflow-hidden">
         <div className="absolute inset-0 z-0">
-          {homepage?.heroSection?.backgroundImage ? (
-            <Image
-                src={homepage.heroSection.backgroundImage}
-                alt="Hero background"
-                fill
-                style={{objectFit: 'cover'}}
-                className="opacity-40"
-                data-ai-hint="abstract background"
-                priority
-            />
-          ) : (
-             <Image
-                src="https://placehold.co/1920x1080.png"
-                alt="Hero background"
-                fill
-                style={{objectFit: 'cover'}}
-                className="opacity-40"
-                data-ai-hint="abstract background"
-                priority
-            />
-          )}
+          <Image
+              src={homepage?.heroSection?.backgroundImage || "https://placehold.co/1920x1080.png"}
+              alt="Hero background"
+              fill
+              style={{objectFit: 'cover'}}
+              className="opacity-40"
+              data-ai-hint="abstract background"
+              priority
+          />
         </div>
         <div className="relative z-10 container mx-auto px-4">
           <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tight mb-4 animate-fade-in-up">

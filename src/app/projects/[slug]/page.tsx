@@ -22,84 +22,59 @@ interface ProjectPageProps {
   params: { slug: string };
 }
 
-const mockProjects: Project[] = [
-    { 
-        _id: '1', 
-        name: 'Marka Kimliği Yenileme', 
-        slug: 'marka-kimligi-yenileme', 
-        mainImage: 'https://placehold.co/1200x800.png', 
-        categories: [{ _id: 'cat1', title: 'Marka Kimliği', slug: 'branding' }] , 
-        description:[],
-        client: 'TechCorp',
-        date: '2023-05-15',
-        services: ['Logo Design', 'Brand Guide', 'Marketing Materials'],
-        overview: [{ _key: '1', _type: 'block', style: 'normal', children: [{ _key: '1.1', _type: 'span', text: 'A complete brand identity overhaul for a leading tech company.' }] }],
-        challenge: [{ _key: '1', _type: 'block', style: 'normal', children: [{ _key: '1.1', _type: 'span', text: 'The existing brand was outdated and did not reflect the company\'s innovative spirit.' }] }],
-        solution: [{ _key: '1', _type: 'block', style: 'normal', children: [{ _key: '1.1', _type: 'span', text: 'We developed a modern, dynamic brand identity that included a new logo, color palette, and typography system.' }] }],
-        result: [{ _key: '1', _type: 'block', style: 'normal', children: [{ _key: '1.1', _type: 'span', text: 'The new branding increased market perception and contributed to a 20% rise in lead generation.' }] }],
-        tags: ['branding', 'logo', 'identity'],
-        relatedProjects: [
-            { _id: '2', name: 'E-Ticaret Sitesi Tasarımı', slug: 'e-ticaret-sitesi-tasarimi', mainImage: 'https://placehold.co/600x400.png', categories: [{ _id: 'cat2', title: 'Web Tasarımı', slug: 'web-design' }]},
-            { _id: '3', name: 'Mobil Uygulama Arayüzü', slug: 'mobil-uygulama-arayuzu', mainImage: 'https://placehold.co/600x400.png', categories: [{ _id: 'cat3', title: 'UI/UX', slug: 'ui-ux' }]},
-        ]
-    },
-];
-
-// GROQ query to get a single project by its slug
 async function getProject(slug: string): Promise<Project | null> {
-  // const query = `*[_type == "project" && slug.current == $slug][0]{
-  //   _id,
-  //   name,
-  //   "slug": slug.current,
-  //   "mainImage": mainImage.asset->url,
-  //   "mainImageObject": mainImage,
-  //   categories[]->{
-  //     _id,
-  //     title,
-  //     "slug": slug.current
-  //   },
-  //   client,
-  //   date,
-  //   services,
-  //   overview,
-  //   challenge,
-  //   solution,
-  //   result,
-  //   contentSections[]{
-  //     ...,
-  //     _type == 'imageGallery' => {
-  //       'images': images[]{
-  //         ...,
-  //         'asset': asset->{
-  //           url,
-  //           'metadata': metadata
-  //         }
-  //       }
-  //     },
-  //     _type == 'fullWidthImage' => {
-  //       'image': image.asset->{
-  //         url,
-  //         'metadata': metadata
-  //       }
-  //     }
-  //   },
-  //   "relatedProjects": *[_type == "project" && slug.current != $slug && count(categories[@._ref in ^.^.categories[]._ref]) > 0] | order(date desc) [0...2] {
-  //     _id,
-  //     name,
-  //     "slug": slug.current,
-  //     "mainImage": mainImage.asset->url,
-  //     categories[]->{
-  //       _id,
-  //       title,
-  //       "slug": slug.current
-  //     }
-  //   },
-  //   tags
-  // }`;
+  const query = `*[_type == "project" && slug.current == $slug][0]{
+    _id,
+    name,
+    "slug": slug.current,
+    "mainImage": mainImage.asset->url,
+    "mainImageObject": mainImage,
+    categories[]->{
+      _id,
+      title,
+      "slug": slug.current
+    },
+    client,
+    date,
+    services,
+    overview,
+    challenge,
+    solution,
+    result,
+    contentSections[]{
+      ...,
+      _type == 'imageGallery' => {
+        'images': images[]{
+          ...,
+          'asset': asset->{
+            url,
+            'metadata': metadata
+          }
+        }
+      },
+      _type == 'fullWidthImage' => {
+        'image': image.asset->{
+          url,
+          'metadata': metadata
+        }
+      }
+    },
+    "relatedProjects": *[_type == "project" && slug.current != $slug && count(categories[@._ref in ^.^.categories[]._ref]) > 0] | order(date desc) [0...2] {
+      _id,
+      name,
+      "slug": slug.current,
+      "mainImage": mainImage.asset->url,
+      categories[]->{
+        _id,
+        title,
+        "slug": slug.current
+      }
+    },
+    tags
+  }`;
   
-  // const project = await client.fetch(query, { slug });
-  // return project;
-  return mockProjects.find(p => p.slug === slug) || null;
+  const project = await client.fetch(query, { slug });
+  return project;
 }
 
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
@@ -120,16 +95,19 @@ export async function generateMetadata({ params }: ProjectPageProps, parent: Res
       title: 'Project Not Found'
     }
   }
-
+  
   const previousImages = (await parent).openGraph?.images || []
+  
+  const description = project.overview ? (project.overview[0]?.children[0]?.text || `Details about the ${project.name} project.`) : `Details about the ${project.name} project.`;
+
 
   return {
     title: `${project.name} | DesignFlow Portfolio`,
-    description: project.overview ? "A project overview" : `Details about the ${project.name} project.`,
+    description: description,
     openGraph: {
       title: `${project.name} | DesignFlow Portfolio`,
-      description: project.overview ? "A project overview" : `Details about the ${project.name} project.`,
-      images: [project.mainImage, ...previousImages],
+      description: description,
+      images: project.mainImage ? [project.mainImage, ...previousImages] : [...previousImages],
     },
   }
 }

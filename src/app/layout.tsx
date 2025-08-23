@@ -4,6 +4,21 @@ import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { Alegreya, Azeret_Mono as Teller } from 'next/font/google';
+
+const alegreya = Alegreya({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-alegreya',
+});
+
+const teller = Teller({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-teller',
+  weight: ['400', '700'],
+});
+
 
 export const metadata: Metadata = {
   title: 'DesignFlow Portfolio | Creative Digital Studio',
@@ -16,12 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&family=Teller&display=swap" rel="stylesheet" />
-      </head>
+    <html lang="en" className={cn("scroll-smooth", alegreya.variable, teller.variable)}>
       <body className={cn("font-body antialiased", "min-h-screen bg-background")}>
         <div className="flex flex-col min-h-screen">
           <Header />
