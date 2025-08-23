@@ -1,3 +1,4 @@
+
 /**
  * This configuration is used to for the Sanity Studio that’s mounted on the `/app/studio/[[...index]]/page.tsx` route
  */
@@ -19,11 +20,17 @@ import imageGallery from './src/sanity/schemas/objects/imageGallery'
 import fullWidthImage from './src/sanity/schemas/objects/fullWidthImage'
 import twoColumnText from './src/sanity/schemas/objects/twoColumnText'
 import videoBlock from './src/sanity/schemas/objects/videoBlock'
+import post from './src/sanity/schemas/post'
+import author from './src/sanity/schemas/author'
+import postCategory from './src/sanity/schemas/postCategory'
 
 
 const schemas = [
   project,
   category,
+  post,
+  author,
+  postCategory,
   portableText,
   homepage,
   service,

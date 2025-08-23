@@ -84,3 +84,31 @@ export interface Project {
   relatedProjects?: Partial<Project>[];
   tags?: string[];
 }
+
+
+// BLOG TYPES
+export interface Author {
+    _id: string;
+    name: string;
+    slug: string;
+    image: string;
+    bio: PortableTextBlock[];
+}
+
+export interface PostCategory {
+    _id: string;
+    title: string;
+    description?: string;
+}
+
+export interface Post {
+    _id: string;
+    title: string;
+    slug: string;
+    author: Author;
+    mainImage: string;
+    categories: PostCategory[];
+    publishedAt: string;
+    body: PortableTextBlock[];
+    excerpt?: string;
+}
