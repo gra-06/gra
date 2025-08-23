@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { client } from '@/lib/sanity';
 import type { Project } from '@/types';
 import type { Metadata } from 'next';
 import { PortableText } from '@portabletext/react';
@@ -11,19 +10,20 @@ interface ProjectPageProps {
   params: { slug: string };
 }
 
-async function getProject(slug: string) {
-  const query = `*[_type == "project" && slug.current == $slug][0]{
-    _id,
-    name,
-    "slug": slug.current,
-    "mainImage": mainImage.asset->url,
-    "images": images[].asset->url,
-    "categories": categories[]->{title, "slug": slug.current},
-    description,
-    tags
-  }`;
-  const project = await client.fetch<Project>(query, { slug });
-  return project;
+async function getProject(slug: string): Promise<Project | null> {
+  // const query = `*[_type == "project" && slug.current == $slug][0]{
+  //   _id,
+  //   name,
+  //   "slug": slug.current,
+  //   "mainImage": mainImage.asset->url,
+  //   "images": images[].asset->url,
+  //   "categories": categories[]->{title, "slug": slug.current},
+  //   description,
+  //   tags
+  // }`;
+  // const project = await client.fetch<Project>(query, { slug });
+  // return project;
+  return null;
 }
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
@@ -40,9 +40,10 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 }
 
 export async function generateStaticParams() {
-  const query = `*[_type == "project"]{"slug": slug.current}`;
-  const slugs = await client.fetch<{ slug: string }[]>(query);
-  return slugs.map(({ slug }) => ({ slug }));
+  // const query = `*[_type == "project"]{"slug": slug.current}`;
+  // const slugs = await client.fetch<{ slug: string }[]>(query);
+  // return slugs.map(({ slug }) => ({ slug }));
+  return [];
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {

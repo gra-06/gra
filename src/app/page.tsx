@@ -1,27 +1,28 @@
-import { client } from '@/lib/sanity';
 import type { Project, Category } from '@/types';
 import { PortfolioGrid } from '@/components/PortfolioGrid';
 
-async function getProjects() {
-  const query = `*[_type == "project"] | order(_createdAt desc){
-    _id,
-    name,
-    "slug": slug.current,
-    "mainImage": mainImage.asset->url,
-    "categories": categories[]->{title, "slug": slug.current}
-  }`;
-  const projects = await client.fetch<Project[]>(query);
-  return projects;
+async function getProjects(): Promise<Project[]> {
+  // const query = `*[_type == "project"] | order(_createdAt desc){
+  //   _id,
+  //   name,
+  //   "slug": slug.current,
+  //   "mainImage": mainImage.asset->url,
+  //   "categories": categories[]->{title, "slug": slug.current}
+  // }`;
+  // const projects = await client.fetch<Project[]>(query);
+  // return projects;
+  return [];
 }
 
-async function getCategories() {
-  const query = `*[_type == "category"] | order(title asc){
-    _id,
-    title,
-    "slug": slug.current
-  }`;
-  const categories = await client.fetch<Category[]>(query);
-  return categories;
+async function getCategories(): Promise<Category[]> {
+  // const query = `*[_type == "category"] | order(title asc){
+  //   _id,
+  //   title,
+  //   "slug": slug.current
+  // }`;
+  // const categories = await client.fetch<Category[]>(query);
+  // return categories;
+  return [];
 }
 
 export default async function Home() {
