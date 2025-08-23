@@ -96,11 +96,11 @@ export default function ProjectPage({ params }: ProjectPageProps) {
       const fetchedProject = await client.fetch(query, { slug });
       return fetchedProject;
     }
-    const slug = params.slug;
-    if (slug) {
-        getProject(slug).then(setProject);
+    
+    if (params.slug) {
+        getProject(params.slug).then(setProject);
     }
-  }, [params]);
+  }, [params.slug]);
 
 
   if (!project) {
@@ -308,3 +308,4 @@ const TimelineItem: React.FC<{ item: CaseStudyEntry, isLast: boolean, onImageCli
     
 
     
+
