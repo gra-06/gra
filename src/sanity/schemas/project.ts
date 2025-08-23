@@ -23,31 +23,14 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'mainImage',
-      title: 'Main Image',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-      validation: (Rule) => Rule.required(),
+        name: 'date',
+        title: 'Project Date',
+        type: 'date',
     }),
     defineField({
-      name: 'images',
-      title: 'Image Gallery',
-      type: 'array',
-      of: [
-        {
-          type: 'image',
-          options: { hotspot: true },
-          fields: [
-            {
-              name: 'alt',
-              type: 'string',
-              title: 'Alternative text',
-            },
-          ],
-        },
-      ],
+        name: 'client',
+        title: 'Client',
+        type: 'string',
     }),
     defineField({
       name: 'categories',
@@ -57,9 +40,59 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-        name: 'description',
-        title: 'Project Description',
+      name: 'services',
+      title: 'Services',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: {
+        layout: 'tags',
+      },
+    }),
+    defineField({
+      name: 'mainImage',
+      title: 'Main Image',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+        name: 'overview',
+        title: 'Project Overview',
         type: 'portableText',
+    }),
+    defineField({
+        name: 'challenge',
+        title: 'The Challenge',
+        type: 'portableText',
+    }),
+    defineField({
+        name: 'solution',
+        title: 'The Solution',
+        type: 'portableText',
+    }),
+    defineField({
+        name: 'result',
+        title: 'The Result',
+        type: 'portableText',
+    }),
+    defineField({
+        name: 'contentSections',
+        title: 'Content Sections',
+        type: 'array',
+        of: [
+            { type: 'imageGallery' },
+            { type: 'fullWidthImage' },
+            { type: 'twoColumnText' },
+            { type: 'videoBlock' },
+        ],
+    }),
+     defineField({
+      name: 'relatedProjects',
+      title: 'Related Projects',
+      type: 'array',
+      of: [{ type: 'reference', to: { type: 'project' } }],
     }),
     defineField({
       name: 'tags',
@@ -74,6 +107,7 @@ export default defineType({
   preview: {
     select: {
       title: 'name',
+      subtitle: 'client',
       media: 'mainImage',
     },
   },
