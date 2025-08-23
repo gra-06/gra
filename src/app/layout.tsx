@@ -3,6 +3,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'DesignFlow Portfolio',
@@ -25,6 +26,7 @@ export default function RootLayout({
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="flex-grow">{children}</main>
+          <Footer />
         </div>
         <Toaster />
       </body>
