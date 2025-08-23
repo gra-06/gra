@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PenTool, Palette, Waypoints, Camera } from 'lucide-react';
+import { HomeProjectCard } from '@/components/HomeProjectCard';
 
 const services = [
     {
@@ -27,6 +28,36 @@ const services = [
         description: 'Creative direction with consistent brand language.',
     },
 ];
+
+const projects = [
+    {
+        title: 'B & O',
+        description: 'Marketing site design and build',
+        imageUrl: 'https://placehold.co/600x450.png',
+        aiHint: 'product design'
+    },
+    {
+        title: 'Cozmetic',
+        description: 'Marketing site design and build',
+        imageUrl: 'https://placehold.co/600x450.png',
+        aiHint: 'cosmetic product'
+    },
+    {
+        title: 'Xendou',
+        description: 'Marketing site design and build',
+        imageUrl: 'https://placehold.co/600x450.png',
+        aiHint: 'tech startup'
+    },
+    {
+        title: 'Blvck',
+        description: 'Marketing site design and build',
+        imageUrl: 'https://placehold.co/600x450.png',
+        aiHint: 'fashion brand'
+    }
+];
+
+const filterButtons = ['All', 'Branding', 'Product', 'UX/UI'];
+
 
 export default async function Home() {
   
@@ -89,6 +120,27 @@ export default async function Home() {
                   ))}
               </div>
           </div>
+      </section>
+      
+      {/* Works Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Works</h2>
+            <div className="flex justify-center flex-wrap gap-2">
+                {filterButtons.map(label => (
+                    <Button key={label} variant={label === 'All' ? 'default' : 'secondary'} className="rounded-full px-6">
+                        {label}
+                    </Button>
+                ))}
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {projects.map((project) => (
+              <HomeProjectCard key={project.title} {...project} />
+            ))}
+          </div>
+        </div>
       </section>
     </>
   );
