@@ -18,7 +18,6 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
-  // Projenin bir slug'ı yoksa kartı render etme
   if (!project.slug) {
     return null;
   }

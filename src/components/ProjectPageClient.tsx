@@ -56,8 +56,41 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 }
   };
+  
+  const overviewText = project.overview?.map(block => block.children.map(child => child.text).join('')).join('\n') || project.name;
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': typeof window !== 'undefined' ? window.location.href : '',
+    },
+    headline: project.name,
+    image: project.mainImage,
+    datePublished: project.date,
+    author: {
+        '@type': 'Organization',
+        name: 'DesignFlow',
+    },
+    publisher: {
+        '@type': 'Organization',
+        name: 'DesignFlow',
+        logo: {
+            '@type': 'ImageObject',
+            url: 'https://placehold.co/100x40.png?text=DesignFlow', // Replace with your actual logo URL
+        },
+    },
+    description: overviewText,
+  };
+
 
   return (
+    <>
+    <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
     <motion.article 
         initial="hidden"
         animate="visible"
@@ -240,5 +273,6 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
         onClose={() => setLightboxImage(null)}
       />
     </motion.article>
+    </>
   );
 }

@@ -1,3 +1,4 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
@@ -31,8 +32,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'DesignFlow Portfolio',
+    url: 'https://your-domain.com', // Replace with your actual domain
+  };
+
   return (
     <html lang="en" className={cn("scroll-smooth", alegreya.variable, teller.variable)} suppressHydrationWarning>
+       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className={cn("font-body antialiased", "min-h-screen bg-background")}>
         <ThemeProvider
             attribute="class"
