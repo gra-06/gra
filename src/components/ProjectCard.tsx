@@ -22,6 +22,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             whileHover={{ y: -8 }}
             transition={{ type: 'spring', stiffness: 300 }}
             className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 bg-card h-full flex flex-col">
+          
           <div className="relative aspect-w-4 aspect-h-3 w-full overflow-hidden">
             <Image
               src={project.mainImage || 'https://placehold.co/600x450.png'}
@@ -31,7 +32,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
               className="object-cover w-full h-full transform transition-transform duration-500 ease-in-out group-hover:scale-105"
               data-ai-hint="project design"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent transition-opacity duration-300 group-hover:from-black/80" />
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
             <div className="absolute top-4 left-4 flex flex-wrap gap-2">
               {project.categories?.map((category) => (
                 <Badge key={category._id} variant="secondary" className="backdrop-blur-sm">
@@ -40,6 +41,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
               ))}
             </div>
           </div>
+          
           <div className="p-6 flex flex-col flex-grow">
             <h3 className="font-headline text-2xl font-bold text-card-foreground leading-tight mt-auto">
               {project.name}
