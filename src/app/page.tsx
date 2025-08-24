@@ -12,6 +12,7 @@ import { PostCard } from '@/components/PostCard';
 import { CtaBanner } from '@/components/CtaBanner';
 import { Faq } from '@/components/Faq';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Brands } from '@/components/Brands';
 
 
 const Behance = (props: React.SVGProps<SVGSVGElement>) => (
@@ -327,6 +328,8 @@ export default async function Home() {
                 </div>
             </div>
         </section>
+
+      <Brands />
 
       {/* About Me Section */}
         <section className="py-20 bg-background">

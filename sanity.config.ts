@@ -28,6 +28,7 @@ import testimonial from './src/sanity/schemas/testimonial'
 import award from './src/sanity/schemas/award'
 import faq from './src/sanity/schemas/faq'
 import tool from './src/sanity/schemas/tool'
+import brand from './src/sanity/schemas/brand'
 
 
 const schemas = [
@@ -49,6 +50,7 @@ const schemas = [
   award,
   faq,
   tool,
+  brand,
 ]
 
 export default defineConfig({
