@@ -67,16 +67,8 @@ export default defineType({
     defineField({
         name: 'servicesSection',
         title: 'Services Section',
-        type: 'object',
-        fields: [
-            defineField({name: 'title', title: 'Title', type: 'string'}),
-            defineField({
-                name: 'servicesList',
-                title: 'Services List',
-                type: 'array',
-                of: [{ type: 'reference', to: { type: 'service' } }],
-            })
-        ]
+        type: 'array',
+        of: [{ type: 'reference', to: { type: 'service' } }],
     }),
     defineField({
         name: 'featuredProjects',

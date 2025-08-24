@@ -3,11 +3,13 @@
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { PenTool, Palette, Waypoints, Camera, Download } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { HomeProjectCard } from '@/components/HomeProjectCard';
 import { SkillsChart } from '@/components/SkillsChart';
 import { client } from '@/lib/sanity';
 import type { PortableTextBlock } from '@portabletext/react';
+import { PortableText } from '@portabletext/react';
+import { PortableTextComponent } from '@/components/PortableTextComponent';
 import imageUrlBuilder from '@sanity/image-url';
 
 const builder = imageUrlBuilder(client);
@@ -16,48 +18,37 @@ function urlFor(source: any) {
   return builder.image(source);
 }
 
-interface HeroData {
-  title: string;
-  subtitle: PortableTextBlock[];
-  profileImage: any;
-  buttons: { _key: string; text: string; url: string }[];
-  socialLinks: { _key: string; platform: string; url: string }[];
+interface Service {
+    _id: string;
+    title: string;
+    description: PortableTextBlock[];
+    icon: any;
 }
 
-async function getHeroData(): Promise<HeroData> {
+interface HomepageData {
+  heroSection: {
+    title: string;
+    subtitle: PortableTextBlock[];
+    profileImage: any;
+    buttons: { _key: string; text: string; url: string }[];
+    socialLinks: { _key: string; platform: string; url: string }[];
+  };
+  servicesSection: Service[];
+}
+
+async function getHomepageData(): Promise<HomepageData | null> {
   const query = `*[_type == "homepage"][0]{
-    "title": heroSection.title,
-    "subtitle": heroSection.subtitle,
-    "profileImage": heroSection.profileImage,
-    "buttons": heroSection.buttons,
-    "socialLinks": heroSection.socialLinks,
+    heroSection,
+    "servicesSection": servicesSection[]->{
+      _id,
+      title,
+      description,
+      "icon": icon.asset->url
+    }
   }`;
   const data = await client.fetch(query);
   return data;
 }
-
-const services = [
-    {
-        icon: PenTool,
-        title: 'Digital Branding',
-        description: 'Blend of strategic thinking and creative flair to craft digital identity.',
-    },
-    {
-        icon: Palette,
-        title: 'Visual Design',
-        description: 'Unique product branding and marketing strategies.',
-    },
-    {
-        icon: Waypoints,
-        title: 'UX Research',
-        description: 'User-centered analysis for optimizing usability.',
-    },
-    {
-        icon: Camera,
-        title: 'Art Direction',
-        description: 'Creative direction with consistent brand language.',
-    },
-];
 
 const projects = [
     {
@@ -139,7 +130,8 @@ const socialIcons: { [key: string]: React.ElementType } = {
 
 
 export default async function Home() {
-  const heroData = await getHeroData();
+  const homepageData = await getHomepageData();
+  const { heroSection, servicesSection } = homepageData || {};
   
   return (
     <>
@@ -149,25 +141,48 @@ export default async function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="flex flex-col items-start text-left">
               <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tighter mb-6 leading-tight">
-                {heroData?.title || "Bring your vision to ultimate reality"}
+                {heroSection?.title || "Bring your vision to ultimate reality"}
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-xl mb-8">
-                {heroData?.subtitle?.map((block: any) => block.children.map((child: any) => child.text).join('')).join('\n') || "Specialize in creating unique visual identities for digital products…"}
-              </p>
+              <div className="text-lg md:text-xl text-muted-foreground max-w-xl mb-8">
+                {heroSection?.subtitle ? (
+                  <PortableText value={heroSection.subtitle} components={PortableTextComponent} />
+                ) : (
+                  <p>Specialize in creating unique visual identities for digital products...</p>
+                )}
+              </div>
               <div className="flex flex-wrap gap-4">
-                {heroData?.buttons?.map((button, index) => (
+                {heroSection?.buttons?.map((button, index) => (
                    <Link key={button._key} href={button.url || '#'}>
                      <Button size="lg" variant={index === 0 ? 'default' : 'outline'} className="text-lg px-8 py-6">
                        {button.text}
                      </Button>
                    </Link>
-                ))}
+                )) || (
+                  <>
+                    <Link href="/portfolio">
+                      <Button size="lg" className="text-lg px-8 py-6">View Portfolio</Button>
+                    </Link>
+                    <Link href="/contact">
+                      <Button size="lg" variant="outline" className="text-lg px-8 py-6">Say Hello</Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
              <div className="flex justify-center items-center">
-                {heroData?.profileImage && (
+                {heroSection?.profileImage ? (
                     <Image
-                        src={urlFor(heroData.profileImage).width(500).height(500).url()}
+                        src={urlFor(heroSection.profileImage).width(500).height(500).url()}
+                        alt="Olyve Schwarz"
+                        width={500}
+                        height={500}
+                        className="rounded-full object-cover aspect-square"
+                        data-ai-hint="portrait woman"
+                        priority
+                    />
+                ) : (
+                  <Image
+                        src="https://placehold.co/500x500.png"
                         alt="Olyve Schwarz"
                         width={500}
                         height={500}
@@ -181,7 +196,7 @@ export default async function Home() {
         </div>
         <div className="absolute bottom-8 right-8">
             <div className="flex items-center gap-4">
-                {heroData?.socialLinks?.map((social) => {
+                {heroSection?.socialLinks?.map((social) => {
                     const Icon = socialIcons[social.platform.toLowerCase()];
                     return Icon ? (
                         <a key={social._key} href={social.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
@@ -200,13 +215,15 @@ export default async function Home() {
                   <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Services</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                  {services.map((service, index) => (
-                      <div key={index} className="bg-card p-8 rounded-lg shadow-lg hover:shadow-primary/20 hover:-translate-y-2 transition-all duration-300">
+                  {servicesSection?.map((service) => (
+                      <div key={service._id} className="bg-card p-8 rounded-lg shadow-lg hover:shadow-primary/20 hover:-translate-y-2 transition-all duration-300">
                           <div className="mb-6 inline-block bg-primary/10 text-primary p-4 rounded-full">
-                              <service.icon className="h-8 w-8" />
+                            <Image src={service.icon} alt={`${service.title} icon`} width={32} height={32} />
                           </div>
                           <h3 className="font-headline text-2xl font-bold mb-3">{service.title}</h3>
-                          <p className="text-muted-foreground">{service.description}</p>
+                          <div className="text-muted-foreground">
+                            <PortableText value={service.description} components={PortableTextComponent} />
+                          </div>
                       </div>
                   ))}
               </div>
