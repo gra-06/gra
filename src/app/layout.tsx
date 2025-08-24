@@ -3,7 +3,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
-import { Header } from '@/components/Header';
+import { Header, type NavItem } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Alegreya, Azeret_Mono as Teller } from 'next/font/google';
 import { ThemeProvider } from '@/components/ThemeProvider';
@@ -39,6 +39,14 @@ export default function RootLayout({
     url: 'https://your-domain.com', // Replace with your actual domain
   };
 
+  const navItems: NavItem[] = [
+    { href: '/', label: 'Anasayfa' },
+    { href: '/about', label: 'Hakkımda' },
+    { href: '/portfolio', label: 'Projeler' },
+    { href: '/blog', label: 'Blog' },
+    { href: '/contact', label: 'İletişim' },
+  ];
+
   return (
     <html lang="en" className={cn("scroll-smooth", alegreya.variable, teller.variable)} suppressHydrationWarning>
        <head>
@@ -55,7 +63,7 @@ export default function RootLayout({
             disableTransitionOnChange
         >
             <div className="flex flex-col min-h-screen">
-                <Header />
+                <Header navItems={navItems} />
                 <main className="flex-grow">{children}</main>
                 <Footer />
             </div>

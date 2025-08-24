@@ -9,7 +9,16 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
-export function Header() {
+export interface NavItem {
+  href: string;
+  label: string;
+}
+
+interface HeaderProps {
+  navItems: NavItem[];
+}
+
+export function Header({ navItems }: HeaderProps) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -18,13 +27,11 @@ export function Header() {
     setIsClient(true);
   }, []);
 
-  const navLinks = [
-    { href: '/about', label: 'About' },
-    { href: '/portfolio', label: 'Portfolio' },
-    { href: '/blog', label: 'Blog' },
-    { href: '/contact', label: 'Contact' },
+  const mobileNavLinks = [
+    ...navItems.filter(item => item.href !== '/contact'),
+    { href: '/contact', label: 'Say Hello' }
   ];
-
+  
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-20 items-center justify-between">
@@ -34,7 +41,7 @@ export function Header() {
         </Link>
 
         <nav className="hidden md:flex items-center space-x-8" aria-label={isClient ? "Ana navigasyon" : undefined}>
-          {navLinks.map((link) => (
+          {navItems.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -74,7 +81,7 @@ export function Header() {
       {isMenuOpen && (
         <div id="mobile-menu" className="md:hidden absolute top-full left-0 w-full bg-background shadow-lg py-4">
           <nav className="flex flex-col items-center space-y-4" aria-label={isClient ? "Mobil ana navigasyon" : undefined}>
-            {[...navLinks, { href: '/contact', label: 'Say Hello' }].map((link) => (
+            {mobileNavLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
