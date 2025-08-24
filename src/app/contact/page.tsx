@@ -6,8 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Mail, Phone, MapPin } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Contact Us | DesignFlow Portfolio',
-    description: 'Get in touch with the DesignFlow team. We\'d love to hear about your project.',
+    title: 'Contact Us | Grafikerabi Portfolio',
+    description: 'Get in touch with the Grafikerabi team. We\'d love to hear about your project.',
 };
 
 export default function ContactPage() {
@@ -68,8 +68,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold">Email</h3>
-                    <p className="text-muted-foreground">hello@designflow.com</p>
-                    <a href="mailto:hello@designflow.com" className="text-primary hover:underline">Send an email</a>
+                    <p className="text-muted-foreground">info@grafikerabi.com</p>
+                    <a href="mailto:info@grafikerabi.com" className="text-primary hover:underline">Send an email</a>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
