@@ -140,8 +140,30 @@ async function getRecentPosts(): Promise<Post[]> {
   return posts;
 }
 
+interface Award {
+    _id: string;
+    title: string;
+    organization: string;
+    year: string;
+    logoUrl: string;
+}
+
+async function getAwards(): Promise<Award[]> {
+    const query = `*[_type == "award"] | order(year desc) {
+        _id,
+        title,
+        organization,
+        year,
+        "logoUrl": logo.asset->url
+    }`;
+    const awards = await client.fetch(query);
+    return awards;
+}
+
+
 export default async function Home() {
     const recentPosts = await getRecentPosts();
+    const awards = await getAwards();
 
   return (
     <>
@@ -340,9 +362,41 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      
+      {/* Awards Section */}
+      {awards.length > 0 && (
+          <section className="py-20 bg-secondary">
+              <div className="container mx-auto px-4">
+                  <div className="text-center mb-12">
+                      <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Awards & Recognition</h2>
+                      <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+                          Recognitions for my dedication to design and excellence.
+                      </p>
+                  </div>
+                  <div className="divide-y divide-border">
+                      {awards.map((award) => (
+                          <div key={award._id} className="flex flex-col sm:flex-row items-center justify-between p-6 transition-colors hover:bg-card/50">
+                             <div className="flex items-center gap-6 mb-4 sm:mb-0">
+                                {award.logoUrl && (
+                                    <div className="relative w-16 h-16">
+                                        <Image src={award.logoUrl} alt={`${award.organization} logo`} fill className="object-contain" />
+                                    </div>
+                                )}
+                               <div>
+                                    <h3 className="font-headline text-2xl font-bold">{award.title}</h3>
+                                    <p className="text-muted-foreground text-lg">{award.organization}</p>
+                               </div>
+                             </div>
+                              <p className="font-headline text-2xl font-bold text-primary">{award.year}</p>
+                          </div>
+                      ))}
+                  </div>
+              </div>
+          </section>
+      )}
 
        {/* Articles Section */}
-       <section className="py-20 bg-secondary">
+       <section className="py-20 bg-background">
           <div className="container mx-auto px-4">
               <div className="text-center mb-12">
                   <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">From the Blog</h2>

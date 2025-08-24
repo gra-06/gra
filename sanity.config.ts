@@ -25,6 +25,7 @@ import post from './src/sanity/schemas/post'
 import author from './src/sanity/schemas/author'
 import postCategory from './src/sanity/schemas/postCategory'
 import testimonial from './src/sanity/schemas/testimonial'
+import award from './src/sanity/schemas/award'
 
 
 const schemas = [
@@ -43,6 +44,7 @@ const schemas = [
   twoColumnText,
   videoBlock,
   testimonial,
+  award,
 ]
 
 export default defineConfig({
