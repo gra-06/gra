@@ -3,10 +3,16 @@
 
 import Link from 'next/link';
 import { Button } from './ui/button';
+import { motion } from 'framer-motion';
 
 export function CtaBanner() {
   return (
-    <section className="bg-secondary py-20">
+    <motion.section 
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+      className="bg-secondary py-20">
       <div className="container mx-auto px-4 text-center">
         <div className="relative isolate overflow-hidden bg-background px-6 py-24 text-center shadow-2xl rounded-3xl sm:px-16">
           <h2 className="font-headline mx-auto max-w-2xl text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -32,6 +38,6 @@ export function CtaBanner() {
           </svg>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

@@ -1,4 +1,5 @@
 
+'use client';
 
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -7,12 +8,12 @@ import { Download, PenTool, Palette, Waypoints, Camera, Star } from 'lucide-reac
 import { HomeProjectCard } from '@/components/HomeProjectCard';
 import { SkillsChart } from '@/components/SkillsChart';
 import type { Project, Post } from '@/types';
-import { client } from '@/lib/sanity';
 import { PostCard } from '@/components/PostCard';
 import { CtaBanner } from '@/components/CtaBanner';
 import { Faq } from '@/components/Faq';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Brands } from '@/components/Brands';
+import { motion } from 'framer-motion';
 
 
 const Behance = (props: React.SVGProps<SVGSVGElement>) => (
@@ -124,25 +125,7 @@ const testimonials = [
 ]
 
 
-async function getRecentPosts(): Promise<Post[]> {
-  const query = `*[_type == "post"] | order(publishedAt desc)[0...3]{
-    _id,
-    title,
-    "slug": slug.current,
-    "mainImage": mainImage.asset->url,
-    publishedAt,
-    excerpt,
-    author->{
-        name
-    },
-    categories[]->{
-        _id,
-        title
-    }
-  }`;
-  const posts = await client.fetch(query);
-  return posts;
-}
+import { client } from '@/lib/sanity';
 
 interface Award {
     _id: string;
@@ -152,32 +135,10 @@ interface Award {
     logoUrl: string;
 }
 
-async function getAwards(): Promise<Award[]> {
-    const query = `*[_type == "award"] | order(year desc) {
-        _id,
-        title,
-        organization,
-        year,
-        "logoUrl": logo.asset->url
-    }`;
-    const awards = await client.fetch(query);
-    return awards;
-}
-
 interface FaqItem {
     _id: string;
     question: string;
     answer: any;
-}
-
-async function getFaqs(): Promise<FaqItem[]> {
-    const query = `*[_type == "faq"] | order(_createdAt asc) {
-        _id,
-        question,
-        answer
-    }`;
-    const faqs = await client.fetch(query);
-    return faqs;
 }
 
 interface Tool {
@@ -187,24 +148,60 @@ interface Tool {
     logoUrl: string;
 }
 
-async function getTools(): Promise<Tool[]> {
-    const query = `*[_type == "tool"] | order(name asc) {
+async function getHomePageData() {
+    const recentPostsQuery = `*[_type == "post"] | order(publishedAt desc)[0...3]{
+      _id,
+      title,
+      "slug": slug.current,
+      "mainImage": mainImage.asset->url,
+      publishedAt,
+      excerpt,
+      author->{
+          name
+      },
+      categories[]->{
+          _id,
+          title
+      }
+    }`;
+    const awardsQuery = `*[_type == "award"] | order(year desc) {
+        _id,
+        title,
+        organization,
+        year,
+        "logoUrl": logo.asset->url
+    }`;
+    const faqsQuery = `*[_type == "faq"] | order(_createdAt asc) {
+        _id,
+        question,
+        answer
+    }`;
+    const toolsQuery = `*[_type == "tool"] | order(name asc) {
         _id,
         name,
         description,
         "logoUrl": logo.asset->url
     }`;
-    const tools = await client.fetch(query);
-    return tools;
+    
+    const [recentPosts, awards, faqs, tools] = await Promise.all([
+      client.fetch<Post[]>(recentPostsQuery),
+      client.fetch<Award[]>(awardsQuery),
+      client.fetch<FaqItem[]>(faqsQuery),
+      client.fetch<Tool[]>(toolsQuery),
+    ]);
+
+    return { recentPosts, awards, faqs, tools };
 }
 
 
-export default async function Home() {
-    const recentPosts = await getRecentPosts();
-    const awards = await getAwards();
-    const faqs = await getFaqs();
-    const tools = await getTools();
+interface HomeProps {
+  recentPosts: Post[];
+  awards: Award[];
+  faqs: FaqItem[];
+  tools: Tool[];
+}
 
+function HomePageContent({ recentPosts, awards, faqs, tools }: HomeProps) {
   return (
     <>
       {/* Hero Section */}
@@ -255,7 +252,12 @@ export default async function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 bg-secondary">
+      <motion.section 
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="py-20 bg-secondary">
           <div className="container mx-auto px-4">
               <div className="text-center mb-12">
                   <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Services</h2>
@@ -272,11 +274,16 @@ export default async function Home() {
                   ))}
               </div>
           </div>
-      </section>
+      </motion.section>
       
         {/* Tools & Stack Section */}
         {tools.length > 0 && (
-            <section className="py-20 bg-background">
+            <motion.section 
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="py-20 bg-background">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
                         <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Tools & Stack</h2>
@@ -304,11 +311,16 @@ export default async function Home() {
                         </div>
                     </TooltipProvider>
                 </div>
-            </section>
+            </motion.section>
         )}
 
       {/* Works Section */}
-        <section className="py-20 bg-secondary">
+        <motion.section 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="py-20 bg-secondary">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                     <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Works</h2>
@@ -327,12 +339,17 @@ export default async function Home() {
                     </Link>
                 </div>
             </div>
-        </section>
+        </motion.section>
 
       <Brands />
 
       {/* About Me Section */}
-        <section className="py-20 bg-background">
+        <motion.section 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="py-20 bg-background">
             <div className="container mx-auto px-4">
                 <div className="grid md:grid-cols-12 gap-12 items-center mb-16">
                     <div className="md:col-span-5 flex justify-center">
@@ -380,10 +397,15 @@ export default async function Home() {
                     </Button>
                 </div>
             </div>
-        </section>
+        </motion.section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-secondary">
+      <motion.section 
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="py-20 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Testimonials</h2>
@@ -420,11 +442,16 @@ export default async function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
       
       {/* Awards Section */}
       {awards.length > 0 && (
-          <section className="py-20 bg-background">
+          <motion.section 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="py-20 bg-background">
               <div className="container mx-auto px-4">
                   <div className="text-center mb-12">
                       <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Awards & Recognition</h2>
@@ -451,11 +478,16 @@ export default async function Home() {
                       ))}
                   </div>
               </div>
-          </section>
+          </motion.section>
       )}
 
        {/* Articles Section */}
-       <section className="py-20 bg-secondary">
+       <motion.section 
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="py-20 bg-secondary">
           <div className="container mx-auto px-4">
               <div className="text-center mb-12">
                   <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">From the Blog</h2>
@@ -476,11 +508,16 @@ export default async function Home() {
                 </div>
                 )}
           </div>
-      </section>
+      </motion.section>
 
       {/* FAQ Section */}
       {faqs.length > 0 && (
-        <section className="py-20 bg-background">
+        <motion.section 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="py-20 bg-background">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                     <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Frequently Asked Questions</h2>
@@ -492,10 +529,15 @@ export default async function Home() {
                     <Faq items={faqs} />
                 </div>
             </div>
-        </section>
+        </motion.section>
       )}
 
       <CtaBanner />
     </>
   );
+}
+
+export default async function Home() {
+    const { recentPosts, awards, faqs, tools } = await getHomePageData();
+    return <HomePageContent recentPosts={recentPosts} awards={awards} faqs={faqs} tools={tools} />
 }

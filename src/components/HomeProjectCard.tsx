@@ -21,6 +21,7 @@ export function HomeProjectCard({ project }: HomeProjectCardProps) {
       <motion.div
         className="relative aspect-w-4 aspect-h-3 w-full"
         whileHover="hover"
+        initial="initial"
       >
         <Image
           src={project.mainImage || 'https://placehold.co/600x450.png'}
@@ -37,20 +38,26 @@ export function HomeProjectCard({ project }: HomeProjectCardProps) {
             hover: { opacity: 1 }
           }}
           transition={{ duration: 0.3 }}
-          initial="initial"
         >
            <motion.div
              variants={{
                 initial: { y: 20, opacity: 0 },
                 hover: { y: 0, opacity: 1 }
              }}
-             transition={{ delay: 0.1 }}
+             transition={{ delay: 0.1, duration: 0.3 }}
            >
              <Button variant="outline" size="lg">View Case Study</Button>
            </motion.div>
         </motion.div>
 
-        <div className="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black/60 to-transparent w-full transition-opacity duration-300 group-hover:opacity-0">
+        <motion.div 
+          className="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black/60 to-transparent w-full"
+          variants={{
+            initial: { opacity: 1 },
+            hover: { opacity: 0 }
+          }}
+          transition={{ duration: 0.3 }}
+        >
              <h3 className="font-headline text-3xl font-bold text-white">
               {project.name}
             </h3>
@@ -61,10 +68,8 @@ export function HomeProjectCard({ project }: HomeProjectCardProps) {
                 </Badge>
               ))}
             </div>
-        </div>
+        </motion.div>
       </motion.div>
     </Link>
   );
 }
-
-    
