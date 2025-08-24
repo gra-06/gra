@@ -276,71 +276,55 @@ export default async function Home() {
         </section>
 
       {/* About Me Section */}
-      <section className="py-20 bg-secondary">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-12 gap-12 items-center mb-16">
-            <div className="md:col-span-5 flex justify-center">
-              <Image
-                src="https://placehold.co/400x400.png"
-                alt="Olyve Schwarz"
-                width={400}
-                height={400}
-                className="rounded-full object-cover aspect-square"
-                data-ai-hint="portrait woman"
-              />
-            </div>
-            <div className="md:col-span-7">
-              <h2 className="font-headline text-4xl md:text-6xl font-bold mb-4">I am Olyve Schwarz</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl">
-                A product designer who crafts unique and powerful digital experiences. I find joy in solving complex problems and creating interfaces that are both beautiful and intuitive for users.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-16 mb-16">
-            <div>
-              <h3 className="font-headline text-3xl font-bold mb-6">Experience</h3>
-              <div className="space-y-6">
-                {experiences.map((exp, index) => (
-                    <div key={index} className="flex justify-between items-end border-b border-border/20 pb-4">
-                        <div>
-                            <p className="font-semibold text-lg">{exp.company}</p>
-                            <p className="text-muted-foreground">{exp.role}</p>
-                        </div>
-                        <p className="text-muted-foreground">{exp.period}</p>
+        <section className="py-20 bg-secondary">
+            <div className="container mx-auto px-4">
+                <div className="grid md:grid-cols-12 gap-12 items-center mb-16">
+                    <div className="md:col-span-5 flex justify-center">
+                        <Image
+                            src="https://placehold.co/400x400.png"
+                            alt="Olyve Schwarz"
+                            width={400}
+                            height={400}
+                            className="rounded-full object-cover aspect-square"
+                            data-ai-hint="portrait woman"
+                        />
                     </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h3 className="font-headline text-3xl font-bold mb-6">Education</h3>
-              <div className="space-y-6">
-                {educations.map((edu, index) => (
-                    <div key={index} className="flex justify-between items-end border-b border-border/20 pb-4">
-                        <div>
-                            <p className="font-semibold text-lg">{edu.institution}</p>
-                            <p className="text-muted-foreground">{edu.degree}</p>
-                        </div>
-                        <p className="text-muted-foreground">{edu.period}</p>
+                    <div className="md:col-span-7">
+                        <h2 className="font-headline text-4xl md:text-6xl font-bold mb-4">I am Olyve Schwarz</h2>
+                        <p className="text-lg text-muted-foreground max-w-2xl">
+                            A product designer who crafts unique and powerful digital experiences. I find joy in solving complex problems and creating interfaces that are both beautiful and intuitive for users.
+                        </p>
                     </div>
-                ))}
-              </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-16 mb-16">
+                    <div>
+                        <h3 className="font-headline text-3xl font-bold mb-8">My Journey</h3>
+                        <div className="relative border-l-2 border-primary/20 pl-8 space-y-12">
+                            {[...experiences, ...educations].sort((a, b) => parseInt(b.period.slice(0, 4)) - parseInt(a.period.slice(0, 4))).map((item, index) => (
+                                <div key={index} className="relative">
+                                    <div className="absolute -left-10 h-4 w-4 bg-primary rounded-full top-1"></div>
+                                    <p className="font-bold text-primary mb-1">{item.period}</p>
+                                    <h4 className="font-headline text-2xl font-bold">{'role' in item ? item.role : item.degree}</h4>
+                                    <p className="text-muted-foreground text-lg">{'company' in item ? item.company : item.institution}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <h3 className="font-headline text-center text-3xl font-bold mb-8">Skills</h3>
+                        <SkillsChart />
+                    </div>
+                </div>
+
+                <div className="text-center mt-16">
+                    <Button size="lg" className="text-lg px-8 py-6">
+                        <Download className="mr-2 h-5 w-5"/>
+                        Download Resume
+                    </Button>
+                </div>
             </div>
-          </div>
-
-          <div>
-            <h3 className="font-headline text-center text-3xl font-bold mb-8">Skills</h3>
-            <SkillsChart />
-          </div>
-
-          <div className="text-center mt-16">
-            <Button size="lg" className="text-lg px-8 py-6">
-                <Download className="mr-2 h-5 w-5"/>
-                Download Resume
-            </Button>
-          </div>
-        </div>
-      </section>
+        </section>
 
       {/* Testimonials Section */}
       <section className="py-20 bg-background">
@@ -459,5 +443,3 @@ export default async function Home() {
     </>
   );
 }
-
-    
