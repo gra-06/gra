@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -12,10 +10,7 @@ import { CtaBanner } from '@/components/CtaBanner';
 import { Faq } from '@/components/Faq';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Brands } from '@/components/Brands';
-
-
 import { client } from '@/lib/sanity';
-import { useEffect, useState } from 'react';
 import { Hero } from '@/components/Hero';
 
 interface Award {
@@ -39,128 +34,107 @@ interface Tool {
     logoUrl: string;
 }
 
-interface HomePageData {
-  recentPosts: Post[];
-  awards: Award[];
-  faqs: FaqItem[];
-  tools: Tool[];
-  projects: Partial<Project>[];
-  services: any[];
-  testimonials: any[];
+async function getHomePageData() {
+    const recentPostsQuery = `*[_type == "post"] | order(publishedAt desc)[0...3]{
+      _id,
+      title,
+      "slug": slug.current,
+      "mainImage": mainImage.asset->url,
+      publishedAt,
+      excerpt,
+      author->{
+          name
+      },
+      categories[]->{
+          _id,
+          title
+      }
+    }`;
+    const awardsQuery = `*[_type == "award"] | order(year desc) {
+        _id,
+        title,
+        organization,
+        year,
+        "logoUrl": logo.asset->url
+    }`;
+    const faqsQuery = `*[_type == "faq"] | order(_createdAt asc) {
+        _id,
+        question,
+        answer
+    }`;
+    const toolsQuery = `*[_type == "tool"] | order(name asc) {
+        _id,
+        name,
+        description,
+        "logoUrl": logo.asset->url
+    }`;
+    
+    const [recentPosts, awards, faqs, tools] = await Promise.all([
+      client.fetch<Post[]>(recentPostsQuery),
+      client.fetch<Award[]>(awardsQuery),
+      client.fetch<FaqItem[]>(faqsQuery),
+      client.fetch<Tool[]>(toolsQuery),
+    ]);
+
+    return { recentPosts, awards, faqs, tools };
 }
 
-export default function Home() {
-    const [data, setData] = useState<HomePageData | null>(null);
 
-    useEffect(() => {
-        async function getHomePageData() {
-            const recentPostsQuery = `*[_type == "post"] | order(publishedAt desc)[0...3]{
-              _id,
-              title,
-              "slug": slug.current,
-              "mainImage": mainImage.asset->url,
-              publishedAt,
-              excerpt,
-              author->{
-                  name
-              },
-              categories[]->{
-                  _id,
-                  title
-              }
-            }`;
-            const awardsQuery = `*[_type == "award"] | order(year desc) {
-                _id,
-                title,
-                organization,
-                year,
-                "logoUrl": logo.asset->url
-            }`;
-            const faqsQuery = `*[_type == "faq"] | order(_createdAt asc) {
-                _id,
-                question,
-                answer
-            }`;
-            const toolsQuery = `*[_type == "tool"] | order(name asc) {
-                _id,
-                name,
-                description,
-                "logoUrl": logo.asset->url
-            }`;
-            
-            const projects: Partial<Project>[] = [
-                { _id: '1', name: 'B & O', slug: 'b-o', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '1', title: 'Marketing', slug: 'marketing' }] },
-                { _id: '2', name: 'Cozmetic', slug: 'cozmetic', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '2', title: 'Design', slug: 'design' }] },
-                { _id: '3', name: 'Xendou', slug: 'xendou', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '3', title: 'Branding', slug: 'branding' }] },
-                { _id: '4', name: 'Blvck', slug: 'blvck', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '4', title: 'Product', slug: 'product' }] }
-            ];
+export default async function Home() {
+    const { recentPosts, awards, faqs, tools } = await getHomePageData();
 
-            const services = [
-                {
-                    _id: '1',
-                    title: 'Digital Branding',
-                    description: 'Blend of strategic thinking and creative flair to craft digital identity.',
-                    Icon: PenTool
-                },
-                {
-                    _id: '2',
-                    title: 'Visual Design',
-                    description: 'Unique product branding and marketing strategies.',
-                    Icon: Palette
-                },
-                {
-                    _id: '3',
-                    title: 'UX Research',
-                    description: 'User-centered analysis for optimizing usability.',
-                    Icon: Waypoints
-                },
-                {
-                    _id: '4',
-                    title: 'Art Direction',
-                    description: 'Creative direction with consistent brand language.',
-                    Icon: Camera
-                }
-            ];
+    const projects: Partial<Project>[] = [
+        { _id: '1', name: 'B & O', slug: 'b-o', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '1', title: 'Marketing', slug: 'marketing' }] },
+        { _id: '2', name: 'Cozmetic', slug: 'cozmetic', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '2', title: 'Design', slug: 'design' }] },
+        { _id: '3', name: 'Xendou', slug: 'xendou', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '3', title: 'Branding', slug: 'branding' }] },
+        { _id: '4', name: 'Blvck', slug: 'blvck', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '4', title: 'Product', slug: 'product' }] }
+    ];
 
-            const testimonials = [
-              {
-                _id: '1',
-                name: 'John Doe',
-                role: 'CEO, Company',
-                quote: "Olyve's design work is exceptional. She has a great eye for detail and a deep understanding of user experience. We're thrilled with the results.",
-                avatar: 'https://placehold.co/100x100.png',
-                rating: 5,
-              },
-              {
-                _id: '2',
-                name: 'Jane Smith',
-                role: 'Marketing Manager, Another Co',
-                quote: "Working with Olyve was a fantastic experience. She is a true professional and a pleasure to collaborate with. Highly recommended!",
-                avatar: 'https://placehold.co/100x100.png',
-                rating: 5,
-              }
-            ]
-
-            const [recentPosts, awards, faqs, tools] = await Promise.all([
-              client.fetch<Post[]>(recentPostsQuery),
-              client.fetch<Award[]>(awardsQuery),
-              client.fetch<FaqItem[]>(faqsQuery),
-              client.fetch<Tool[]>(toolsQuery),
-            ]);
-
-            setData({ recentPosts, awards, faqs, tools, projects, services, testimonials });
+    const services = [
+        {
+            _id: '1',
+            title: 'Digital Branding',
+            description: 'Blend of strategic thinking and creative flair to craft digital identity.',
+            Icon: PenTool
+        },
+        {
+            _id: '2',
+            title: 'Visual Design',
+            description: 'Unique product branding and marketing strategies.',
+            Icon: Palette
+        },
+        {
+            _id: '3',
+            title: 'UX Research',
+            description: 'User-centered analysis for optimizing usability.',
+            Icon: Waypoints
+        },
+        {
+            _id: '4',
+            title: 'Art Direction',
+            description: 'Creative direction with consistent brand language.',
+            Icon: Camera
         }
+    ];
 
-        getHomePageData();
-    }, []);
-
-    if (!data) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-            </div>
-        )
-    }
+    const testimonials = [
+      {
+        _id: '1',
+        name: 'John Doe',
+        role: 'CEO, Company',
+        quote: "Olyve's design work is exceptional. She has a great eye for detail and a deep understanding of user experience. We're thrilled with the results.",
+        avatar: 'https://placehold.co/100x100.png',
+        rating: 5,
+      },
+      {
+        _id: '2',
+        name: 'Jane Smith',
+        role: 'Marketing Manager, Another Co',
+        quote: "Working with Olyve was a fantastic experience. She is a true professional and a pleasure to collaborate with. Highly recommended!",
+        avatar: 'https://placehold.co/100x100.png',
+        rating: 5,
+      }
+    ];
     
     const experiences = [
         {
@@ -191,9 +165,7 @@ export default function Home() {
             degree: 'Bachelor of Arts',
             period: '2010 - 2014'
         }
-    ]
-
-    const { recentPosts, awards, faqs, tools, projects, services, testimonials } = data;
+    ];
 
   return (
     <>
