@@ -13,32 +13,40 @@ import { CtaBanner } from '@/components/CtaBanner';
 import { Faq } from '@/components/Faq';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Brands } from '@/components/Brands';
-import { motion } from 'framer-motion';
 
 
 const Behance = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M4.5 9.5H8M6.25 7v5M15 11h-1a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2zM19 11h-1a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2zM15 7h4"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M4.5 9.5H8" />
+        <path d="M6.25 7v5" />
+        <path d="M15 11h-1a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2z" />
+        <path d="M19 11h-1a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2z" />
+        <path d="M15 7h4" />
+    </svg>
 );
 
 const Dribbble = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"></circle><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"></path></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <circle cx="12" cy="12" r="10" />
+        <path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72" />
+        <path d="M11.1 21.65c-3.72-4.35-8.94-5.66-16.88-5.85" />
+        <path d="m21.96 11.25-3.5-.93-6.63-.82c-2.31-.29-5.01 1.66-7.44 6.32" />
+    </svg>
 );
 
 const Linkedin = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+        <rect x="2" y="9" width="4" height="12" />
+        <circle cx="4" cy="4" r="2" />
+    </svg>
 );
 
 const socialLinks = [
-  { platform: 'behance', url: '#' },
-  { platform: 'dribbble', url: '#' },
-  { platform: 'linkedin', url: '#' },
+  { platform: 'behance', url: '#', Icon: Behance },
+  { platform: 'dribbble', url: '#', Icon: Dribbble },
+  { platform: 'linkedin', url: '#', Icon: Linkedin },
 ];
-
-const socialIcons: { [key: string]: React.ElementType } = {
-  behance: Behance,
-  dribbble: Dribbble,
-  linkedin: Linkedin,
-};
 
 const services = [
     {
@@ -126,6 +134,7 @@ const testimonials = [
 
 
 import { client } from '@/lib/sanity';
+import { useEffect, useState } from 'react';
 
 interface Award {
     _id: string;
@@ -148,60 +157,75 @@ interface Tool {
     logoUrl: string;
 }
 
-async function getHomePageData() {
-    const recentPostsQuery = `*[_type == "post"] | order(publishedAt desc)[0...3]{
-      _id,
-      title,
-      "slug": slug.current,
-      "mainImage": mainImage.asset->url,
-      publishedAt,
-      excerpt,
-      author->{
-          name
-      },
-      categories[]->{
-          _id,
-          title
-      }
-    }`;
-    const awardsQuery = `*[_type == "award"] | order(year desc) {
-        _id,
-        title,
-        organization,
-        year,
-        "logoUrl": logo.asset->url
-    }`;
-    const faqsQuery = `*[_type == "faq"] | order(_createdAt asc) {
-        _id,
-        question,
-        answer
-    }`;
-    const toolsQuery = `*[_type == "tool"] | order(name asc) {
-        _id,
-        name,
-        description,
-        "logoUrl": logo.asset->url
-    }`;
-    
-    const [recentPosts, awards, faqs, tools] = await Promise.all([
-      client.fetch<Post[]>(recentPostsQuery),
-      client.fetch<Award[]>(awardsQuery),
-      client.fetch<FaqItem[]>(faqsQuery),
-      client.fetch<Tool[]>(toolsQuery),
-    ]);
-
-    return { recentPosts, awards, faqs, tools };
-}
-
-
-interface HomeProps {
+interface HomePageData {
   recentPosts: Post[];
   awards: Award[];
   faqs: FaqItem[];
   tools: Tool[];
 }
 
-function HomePageContent({ recentPosts, awards, faqs, tools }: HomeProps) {
+export default function Home() {
+    const [data, setData] = useState<HomePageData | null>(null);
+
+    useEffect(() => {
+        async function getHomePageData() {
+            const recentPostsQuery = `*[_type == "post"] | order(publishedAt desc)[0...3]{
+              _id,
+              title,
+              "slug": slug.current,
+              "mainImage": mainImage.asset->url,
+              publishedAt,
+              excerpt,
+              author->{
+                  name
+              },
+              categories[]->{
+                  _id,
+                  title
+              }
+            }`;
+            const awardsQuery = `*[_type == "award"] | order(year desc) {
+                _id,
+                title,
+                organization,
+                year,
+                "logoUrl": logo.asset->url
+            }`;
+            const faqsQuery = `*[_type == "faq"] | order(_createdAt asc) {
+                _id,
+                question,
+                answer
+            }`;
+            const toolsQuery = `*[_type == "tool"] | order(name asc) {
+                _id,
+                name,
+                description,
+                "logoUrl": logo.asset->url
+            }`;
+            
+            const [recentPosts, awards, faqs, tools] = await Promise.all([
+              client.fetch<Post[]>(recentPostsQuery),
+              client.fetch<Award[]>(awardsQuery),
+              client.fetch<FaqItem[]>(faqsQuery),
+              client.fetch<Tool[]>(toolsQuery),
+            ]);
+
+            setData({ recentPosts, awards, faqs, tools });
+        }
+
+        getHomePageData();
+    }, []);
+
+    if (!data) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+            </div>
+        )
+    }
+
+    const { recentPosts, awards, faqs, tools } = data;
+
   return (
     <>
       {/* Hero Section */}
@@ -239,25 +263,17 @@ function HomePageContent({ recentPosts, awards, faqs, tools }: HomeProps) {
         </div>
         <div className="absolute bottom-8 right-8">
             <div className="flex items-center gap-4">
-                {socialLinks.map((social) => {
-                    const Icon = socialIcons[social.platform.toLowerCase()];
-                    return Icon ? (
-                        <a key={social.platform} href={social.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                            <Icon className="h-6 w-6" />
-                        </a>
-                    ) : null;
-                })}
+                {socialLinks.map(({ platform, url, Icon }) => (
+                    <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                        <Icon className="h-6 w-6" />
+                    </a>
+                ))}
             </div>
         </div>
       </section>
 
       {/* Services Section */}
-      <motion.section 
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="py-20 bg-secondary">
+      <section className="py-20 bg-secondary">
           <div className="container mx-auto px-4">
               <div className="text-center mb-12">
                   <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Services</h2>
@@ -274,16 +290,11 @@ function HomePageContent({ recentPosts, awards, faqs, tools }: HomeProps) {
                   ))}
               </div>
           </div>
-      </motion.section>
+      </section>
       
         {/* Tools & Stack Section */}
         {tools.length > 0 && (
-            <motion.section 
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="py-20 bg-background">
+            <section className="py-20 bg-background">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
                         <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Tools & Stack</h2>
@@ -311,16 +322,11 @@ function HomePageContent({ recentPosts, awards, faqs, tools }: HomeProps) {
                         </div>
                     </TooltipProvider>
                 </div>
-            </motion.section>
+            </section>
         )}
 
       {/* Works Section */}
-        <motion.section 
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="py-20 bg-secondary">
+        <section className="py-20 bg-secondary">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                     <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Works</h2>
@@ -339,17 +345,12 @@ function HomePageContent({ recentPosts, awards, faqs, tools }: HomeProps) {
                     </Link>
                 </div>
             </div>
-        </motion.section>
+        </section>
 
       <Brands />
 
       {/* About Me Section */}
-        <motion.section 
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="py-20 bg-background">
+        <section className="py-20 bg-background">
             <div className="container mx-auto px-4">
                 <div className="grid md:grid-cols-12 gap-12 items-center mb-16">
                     <div className="md:col-span-5 flex justify-center">
@@ -397,15 +398,10 @@ function HomePageContent({ recentPosts, awards, faqs, tools }: HomeProps) {
                     </Button>
                 </div>
             </div>
-        </motion.section>
+        </section>
 
       {/* Testimonials Section */}
-      <motion.section 
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="py-20 bg-secondary">
+      <section className="py-20 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Testimonials</h2>
@@ -442,16 +438,11 @@ function HomePageContent({ recentPosts, awards, faqs, tools }: HomeProps) {
             ))}
           </div>
         </div>
-      </motion.section>
+      </section>
       
       {/* Awards Section */}
       {awards.length > 0 && (
-          <motion.section 
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="py-20 bg-background">
+          <section className="py-20 bg-background">
               <div className="container mx-auto px-4">
                   <div className="text-center mb-12">
                       <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Awards & Recognition</h2>
@@ -478,16 +469,11 @@ function HomePageContent({ recentPosts, awards, faqs, tools }: HomeProps) {
                       ))}
                   </div>
               </div>
-          </motion.section>
+          </section>
       )}
 
        {/* Articles Section */}
-       <motion.section 
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="py-20 bg-secondary">
+       <section className="py-20 bg-secondary">
           <div className="container mx-auto px-4">
               <div className="text-center mb-12">
                   <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">From the Blog</h2>
@@ -508,16 +494,11 @@ function HomePageContent({ recentPosts, awards, faqs, tools }: HomeProps) {
                 </div>
                 )}
           </div>
-      </motion.section>
+      </section>
 
       {/* FAQ Section */}
       {faqs.length > 0 && (
-        <motion.section 
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="py-20 bg-background">
+        <section className="py-20 bg-background">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                     <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Frequently Asked Questions</h2>
@@ -529,15 +510,10 @@ function HomePageContent({ recentPosts, awards, faqs, tools }: HomeProps) {
                     <Faq items={faqs} />
                 </div>
             </div>
-        </motion.section>
+        </section>
       )}
 
       <CtaBanner />
     </>
   );
-}
-
-export default async function Home() {
-    const { recentPosts, awards, faqs, tools } = await getHomePageData();
-    return <HomePageContent recentPosts={recentPosts} awards={awards} faqs={faqs} tools={tools} />
 }
