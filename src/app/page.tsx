@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -16,127 +14,9 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Brands } from '@/components/Brands';
 
 
-const Behance = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <path d="M4.5 9.5H8" />
-        <path d="M6.25 7v5" />
-        <path d="M15 11h-1a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2z" />
-        <path d="M19 11h-1a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2z" />
-        <path d="M15 7h4" />
-    </svg>
-);
-
-const Dribbble = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <circle cx="12" cy="12" r="10" />
-        <path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72" />
-        <path d="m11.1 21.65-8.34-12.2" />
-        <path d="m21.96 11.25-9.15 1.77" />
-    </svg>
-);
-
-
-const Linkedin = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-        <rect x="2" y="9" width="4" height="12" />
-        <circle cx="4" cy="4" r="2" />
-    </svg>
-);
-
-const socialLinks = [
-  { platform: 'behance', url: '#', Icon: Behance },
-  { platform: 'dribbble', url: '#', Icon: Dribbble },
-  { platform: 'linkedin', url: '#', Icon: Linkedin },
-];
-
-const services = [
-    {
-        _id: '1',
-        title: 'Digital Branding',
-        description: 'Blend of strategic thinking and creative flair to craft digital identity.',
-        Icon: PenTool
-    },
-    {
-        _id: '2',
-        title: 'Visual Design',
-        description: 'Unique product branding and marketing strategies.',
-        Icon: Palette
-    },
-    {
-        _id: '3',
-        title: 'UX Research',
-        description: 'User-centered analysis for optimizing usability.',
-        Icon: Waypoints
-    },
-    {
-        _id: '4',
-        title: 'Art Direction',
-        description: 'Creative direction with consistent brand language.',
-        Icon: Camera
-    }
-];
-
-const projects: Partial<Project>[] = [
-    { _id: '1', name: 'B & O', slug: 'b-o', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '1', title: 'Marketing', slug: 'marketing' }] },
-    { _id: '2', name: 'Cozmetic', slug: 'cozmetic', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '2', title: 'Design', slug: 'design' }] },
-    { _id: '3', name: 'Xendou', slug: 'xendou', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '3', title: 'Branding', slug: 'branding' }] },
-    { _id: '4', name: 'Blvck', slug: 'blvck', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '4', title: 'Product', slug: 'product' }] }
-];
-
-const experiences = [
-    {
-      company: 'Freelance',
-      role: 'Product Designer',
-      period: '2020 - Present'
-    },
-    {
-      company: 'AKQA',
-      role: 'Senior Product Designer',
-      period: '2018 - 2020'
-    },
-    {
-      company: 'Google',
-      role: 'Creative Head',
-      period: '2016 - 2018'
-    }
-];
-
-const educations = [
-    {
-        institution: 'University of Arts',
-        degree: 'Master of Arts',
-        period: '2014 - 2016'
-    },
-    {
-        institution: 'University of Design',
-        degree: 'Bachelor of Arts',
-        period: '2010 - 2014'
-    }
-]
-
-const testimonials = [
-  {
-    _id: '1',
-    name: 'John Doe',
-    role: 'CEO, Company',
-    quote: "Olyve's design work is exceptional. She has a great eye for detail and a deep understanding of user experience. We're thrilled with the results.",
-    avatar: 'https://placehold.co/100x100.png',
-    rating: 5,
-  },
-  {
-    _id: '2',
-    name: 'Jane Smith',
-    role: 'Marketing Manager, Another Co',
-    quote: "Working with Olyve was a fantastic experience. She is a true professional and a pleasure to collaborate with. Highly recommended!",
-    avatar: 'https://placehold.co/100x100.png',
-    rating: 5,
-  }
-]
-
-
 import { client } from '@/lib/sanity';
 import { useEffect, useState } from 'react';
+import { Hero } from '@/components/Hero';
 
 interface Award {
     _id: string;
@@ -164,6 +44,9 @@ interface HomePageData {
   awards: Award[];
   faqs: FaqItem[];
   tools: Tool[];
+  projects: Partial<Project>[];
+  services: any[];
+  testimonials: any[];
 }
 
 export default function Home() {
@@ -205,6 +88,59 @@ export default function Home() {
                 "logoUrl": logo.asset->url
             }`;
             
+            const projects: Partial<Project>[] = [
+                { _id: '1', name: 'B & O', slug: 'b-o', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '1', title: 'Marketing', slug: 'marketing' }] },
+                { _id: '2', name: 'Cozmetic', slug: 'cozmetic', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '2', title: 'Design', slug: 'design' }] },
+                { _id: '3', name: 'Xendou', slug: 'xendou', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '3', title: 'Branding', slug: 'branding' }] },
+                { _id: '4', name: 'Blvck', slug: 'blvck', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '4', title: 'Product', slug: 'product' }] }
+            ];
+
+            const services = [
+                {
+                    _id: '1',
+                    title: 'Digital Branding',
+                    description: 'Blend of strategic thinking and creative flair to craft digital identity.',
+                    Icon: PenTool
+                },
+                {
+                    _id: '2',
+                    title: 'Visual Design',
+                    description: 'Unique product branding and marketing strategies.',
+                    Icon: Palette
+                },
+                {
+                    _id: '3',
+                    title: 'UX Research',
+                    description: 'User-centered analysis for optimizing usability.',
+                    Icon: Waypoints
+                },
+                {
+                    _id: '4',
+                    title: 'Art Direction',
+                    description: 'Creative direction with consistent brand language.',
+                    Icon: Camera
+                }
+            ];
+
+            const testimonials = [
+              {
+                _id: '1',
+                name: 'John Doe',
+                role: 'CEO, Company',
+                quote: "Olyve's design work is exceptional. She has a great eye for detail and a deep understanding of user experience. We're thrilled with the results.",
+                avatar: 'https://placehold.co/100x100.png',
+                rating: 5,
+              },
+              {
+                _id: '2',
+                name: 'Jane Smith',
+                role: 'Marketing Manager, Another Co',
+                quote: "Working with Olyve was a fantastic experience. She is a true professional and a pleasure to collaborate with. Highly recommended!",
+                avatar: 'https://placehold.co/100x100.png',
+                rating: 5,
+              }
+            ]
+
             const [recentPosts, awards, faqs, tools] = await Promise.all([
               client.fetch<Post[]>(recentPostsQuery),
               client.fetch<Award[]>(awardsQuery),
@@ -212,7 +148,7 @@ export default function Home() {
               client.fetch<Tool[]>(toolsQuery),
             ]);
 
-            setData({ recentPosts, awards, faqs, tools });
+            setData({ recentPosts, awards, faqs, tools, projects, services, testimonials });
         }
 
         getHomePageData();
@@ -225,56 +161,43 @@ export default function Home() {
             </div>
         )
     }
+    
+    const experiences = [
+        {
+          company: 'Freelance',
+          role: 'Product Designer',
+          period: '2020 - Present'
+        },
+        {
+          company: 'AKQA',
+          role: 'Senior Product Designer',
+          period: '2018 - 2020'
+        },
+        {
+          company: 'Google',
+          role: 'Creative Head',
+          period: '2016 - 2018'
+        }
+    ];
 
-    const { recentPosts, awards, faqs, tools } = data;
+    const educations = [
+        {
+            institution: 'University of Arts',
+            degree: 'Master of Arts',
+            period: '2014 - 2016'
+        },
+        {
+            institution: 'University of Design',
+            degree: 'Bachelor of Arts',
+            period: '2010 - 2014'
+        }
+    ]
+
+    const { recentPosts, awards, faqs, tools, projects, services, testimonials } = data;
 
   return (
     <>
-      {/* Hero Section */}
-      <section className="min-h-[calc(100vh-80px)] w-full flex flex-col justify-center bg-background relative">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="https://placehold.co/1920x1080.png"
-            alt="Hero background"
-            fill
-            className="object-cover"
-            priority
-            data-ai-hint="abstract texture"
-          />
-          <div className="absolute inset-0 bg-black/50" />
-        </div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="flex flex-col items-start text-left">
-              <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tighter mb-6 leading-tight text-white">
-                Başlık Sanity'den Gelecek
-              </h1>
-              <p className="text-lg md:text-xl text-neutral-200 max-w-xl mb-8">
-                Açıklama metni de Sanity'den dinamik olarak yüklenecek.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <Link href="/portfolio">
-                  <Button size="lg" className="text-lg px-8 py-6">Projelerimi Gör</Button>
-                </Link>
-                <Link href="/contact">
-                  <Button size="lg" variant="outline" className="text-lg px-8 py-6 text-white border-white hover:bg-white hover:text-black">İletişime Geç</Button>
-                </Link>
-              </div>
-            </div>
-            
-          </div>
-        </div>
-        <div className="absolute bottom-8 right-8 z-10">
-            <div className="flex items-center gap-4">
-                {socialLinks.map(({ platform, url, Icon }) => (
-                    <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-primary transition-colors">
-                        <Icon className="h-6 w-6" />
-                    </a>
-                ))}
-            </div>
-        </div>
-      </section>
-
+      <Hero />
       {/* Services Section */}
       <section className="py-20 bg-secondary">
           <div className="container mx-auto px-4">
