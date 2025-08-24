@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Download } from 'lucide-react';
+import { Download, PenTool, Palette, Waypoints, Camera } from 'lucide-react';
 import { HomeProjectCard } from '@/components/HomeProjectCard';
 import { SkillsChart } from '@/components/SkillsChart';
 import { client } from '@/lib/sanity';
@@ -11,6 +11,7 @@ import type { PortableTextBlock } from '@portabletext/react';
 import { PortableText } from '@portabletext/react';
 import { PortableTextComponent } from '@/components/PortableTextComponent';
 import imageUrlBuilder from '@sanity/image-url';
+import type { Project } from '@/types';
 
 const builder = imageUrlBuilder(client);
 
@@ -34,6 +35,7 @@ interface HomepageData {
     socialLinks: { _key: string; platform: string; url: string }[];
   };
   servicesSection: Service[];
+  featuredProjects: Project[];
 }
 
 async function getHomepageData(): Promise<HomepageData | null> {
@@ -44,40 +46,21 @@ async function getHomepageData(): Promise<HomepageData | null> {
       title,
       description,
       "icon": icon.asset->url
+    },
+    "featuredProjects": featuredProjects[]->{
+      _id,
+      name,
+      "slug": slug.current,
+      "mainImage": mainImage.asset->url,
+      categories[]->{
+        _id,
+        title
+      }
     }
   }`;
   const data = await client.fetch(query);
   return data;
 }
-
-const projects = [
-    {
-        title: 'B & O',
-        description: 'Marketing site design and build',
-        imageUrl: 'https://placehold.co/600x450.png',
-        aiHint: 'product design'
-    },
-    {
-        title: 'Cozmetic',
-        description: 'Marketing site design and build',
-        imageUrl: 'https://placehold.co/600x450.png',
-        aiHint: 'cosmetic product'
-    },
-    {
-        title: 'Xendou',
-        description: 'Marketing site design and build',
-        imageUrl: 'https://placehold.co/600x450.png',
-        aiHint: 'tech startup'
-    },
-    {
-        title: 'Blvck',
-        description: 'Marketing site design and build',
-        imageUrl: 'https://placehold.co/600x450.png',
-        aiHint: 'fashion brand'
-    }
-];
-
-const filterButtons = ['All', 'Branding', 'Product', 'UX/UI'];
 
 const experiences = [
     {
@@ -131,7 +114,19 @@ const socialIcons: { [key: string]: React.ElementType } = {
 
 export default async function Home() {
   const homepageData = await getHomepageData();
-  const { heroSection, servicesSection } = homepageData || {};
+
+  if (!homepageData) {
+    return (
+        <div className="flex items-center justify-center h-screen bg-background text-foreground">
+            <div className="text-center">
+                <h1 className="text-3xl font-bold mb-4">Welcome to DesignFlow</h1>
+                <p className="text-muted-foreground">Homepage content is being set up. Please check back soon!</p>
+            </div>
+        </div>
+    );
+  }
+
+  const { heroSection, servicesSection, featuredProjects } = homepageData;
   
   return (
     <>
@@ -231,25 +226,26 @@ export default async function Home() {
       </section>
       
       {/* Works Section */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Works</h2>
-            <div className="flex justify-center flex-wrap gap-2">
-                {filterButtons.map(label => (
-                    <Button key={label} variant={label === 'All' ? 'default' : 'secondary'} className="rounded-full px-6">
-                        {label}
-                    </Button>
-                ))}
+        <section className="py-20 bg-background">
+            <div className="container mx-auto px-4">
+                <div className="text-center mb-12">
+                    <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Works</h2>
+                    <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+                        A collection of projects that showcase my passion for creating meaningful digital products.
+                    </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {featuredProjects?.map((project) => (
+                        <HomeProjectCard key={project._id} project={project} />
+                    ))}
+                </div>
+                <div className="text-center mt-12">
+                    <Link href="/portfolio">
+                        <Button size="lg">View All Works</Button>
+                    </Link>
+                </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {projects.map((project) => (
-              <HomeProjectCard key={project.title} {...project} />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
 
       {/* About Me Section */}
       <section className="py-20 bg-secondary">
@@ -320,3 +316,5 @@ export default async function Home() {
     </>
   );
 }
+
+    

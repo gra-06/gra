@@ -1,10 +1,4 @@
-/**
- * ProjectCard.tsx: Portfolyo ızgarasındaki her bir proje için kart bileşeni.
- * 
- * Bu bileşen, bir projenin kapak görselini, başlığını ve kategorilerini gösterir.
- * Kartın üzerine gelindiğinde (hover) animasyon efekti uygular.
- * Karta tıklandığında ilgili projenin detay sayfasına yönlendirir.
- */
+
 'use client';
 
 import Link from 'next/link';
@@ -37,17 +31,16 @@ export function ProjectCard({ project }: ProjectCardProps) {
               className="object-cover w-full h-full transform transition-transform duration-500 ease-in-out group-hover:scale-105"
               data-ai-hint="project design"
             />
-             {/* Hover efekti için overlay */}
-            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
-          </div>
-          <div className="p-6 flex flex-col flex-grow">
-            <div className="flex flex-wrap gap-2 mb-3">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent transition-opacity duration-300 group-hover:from-black/80" />
+            <div className="absolute top-4 left-4 flex flex-wrap gap-2">
               {project.categories?.map((category) => (
-                <Badge key={category._id} variant="secondary">
+                <Badge key={category._id} variant="secondary" className="backdrop-blur-sm">
                   {category.title}
                 </Badge>
               ))}
             </div>
+          </div>
+          <div className="p-6 flex flex-col flex-grow">
             <h3 className="font-headline text-2xl font-bold text-card-foreground leading-tight mt-auto">
               {project.name}
             </h3>
@@ -56,3 +49,5 @@ export function ProjectCard({ project }: ProjectCardProps) {
       </Link>
   );
 }
+
+    

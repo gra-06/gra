@@ -5,28 +5,30 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import type { Project } from '@/types';
+import { Badge } from './ui/badge';
 
 interface HomeProjectCardProps {
-  title: string;
-  description: string;
-  imageUrl: string;
-  aiHint: string;
+  project: Partial<Project>;
 }
 
-export function HomeProjectCard({ title, description, imageUrl, aiHint }: HomeProjectCardProps) {
+export function HomeProjectCard({ project }: HomeProjectCardProps) {
+  if (!project.slug) {
+    return null;
+  }
   return (
-    <Link href="/portfolio" className="group block overflow-hidden rounded-lg">
+    <Link href={`/projects/${project.slug}`} className="group block overflow-hidden rounded-lg">
       <motion.div
         className="relative aspect-w-4 aspect-h-3 w-full"
         whileHover="hover"
       >
         <Image
-          src={imageUrl}
-          alt={title}
+          src={project.mainImage || 'https://placehold.co/600x450.png'}
+          alt={project.name || 'Project image'}
           width={600}
           height={450}
           className="object-cover w-full h-full transform transition-transform duration-500 ease-in-out group-hover:scale-105"
-          data-ai-hint={aiHint}
+          data-ai-hint="project design"
         />
         <motion.div
           className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-6 text-center"
@@ -50,11 +52,19 @@ export function HomeProjectCard({ title, description, imageUrl, aiHint }: HomePr
 
         <div className="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black/60 to-transparent w-full transition-opacity duration-300 group-hover:opacity-0">
              <h3 className="font-headline text-3xl font-bold text-white">
-              {title}
+              {project.name}
             </h3>
-            <p className="text-white/80 font-body">{description}</p>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {project.categories?.map((category) => (
+                <Badge key={category._id} variant="secondary" className="backdrop-blur-sm">
+                  {category.title}
+                </Badge>
+              ))}
+            </div>
         </div>
       </motion.div>
     </Link>
   );
 }
+
+    
