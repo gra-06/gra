@@ -9,6 +9,7 @@ import { SkillsChart } from '@/components/SkillsChart';
 import type { Project, Post } from '@/types';
 import { client } from '@/lib/sanity';
 import { PostCard } from '@/components/PostCard';
+import { CtaBanner } from '@/components/CtaBanner';
 
 
 const Behance = (props: React.SVGProps<SVGSVGElement>) => (
@@ -418,6 +419,8 @@ export default async function Home() {
                 )}
           </div>
       </section>
+
+      <CtaBanner />
     </>
   );
 }
