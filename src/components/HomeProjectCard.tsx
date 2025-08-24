@@ -55,23 +55,23 @@ export function HomeProjectCard({ project }: HomeProjectCardProps) {
         </motion.div>
 
         <motion.div 
-          className="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black/60 to-transparent w-full"
+          className="absolute bottom-0 left-0 p-6 w-full bg-gradient-to-t from-black/70 to-transparent"
           variants={{
             initial: { opacity: 1 },
             hover: { opacity: 0 }
           }}
           transition={{ duration: 0.3 }}
         >
-             <h3 className="font-headline text-3xl font-bold text-white">
-              {project.name}
-            </h3>
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="flex flex-wrap gap-2 mb-2">
               {project.categories?.map((category) => (
                 <Badge key={category._id} variant="secondary" className="backdrop-blur-sm">
                   {category.title}
                 </Badge>
               ))}
             </div>
+             <h3 className="font-headline text-3xl font-bold text-white">
+              {project.name}
+            </h3>
         </motion.div>
       </motion.div>
     </Link>
