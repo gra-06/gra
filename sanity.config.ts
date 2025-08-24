@@ -29,6 +29,7 @@ import award from './src/sanity/schemas/award'
 import faq from './src/sanity/schemas/faq'
 import tool from './src/sanity/schemas/tool'
 import brand from './src/sanity/schemas/brand'
+import badge from './src/sanity/schemas/badge'
 
 
 const schemas = [
@@ -51,6 +52,7 @@ const schemas = [
   faq,
   tool,
   brand,
+  badge,
 ]
 
 export default defineConfig({

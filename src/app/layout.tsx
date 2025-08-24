@@ -8,6 +8,9 @@ import { Footer } from '@/components/Footer';
 import { Alegreya, Azeret_Mono as Teller } from 'next/font/google';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { PortfolioChatbot } from '@/components/PortfolioChatbot';
+import { GamificationProvider } from '@/providers/GamificationProvider';
+import { getBadges } from '@/lib/badgeService';
+import { UserBadges } from '@/components/UserBadges';
 
 
 const alegreya = Alegreya({
@@ -29,7 +32,7 @@ export const metadata: Metadata = {
   description: 'A modern portfolio for creative professionals. We transform ideas into extraordinary digital experiences.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -49,6 +52,8 @@ export default function RootLayout({
     { href: '/contact', label: 'İletişim' },
   ];
 
+  const badges = await getBadges();
+
   return (
     <html lang="en" className={cn("scroll-smooth", alegreya.variable, teller.variable)} suppressHydrationWarning>
        <head>
@@ -64,6 +69,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
+          <GamificationProvider allBadges={badges}>
             <div className="flex flex-col min-h-screen">
                 <Header navItems={navItems} />
                 <main className="flex-grow">{children}</main>
@@ -71,6 +77,8 @@ export default function RootLayout({
             </div>
             <Toaster />
             <PortfolioChatbot />
+            <UserBadges />
+          </GamificationProvider>
         </ThemeProvider>
       </body>
     </html>

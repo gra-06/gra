@@ -1,4 +1,6 @@
 
+'use client';
+
 import { client } from '@/lib/sanity';
 import type { Post } from '@/types';
 import { notFound } from 'next/navigation';
@@ -9,6 +11,8 @@ import { format } from 'date-fns';
 import { Calendar, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { Metadata } from 'next';
+import { useEffect, useState } from 'react';
+import { useGamification } from '@/hooks/use-gamification';
 
 interface PostPageProps {
   params: { slug: string };
@@ -36,24 +40,28 @@ async function getPost(slug: string): Promise<Post | null> {
     return post;
 }
 
-export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {
-  const post = await getPost(params.slug)
-  if (!post) {
-    return {
-      title: 'Post Not Found'
-    }
-  }
+// This needs to be a separate client component to use hooks
+function PostBody({ slug }: { slug: string }) {
+    const [post, setPost] = useState<Post | null>(null);
+    const { logEvent } = useGamification();
 
-  return {
-    title: `${post.title} | DesignFlow Blog`,
-    description: post.excerpt || 'A blog post from the DesignFlow team.',
-  }
-}
-
-export default async function PostPage({ params }: PostPageProps) {
-    const post = await getPost(params.slug);
+    useEffect(() => {
+        async function loadPost() {
+            const fetchedPost = await getPost(slug);
+            setPost(fetchedPost);
+            if (fetchedPost) {
+                logEvent('POST_VISIT');
+            }
+        }
+        loadPost();
+    }, [slug, logEvent]);
 
     if (!post) {
+        // You can return a loading skeleton here
+        return <div className="container mx-auto px-4 py-16 text-center">Loading post...</div>;
+    }
+    
+    if (!post._id) {
         notFound();
     }
 
@@ -137,6 +145,25 @@ export default async function PostPage({ params }: PostPageProps) {
             </article>
         </>
     );
+}
+
+
+export default function PostPage({ params }: PostPageProps) {
+    return <PostBody slug={params.slug} />;
+}
+
+export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {
+  const post = await getPost(params.slug)
+  if (!post) {
+    return {
+      title: 'Post Not Found'
+    }
+  }
+
+  return {
+    title: `${post.title} | DesignFlow Blog`,
+    description: post.excerpt || 'A blog post from the DesignFlow team.',
+  }
 }
 
 // Add this to dynamically generate static pages for blog posts

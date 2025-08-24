@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import type { Project } from '@/types';
@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import { ProjectCard } from '@/components/ProjectCard';
 import imageUrlBuilder from '@sanity/image-url';
 import { ImageLightbox } from '@/components/ImageLightbox';
+import { useGamification } from '@/hooks/use-gamification';
 
 const builder = imageUrlBuilder(client);
 
@@ -42,6 +43,11 @@ const Section: React.FC<{ title: string; children: React.ReactNode, delay?: numb
 export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [lightboxAlt, setLightboxAlt] = useState<string>('');
+  const { logEvent } = useGamification();
+
+  useEffect(() => {
+    logEvent('PROJECT_VISIT');
+  }, [logEvent]);
 
 
   const containerVariants = {

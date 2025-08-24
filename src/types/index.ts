@@ -131,3 +131,23 @@ export interface Post {
     body: PortableTextBlock[];
     excerpt?: string;
 }
+
+// GAMIFICATION TYPES
+export type GameEvent = 'PROJECT_VISIT' | 'POST_VISIT' | 'CHAT_WITH_AI' | 'PAGE_VIEW';
+
+export interface Badge {
+    _id: string;
+    _type: 'badge';
+    name: string;
+    description: string;
+    icon: string;
+    event: GameEvent;
+    count: number;
+    secret: boolean;
+}
+
+export interface UserProgress {
+    events: { [key in GameEvent]?: number };
+    uniqueEvents: { [key in GameEvent]?: string[] };
+    earnedBadges: string[];
+}
