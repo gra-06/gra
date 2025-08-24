@@ -17,8 +17,8 @@ export function HomeProjectCard({ project }: HomeProjectCardProps) {
     return null;
   }
 
-  // Get image URL from Sanity asset reference if available
-  const imageUrl = project.mainImage ? (project.mainImage as any).asset?.url || project.mainImage : null;
+  // Directly check for the nested asset URL from Sanity.
+  const imageUrl = (project.mainImage as any)?.asset?.url;
 
   return (
     <Link href={`/projects/${project.slug}`} className="group block overflow-hidden rounded-lg">
