@@ -3,15 +3,14 @@
 
 import { useState, useRef, useEffect, type FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Send, X, CornerDownLeft, Sparkles, User } from 'lucide-react';
+import { Bot, Send, X, CornerDownLeft, Sparkles, User, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { handleChat } from '@/actions/aiActions';
-import { useStreamableValue } from 'ai/rsc';
 import { cn } from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-
+import { readStreamableValue } from 'ai/rsc';
 
 interface Message {
   id: string;
@@ -24,7 +23,6 @@ export function PortfolioChatbot() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { data, error, append, update, done } = useStreamableValue<string>();
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -32,43 +30,38 @@ export function PortfolioChatbot() {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [messages, data]);
-  
-  useEffect(() => {
-    if (done) {
-        setIsLoading(false);
-    }
-    if (data) {
-        setMessages(prev => {
-            const lastMessage = prev[prev.length - 1];
-            if (lastMessage && lastMessage.role === 'model') {
-                const newMessages = [...prev];
-                newMessages[newMessages.length - 1] = { ...lastMessage, content: data };
-                return newMessages;
-            }
-            return [...prev, { id: `model-${Date.now()}`, role: 'model', content: data }];
-        });
-    }
-  }, [data, done]);
+  }, [messages]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const newUserMessage: Message = { id: `user-${Date.now()}`, role: 'user', content: input };
-    const currentMessages = [...messages, newUserMessage];
-    setMessages(currentMessages);
+    const userMessage: Message = { id: `user-${Date.now()}`, role: 'user', content: input };
+    setMessages(prevMessages => [...prevMessages, userMessage]);
     setInput('');
     setIsLoading(true);
 
+    const newMessages = [...messages, userMessage];
+
     try {
-        const stream = await handleChat({ messages: currentMessages.map(m => ({ role: m.role, content: m.content })) });
-        for await (const delta of stream) {
-            update(delta);
+        const stream = await handleChat({ messages: newMessages.map(m => ({ role: m.role, content: m.content })) });
+
+        let fullResponse = '';
+        const modelMessageId = `model-${Date.now()}`;
+        setMessages(prev => [...prev, { id: modelMessageId, role: 'model', content: '...' }]);
+
+        for await (const delta of readStreamableValue(stream)) {
+            fullResponse += delta;
+            setMessages(prev => prev.map(m =>
+                m.id === modelMessageId ? { ...m, content: fullResponse } : m
+            ));
         }
+
     } catch (err) {
-        console.error(err);
-        setMessages(prev => [...prev, { id: `error-${Date.now()}`, role: 'model', content: 'Sorry, I encountered an error. Please try again.' }]);
+        console.error("Error during chat handling:", err);
+        const errorMessageId = `model-error-${Date.now()}`;
+        setMessages(prev => [...prev, { id: errorMessageId, role: 'model', content: "Sorry, I'm having trouble connecting. Please try again later." }]);
+    } finally {
         setIsLoading(false);
     }
   };
@@ -121,7 +114,7 @@ export function PortfolioChatbot() {
             </header>
 
             <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-6">
-                {messages.length === 0 && (
+                {messages.length === 0 && !isLoading && (
                     <div className="text-center text-muted-foreground py-8">
                         <Sparkles className="mx-auto h-12 w-12 text-primary/50 mb-4"/>
                         <p className="font-semibold">Ask me anything!</p>
@@ -129,7 +122,7 @@ export function PortfolioChatbot() {
                     </div>
                 )}
               {messages.map((message, index) => (
-                <div key={message.id} className={cn('flex items-start gap-3', message.role === 'user' ? 'justify-end' : '')}>
+                <div key={message.id || index} className={cn('flex items-start gap-3', message.role === 'user' ? 'justify-end' : '')}>
                   {message.role === 'model' && (
                      <Avatar className="w-8 h-8">
                         <AvatarImage src="https://placehold.co/40x40.png" alt="Olyve AI Assistant" data-ai-hint="bot logo" />
@@ -137,13 +130,17 @@ export function PortfolioChatbot() {
                     </Avatar>
                   )}
                   <div className={cn('max-w-[80%] rounded-xl px-4 py-2', message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary')}>
-                    <ReactMarkdown className="prose prose-sm dark:prose-invert max-w-none break-words"
-                        components={{
-                            a: ({node, ...props}) => <a {...props} target="_blank" rel="noopener noreferrer" className="text-primary underline" />,
-                        }}
-                    >
-                        {message.content}
-                    </ReactMarkdown>
+                    {message.content === '...' ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <ReactMarkdown className="prose prose-sm dark:prose-invert max-w-none break-words"
+                          components={{
+                              a: ({node, ...props}) => <a {...props} target="_blank" rel="noopener noreferrer" className="text-primary underline" />,
+                          }}
+                      >
+                          {message.content}
+                      </ReactMarkdown>
+                    )}
                   </div>
                    {message.role === 'user' && (
                      <Avatar className="w-8 h-8">
@@ -152,19 +149,17 @@ export function PortfolioChatbot() {
                   )}
                 </div>
               ))}
-               {isLoading && messages[messages.length-1]?.role === 'user' && (
-                    <div className="flex items-start gap-3">
-                         <Avatar className="w-8 h-8">
-                            <AvatarImage src="https://placehold.co/40x40.png" alt="Olyve AI Assistant" data-ai-hint="bot logo" />
-                            <AvatarFallback>AI</AvatarFallback>
-                        </Avatar>
-                        <div className="bg-secondary rounded-xl px-4 py-3 flex items-center space-x-2">
-                            <span className="h-2 w-2 bg-muted-foreground rounded-full animate-pulse" style={{animationDelay: '0s'}}></span>
-                            <span className="h-2 w-2 bg-muted-foreground rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></span>
-                            <span className="h-2 w-2 bg-muted-foreground rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></span>
-                        </div>
+              {isLoading && messages.length > 0 && messages[messages.length-1].role === 'user' && (
+                <div className={cn('flex items-start gap-3')}>
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src="https://placehold.co/40x40.png" alt="Olyve AI Assistant" data-ai-hint="bot logo" />
+                      <AvatarFallback>AI</AvatarFallback>
+                    </Avatar>
+                    <div className={cn('max-w-[80%] rounded-xl px-4 py-2 bg-secondary')}>
+                      <Loader2 className="h-5 w-5 animate-spin" />
                     </div>
-                )}
+                </div>
+              )}
             </div>
             
             <footer className="p-4 border-t bg-card/80 backdrop-blur-sm">
@@ -197,7 +192,7 @@ export function PortfolioChatbot() {
                   disabled={isLoading}
                 />
                 <Button type="submit" size="icon" className="absolute right-6 bottom-6" disabled={!input.trim() || isLoading}>
-                  <Send className="w-4 h-4" />
+                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 </Button>
               </form>
             </footer>

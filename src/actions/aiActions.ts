@@ -3,6 +3,7 @@
 import { suggestTags } from '@/ai/flows/suggest-tags';
 import { streamPortfolioGuide } from '@/ai/flows/portfolio-guide';
 import { z } from 'zod';
+import { createStreamableValue } from 'ai/rsc';
 
 const suggestTagsSchema = z.object({
   photoDataUri: z.string({
@@ -50,5 +51,13 @@ export async function handleChat(input: z.infer<typeof chatSchema>) {
     if (!validatedFields.success) {
         throw new Error('Invalid input for chat handler');
     }
-    return streamPortfolioGuide(validatedFields.data);
+    const stream = createStreamableValue();
+    (async () => {
+      const { output } = await streamPortfolioGuide(validatedFields.data);
+      for await (const delta of output) {
+        stream.update(delta);
+      }
+      stream.done();
+    })();
+    return stream.value;
 }
