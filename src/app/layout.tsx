@@ -7,6 +7,8 @@ import { Header, type NavItem } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Alegreya, Azeret_Mono as Teller } from 'next/font/google';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { PortfolioChatbot } from '@/components/PortfolioChatbot';
+
 
 const alegreya = Alegreya({
   subsets: ['latin'],
@@ -68,6 +70,7 @@ export default function RootLayout({
                 <Footer />
             </div>
             <Toaster />
+            <PortfolioChatbot />
         </ThemeProvider>
       </body>
     </html>

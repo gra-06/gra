@@ -109,6 +109,7 @@ export default defineType({
       options: {
         layout: 'tags',
       },
+      description: 'Tags for the project, used for search and discovery by the AI chatbot.',
     }),
   ],
   preview: {

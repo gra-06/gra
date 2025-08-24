@@ -63,6 +63,16 @@ export default defineType({
       type: 'portableText',
        validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: 'tags',
+      title: 'Tags',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: {
+        layout: 'tags',
+      },
+      description: 'Tags for the post, used for search and discovery by the AI chatbot.',
+    }),
   ],
   initialValue: {
       publishedAt: new Date().toISOString(),
