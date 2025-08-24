@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useGamification } from '@/hooks/use-gamification';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export interface NavItem {
   href: string;
@@ -42,18 +43,25 @@ export function Header({ navItems }: HeaderProps) {
           <span className="font-headline text-3xl font-bold">Olyve Schwarz</span>
         </Link>
 
-        <nav className="hidden md:flex items-center space-x-8" aria-label={isClient ? "Ana navigasyon" : undefined}>
+        <nav className="hidden md:flex items-center space-x-2 relative" aria-label={isClient ? "Ana navigasyon" : undefined}>
           {navItems.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                'text-lg font-medium transition-colors hover:text-primary',
-                pathname === link.href ? 'text-primary' : 'text-muted-foreground'
+                'relative px-4 py-2 text-lg font-medium transition-colors hover:text-primary',
+                 pathname === link.href ? 'text-primary' : 'text-muted-foreground'
               )}
               aria-current={isClient && pathname === link.href ? 'page' : undefined}
             >
               {link.label}
+              {pathname === link.href && (
+                <motion.div
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                  layoutId="underline"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
             </Link>
           ))}
         </nav>
@@ -87,27 +95,43 @@ export function Header({ navItems }: HeaderProps) {
           </Button>
         </div>
       </div>
-
-      {isMenuOpen && (
-        <div id="mobile-menu" className="md:hidden absolute top-full left-0 w-full bg-background shadow-lg py-4">
-          <nav className="flex flex-col items-center space-y-4" aria-label={isClient ? "Mobil ana navigasyon" : undefined}>
-            {mobileNavLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsMenuOpen(false)}
-                className={cn(
-                  'text-lg font-medium transition-colors hover:text-primary w-full text-center py-2',
-                  pathname === link.href ? 'text-primary' : 'text-muted-foreground'
-                )}
-                aria-current={isClient && pathname === link.href ? 'page' : undefined}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      )}
+      
+      <AnimatePresence>
+        {isMenuOpen && (
+            <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                id="mobile-menu" 
+                className="md:hidden absolute top-full left-0 w-full bg-background shadow-lg overflow-hidden"
+            >
+            <nav className="flex flex-col items-center space-y-2 p-4" aria-label={isClient ? "Mobil ana navigasyon" : undefined}>
+                {mobileNavLinks.map((link, index) => (
+                <motion.div
+                    key={link.href}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05, duration: 0.2 }}
+                    className="w-full"
+                >
+                    <Link
+                        href={link.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        className={cn(
+                        'block text-lg font-medium transition-colors hover:text-primary w-full text-center py-3 rounded-md',
+                        pathname === link.href ? 'text-primary bg-primary/10' : 'text-muted-foreground'
+                        )}
+                        aria-current={isClient && pathname === link.href ? 'page' : undefined}
+                    >
+                        {link.label}
+                    </Link>
+                </motion.div>
+                ))}
+            </nav>
+            </motion.div>
+        )}
+       </AnimatePresence>
     </header>
   );
 }
