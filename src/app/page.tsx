@@ -11,6 +11,7 @@ import { client } from '@/lib/sanity';
 import { PostCard } from '@/components/PostCard';
 import { CtaBanner } from '@/components/CtaBanner';
 import { Faq } from '@/components/Faq';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 
 const Behance = (props: React.SVGProps<SVGSVGElement>) => (
@@ -178,11 +179,30 @@ async function getFaqs(): Promise<FaqItem[]> {
     return faqs;
 }
 
+interface Tool {
+    _id: string;
+    name: string;
+    description: string;
+    logoUrl: string;
+}
+
+async function getTools(): Promise<Tool[]> {
+    const query = `*[_type == "tool"] | order(name asc) {
+        _id,
+        name,
+        description,
+        "logoUrl": logo.asset->url
+    }`;
+    const tools = await client.fetch(query);
+    return tools;
+}
+
 
 export default async function Home() {
     const recentPosts = await getRecentPosts();
     const awards = await getAwards();
     const faqs = await getFaqs();
+    const tools = await getTools();
 
   return (
     <>
@@ -253,8 +273,41 @@ export default async function Home() {
           </div>
       </section>
       
+        {/* Tools & Stack Section */}
+        {tools.length > 0 && (
+            <section className="py-20 bg-background">
+                <div className="container mx-auto px-4">
+                    <div className="text-center mb-12">
+                        <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Tools & Stack</h2>
+                        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+                            My favorite arsenal of tools and technologies to bring ideas to life.
+                        </p>
+                    </div>
+                    <TooltipProvider>
+                        <div className="flex flex-wrap justify-center gap-8">
+                            {tools.map((tool) => (
+                                <Tooltip key={tool._id}>
+                                    <TooltipTrigger asChild>
+                                        <div className="bg-card p-4 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 w-32 h-32 flex items-center justify-center">
+                                            {tool.logoUrl && (
+                                                <Image src={tool.logoUrl} alt={`${tool.name} logo`} width={80} height={80} className="object-contain" />
+                                            )}
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p className="font-bold">{tool.name}</p>
+                                        {tool.description && <p className="text-sm text-muted-foreground">{tool.description}</p>}
+                                    </TooltipContent>
+                                </Tooltip>
+                            ))}
+                        </div>
+                    </TooltipProvider>
+                </div>
+            </section>
+        )}
+
       {/* Works Section */}
-        <section className="py-20 bg-background">
+        <section className="py-20 bg-secondary">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                     <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Works</h2>
@@ -276,7 +329,7 @@ export default async function Home() {
         </section>
 
       {/* About Me Section */}
-        <section className="py-20 bg-secondary">
+        <section className="py-20 bg-background">
             <div className="container mx-auto px-4">
                 <div className="grid md:grid-cols-12 gap-12 items-center mb-16">
                     <div className="md:col-span-5 flex justify-center">
@@ -327,7 +380,7 @@ export default async function Home() {
         </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-background">
+      <section className="py-20 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Testimonials</h2>
@@ -368,7 +421,7 @@ export default async function Home() {
       
       {/* Awards Section */}
       {awards.length > 0 && (
-          <section className="py-20 bg-secondary">
+          <section className="py-20 bg-background">
               <div className="container mx-auto px-4">
                   <div className="text-center mb-12">
                       <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Awards & Recognition</h2>
@@ -399,7 +452,7 @@ export default async function Home() {
       )}
 
        {/* Articles Section */}
-       <section className="py-20 bg-background">
+       <section className="py-20 bg-secondary">
           <div className="container mx-auto px-4">
               <div className="text-center mb-12">
                   <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">From the Blog</h2>
@@ -424,7 +477,7 @@ export default async function Home() {
 
       {/* FAQ Section */}
       {faqs.length > 0 && (
-        <section className="py-20 bg-secondary">
+        <section className="py-20 bg-background">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                     <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Frequently Asked Questions</h2>
