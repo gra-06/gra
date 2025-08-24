@@ -78,7 +78,7 @@ export async function streamPortfolioGuide({ messages }: { messages: { role: 'us
     const { stream } = ai.generate({
         model: 'googleai/gemini-2.0-flash',
         prompt: messages,
-        system: portfolioGuidePrompt.context[0].text,
+        system: portfolioGuidePrompt.system,
         tools: [getPortfolioInfo],
         config: {
             temperature: 0.3,
