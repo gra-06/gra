@@ -111,6 +111,12 @@ export default defineType({
       },
       description: 'Tags for the project, used for search and discovery by the AI chatbot.',
     }),
+    defineField({
+      name: 'location',
+      title: 'Location',
+      type: 'geopoint',
+      description: 'The geographical location of the project for the interactive map.'
+    })
   ],
   preview: {
     select: {

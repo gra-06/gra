@@ -12,6 +12,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Brands } from '@/components/Brands';
 import { client } from '@/lib/sanity';
 import { Hero } from '@/components/Hero';
+import { ProjectMap } from '@/components/ProjectMap';
 
 interface Award {
     _id: string;
@@ -35,6 +36,14 @@ interface Tool {
 }
 
 async function getHomePageData() {
+    const projectsQuery = `*[_type == "project"] | order(date desc){
+      _id,
+      name,
+      "slug": slug.current,
+      mainImage,
+      categories[]->{_id, title, "slug": slug.current},
+      location
+    }`;
     const recentPostsQuery = `*[_type == "post"] | order(publishedAt desc)[0...3]{
       _id,
       title,
@@ -69,26 +78,20 @@ async function getHomePageData() {
         "logoUrl": logo.asset->url
     }`;
     
-    const [recentPosts, awards, faqs, tools] = await Promise.all([
+    const [projects, recentPosts, awards, faqs, tools] = await Promise.all([
+      client.fetch<Project[]>(projectsQuery),
       client.fetch<Post[]>(recentPostsQuery),
       client.fetch<Award[]>(awardsQuery),
       client.fetch<FaqItem[]>(faqsQuery),
       client.fetch<Tool[]>(toolsQuery),
     ]);
 
-    return { recentPosts, awards, faqs, tools };
+    return { projects, recentPosts, awards, faqs, tools };
 }
 
 
 export default async function Home() {
-    const { recentPosts, awards, faqs, tools } = await getHomePageData();
-
-    const projects: Partial<Project>[] = [
-        { _id: '1', name: 'B & O', slug: 'b-o', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '1', title: 'Marketing', slug: 'marketing' }] },
-        { _id: '2', name: 'Cozmetic', slug: 'cozmetic', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '2', title: 'Design', slug: 'design' }] },
-        { _id: '3', name: 'Xendou', slug: 'xendou', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '3', title: 'Branding', slug: 'branding' }] },
-        { _id: '4', name: 'Blvck', slug: 'blvck', mainImage: 'https://placehold.co/600x450.png', categories: [{ _id: '4', title: 'Product', slug: 'product' }] }
-    ];
+    const { projects, recentPosts, awards, faqs, tools } = await getHomePageData();
 
     const services = [
         {
@@ -233,7 +236,7 @@ export default async function Home() {
                     </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {projects.map((project) => (
+                    {projects.slice(0, 4).map((project) => (
                         <HomeProjectCard key={project._id} project={project} />
                     ))}
                 </div>
@@ -244,6 +247,22 @@ export default async function Home() {
                 </div>
             </div>
         </section>
+
+      {projects.filter(p => p.location).length > 0 && (
+        <section className="py-20 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Global Reach</h2>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+                Collaborating with clients and teams from all over the world.
+              </p>
+            </div>
+            <div className="relative w-full h-[600px] bg-secondary/30 rounded-lg overflow-hidden shadow-inner">
+               <ProjectMap projects={projects.filter(p => p.location)} />
+            </div>
+          </div>
+        </section>
+      )}
 
       <Brands />
 

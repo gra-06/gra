@@ -67,6 +67,12 @@ export interface CaseStudyEntry {
     image: SanityImage;
 }
 
+export interface Geopoint {
+    _type: 'geopoint';
+    lat: number;
+    lng: number;
+}
+
 
 // A union type for all possible content sections
 export type ContentSection = ImageGallerySection | FullWidthImageSection | TwoColumnTextSection | VideoBlockSection;
@@ -94,6 +100,7 @@ export interface Project {
   contentSections?: ContentSection[];
   relatedProjects?: Partial<Project>[];
   tags?: string[];
+  location?: Geopoint;
 }
 
 
