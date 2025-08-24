@@ -10,11 +10,11 @@ export function CtaBanner() {
       <div className="container mx-auto px-4 text-center">
         <div className="relative isolate overflow-hidden bg-background px-6 py-24 text-center shadow-2xl rounded-3xl sm:px-16">
           <h2 className="font-headline mx-auto max-w-2xl text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Ready to start your next project?
+            Let’s build something great together
           </h2>
           <div className="mt-8 flex items-center justify-center gap-x-6">
             <Link href="/contact">
-              <Button size="lg" className="text-lg px-8 py-6">Hire Me</Button>
+              <Button size="lg" className="text-lg px-8 py-6">Contact Me</Button>
             </Link>
           </div>
           <svg
