@@ -24,7 +24,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 bg-card h-full flex flex-col">
           <div className="relative aspect-w-4 aspect-h-3 w-full overflow-hidden">
             <Image
-              src={project.mainImage || 'https://placehold.co/600x400.png'}
+              src={project.mainImage || 'https://placehold.co/600x450.png'}
               alt={project.name || 'Proje görseli'}
               width={600}
               height={450}
