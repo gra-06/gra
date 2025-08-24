@@ -1,4 +1,5 @@
 
+
 import { defineField, defineType } from 'sanity';
 
 export default defineType({
@@ -80,18 +81,7 @@ export default defineType({
         name: 'testimonialsSection',
         title: 'Testimonials Section',
         type: 'array',
-        of: [
-            {
-                type: 'object',
-                name: 'testimonial',
-                title: 'Testimonial',
-                fields: [
-                    defineField({ name: 'quote', title: 'Quote', type: 'text', validation: Rule => Rule.required()}),
-                    defineField({ name: 'author', title: 'Author', type: 'string', validation: Rule => Rule.required()}),
-                    defineField({ name: 'authorRole', title: 'Author Role', type: 'string'})
-                ]
-            }
-        ]
+        of: [{ type: 'reference', to: { type: 'testimonial' }}]
     })
   ],
   preview: {

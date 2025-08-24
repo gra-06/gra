@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Download, PenTool, Palette, Waypoints, Camera } from 'lucide-react';
+import { Download, PenTool, Palette, Waypoints, Camera, Star } from 'lucide-react';
 import { HomeProjectCard } from '@/components/HomeProjectCard';
 import { SkillsChart } from '@/components/SkillsChart';
 import type { Project } from '@/types';
@@ -96,6 +96,25 @@ const educations = [
         degree: 'Bachelor of Arts',
         period: '2010 - 2014'
     }
+]
+
+const testimonials = [
+  {
+    _id: '1',
+    name: 'John Doe',
+    role: 'CEO, Company',
+    quote: "Olyve's design work is exceptional. She has a great eye for detail and a deep understanding of user experience. We're thrilled with the results.",
+    avatar: 'https://placehold.co/100x100.png',
+    rating: 5,
+  },
+  {
+    _id: '2',
+    name: 'Jane Smith',
+    role: 'Marketing Manager, Another Co',
+    quote: "Working with Olyve was a fantastic experience. She is a true professional and a pleasure to collaborate with. Highly recommended!",
+    avatar: 'https://placehold.co/100x100.png',
+    rating: 5,
+  }
 ]
 
 export default function Home() {
@@ -253,6 +272,46 @@ export default function Home() {
                 <Download className="mr-2 h-5 w-5"/>
                 Download Resume
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Testimonials</h2>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+              What my clients say about me.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {testimonials.map((testimonial) => (
+              <div key={testimonial._id} className="bg-card p-8 rounded-lg shadow-lg">
+                <div className="flex items-center mb-4">
+                  <Image 
+                    src={testimonial.avatar} 
+                    alt={testimonial.name}
+                    width={64}
+                    height={64}
+                    className="rounded-full mr-4"
+                  />
+                  <div>
+                    <h3 className="font-headline text-xl font-bold">{testimonial.name}</h3>
+                    <p className="text-muted-foreground">{testimonial.role}</p>
+                  </div>
+                </div>
+                <div className="flex mb-4">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star 
+                      key={i} 
+                      className={`w-5 h-5 ${i < testimonial.rating ? 'text-primary fill-primary' : 'text-muted-foreground'}`}
+                    />
+                  ))}
+                </div>
+                <p className="text-muted-foreground italic">"{testimonial.quote}"</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

@@ -24,6 +24,7 @@ import videoBlock from './src/sanity/schemas/objects/videoBlock'
 import post from './src/sanity/schemas/post'
 import author from './src/sanity/schemas/author'
 import postCategory from './src/sanity/schemas/postCategory'
+import testimonial from './src/sanity/schemas/testimonial'
 
 
 const schemas = [
@@ -40,7 +41,8 @@ const schemas = [
   imageGallery,
   fullWidthImage,
   twoColumnText,
-  videoBlock
+  videoBlock,
+  testimonial,
 ]
 
 export default defineConfig({
