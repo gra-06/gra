@@ -6,7 +6,9 @@ import Image from 'next/image';
 import { Download, PenTool, Palette, Waypoints, Camera, Star } from 'lucide-react';
 import { HomeProjectCard } from '@/components/HomeProjectCard';
 import { SkillsChart } from '@/components/SkillsChart';
-import type { Project } from '@/types';
+import type { Project, Post } from '@/types';
+import { client } from '@/lib/sanity';
+import { PostCard } from '@/components/PostCard';
 
 
 const Behance = (props: React.SVGProps<SVGSVGElement>) => (
@@ -117,7 +119,30 @@ const testimonials = [
   }
 ]
 
-export default function Home() {
+
+async function getRecentPosts(): Promise<Post[]> {
+  const query = `*[_type == "post"] | order(publishedAt desc)[0...3]{
+    _id,
+    title,
+    "slug": slug.current,
+    "mainImage": mainImage.asset->url,
+    publishedAt,
+    excerpt,
+    author->{
+        name
+    },
+    categories[]->{
+        _id,
+        title
+    }
+  }`;
+  const posts = await client.fetch(query);
+  return posts;
+}
+
+export default async function Home() {
+    const recentPosts = await getRecentPosts();
+
   return (
     <>
       {/* Hero Section */}
@@ -314,6 +339,30 @@ export default function Home() {
             ))}
           </div>
         </div>
+      </section>
+
+       {/* Articles Section */}
+       <section className="py-20 bg-secondary">
+          <div className="container mx-auto px-4">
+              <div className="text-center mb-12">
+                  <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">From the Blog</h2>
+                   <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+                        Insights on design, development, and creativity from our team.
+                    </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {recentPosts.map((post) => (
+                      <PostCard key={post._id} post={post} />
+                  ))}
+              </div>
+               {recentPosts.length > 0 && (
+                <div className="text-center mt-12">
+                    <Link href="/blog">
+                        <Button size="lg">View All Articles</Button>
+                    </Link>
+                </div>
+                )}
+          </div>
       </section>
     </>
   );

@@ -68,10 +68,10 @@ export default async function PostPage({ params }: PostPageProps) {
         },
         publisher: {
             '@type': 'Organization',
-            name: 'DesignFlow',
+            name: 'Grafikerabi',
             logo: {
                 '@type': 'ImageObject',
-                url: 'https://placehold.co/100x40.png?text=DesignFlow', // Replace with your actual logo URL
+                url: 'https://placehold.co/100x40.png?text=Grafikerabi', // Replace with your actual logo URL
             },
         },
         datePublished: post.publishedAt,
