@@ -9,7 +9,7 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import { client } from '@/lib/sanity';
-import { streamableValue } from 'ai/rsc';
+import { createStreamableValue } from 'ai/rsc';
 
 // Tool to get portfolio information from Sanity
 const getPortfolioInfo = ai.defineTool(
@@ -76,7 +76,7 @@ const portfolioGuidePrompt = ai.definePrompt({
 });
 
 export async function streamPortfolioGuide({ messages }: { messages: { role: 'user' | 'model', content: string }[] }) {
-    const stream = streamableValue('');
+    const stream = createStreamableValue();
 
     (async () => {
         const { stream: anstream } = ai.generateStream({
