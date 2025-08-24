@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -29,10 +30,11 @@ const Dribbble = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
         <circle cx="12" cy="12" r="10" />
         <path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72" />
-        <path d="M11.1 21.65c-3.72-4.35-8.94-5.66-16.88-5.85" />
-        <path d="m21.96 11.25-3.5-.93-6.63-.82c-2.31-.29-5.01 1.66-7.44 6.32" />
+        <path d="m11.1 21.65-8.34-12.2" />
+        <path d="m21.96 11.25-9.15 1.77" />
     </svg>
 );
+
 
 const Linkedin = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -230,41 +232,42 @@ export default function Home() {
     <>
       {/* Hero Section */}
       <section className="min-h-[calc(100vh-80px)] w-full flex flex-col justify-center bg-background relative">
-        <div className="container mx-auto px-4">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="https://placehold.co/1920x1080.png"
+            alt="Hero background"
+            fill
+            className="object-cover"
+            priority
+            data-ai-hint="abstract texture"
+          />
+          <div className="absolute inset-0 bg-black/50" />
+        </div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="flex flex-col items-start text-left">
-              <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tighter mb-6 leading-tight">
-                Bring your vision to ultimate reality
+              <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tighter mb-6 leading-tight text-white">
+                Başlık Sanity'den Gelecek
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-xl mb-8">
-                Specialize in creating unique visual identities for digital products...
+              <p className="text-lg md:text-xl text-neutral-200 max-w-xl mb-8">
+                Açıklama metni de Sanity'den dinamik olarak yüklenecek.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/portfolio">
-                  <Button size="lg" className="text-lg px-8 py-6">View Portfolio</Button>
+                  <Button size="lg" className="text-lg px-8 py-6">Projelerimi Gör</Button>
                 </Link>
                 <Link href="/contact">
-                  <Button size="lg" variant="outline" className="text-lg px-8 py-6">Hire Me</Button>
+                  <Button size="lg" variant="outline" className="text-lg px-8 py-6 text-white border-white hover:bg-white hover:text-black">İletişime Geç</Button>
                 </Link>
               </div>
             </div>
-             <div className="flex justify-center items-center">
-                  <Image
-                        src="https://placehold.co/500x500.png"
-                        alt="Olyve Schwarz"
-                        width={500}
-                        height={500}
-                        className="rounded-full object-cover aspect-square"
-                        data-ai-hint="portrait woman"
-                        priority
-                    />
-            </div>
+            
           </div>
         </div>
-        <div className="absolute bottom-8 right-8">
+        <div className="absolute bottom-8 right-8 z-10">
             <div className="flex items-center gap-4">
                 {socialLinks.map(({ platform, url, Icon }) => (
-                    <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                    <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-primary transition-colors">
                         <Icon className="h-6 w-6" />
                     </a>
                 ))}
