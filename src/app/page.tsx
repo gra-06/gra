@@ -10,6 +10,7 @@ import type { Project, Post } from '@/types';
 import { client } from '@/lib/sanity';
 import { PostCard } from '@/components/PostCard';
 import { CtaBanner } from '@/components/CtaBanner';
+import { Faq } from '@/components/Faq';
 
 
 const Behance = (props: React.SVGProps<SVGSVGElement>) => (
@@ -161,10 +162,27 @@ async function getAwards(): Promise<Award[]> {
     return awards;
 }
 
+interface FaqItem {
+    _id: string;
+    question: string;
+    answer: any;
+}
+
+async function getFaqs(): Promise<FaqItem[]> {
+    const query = `*[_type == "faq"] | order(_createdAt asc) {
+        _id,
+        question,
+        answer
+    }`;
+    const faqs = await client.fetch(query);
+    return faqs;
+}
+
 
 export default async function Home() {
     const recentPosts = await getRecentPosts();
     const awards = await getAwards();
+    const faqs = await getFaqs();
 
   return (
     <>
@@ -420,7 +438,26 @@ export default async function Home() {
           </div>
       </section>
 
+      {/* FAQ Section */}
+      {faqs.length > 0 && (
+        <section className="py-20 bg-secondary">
+            <div className="container mx-auto px-4">
+                <div className="text-center mb-12">
+                    <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Frequently Asked Questions</h2>
+                    <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+                        Have questions? We have answers.
+                    </p>
+                </div>
+                <div className="max-w-4xl mx-auto">
+                    <Faq items={faqs} />
+                </div>
+            </div>
+        </section>
+      )}
+
       <CtaBanner />
     </>
   );
 }
+
+    

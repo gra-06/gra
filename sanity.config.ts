@@ -26,6 +26,7 @@ import author from './src/sanity/schemas/author'
 import postCategory from './src/sanity/schemas/postCategory'
 import testimonial from './src/sanity/schemas/testimonial'
 import award from './src/sanity/schemas/award'
+import faq from './src/sanity/schemas/faq'
 
 
 const schemas = [
@@ -45,6 +46,7 @@ const schemas = [
   videoBlock,
   testimonial,
   award,
+  faq,
 ]
 
 export default defineConfig({
@@ -62,3 +64,5 @@ export default defineConfig({
     visionTool({ defaultApiVersion: apiVersion }),
   ],
 })
+
+    
