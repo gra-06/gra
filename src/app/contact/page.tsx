@@ -6,8 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Mail, Phone, MapPin } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Contact Us | Grafikerabi Portfolio',
-    description: 'Get in touch with the Grafikerabi team. We\'d love to hear about your project.',
+    title: 'Contact Us | Olyve Schwarz Portfolio',
+    description: 'Get in touch with the Olyve Schwarz team. We\'d love to hear about your project.',
 };
 
 export default function ContactPage() {
@@ -68,8 +68,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold">Email</h3>
-                    <p className="text-muted-foreground">info@grafikerabi.com</p>
-                    <a href="mailto:info@grafikerabi.com" className="text-primary hover:underline">Send an email</a>
+                    <p className="text-muted-foreground">info@olyveschwarz.com</p>
+                    <a href="mailto:info@olyveschwarz.com" className="text-primary hover:underline">Send an email</a>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">

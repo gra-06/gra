@@ -28,15 +28,15 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           
           <div className="md:col-span-4 flex flex-col items-center text-center md:items-start md:text-left">
-             <Link href="/" className="flex items-center space-x-2 mb-4" aria-label="Grafikerabi Home">
+             <Link href="/" className="flex items-center space-x-2 mb-4" aria-label="Olyve Schwarz Home">
                 <Brush className="h-8 w-8 text-primary" />
-                <span className="font-headline text-3xl font-bold">Grafikerabi</span>
+                <span className="font-headline text-3xl font-bold">Olyve Schwarz</span>
             </Link>
             <p className="max-w-xs text-muted-foreground mb-4">
               Creating value for your brand with creative designs.
             </p>
-             <a href="mailto:info@grafikerabi.com" className="font-semibold text-primary hover:underline">
-                info@grafikerabi.com
+             <a href="mailto:info@olyveschwarz.com" className="font-semibold text-primary hover:underline">
+                info@olyveschwarz.com
               </a>
           </div>
 
@@ -51,9 +51,9 @@ export function Footer() {
           </div>
           
           <div className="md:col-span-6 text-center md:text-left">
-             <h3 className="font-headline text-xl font-semibold mb-4" id="newsletter-heading">Subscribe to our Newsletter</h3>
+             <h3 className="font-headline text-xl font-semibold mb-4" id="newsletter-heading">Stay in the loop</h3>
              <p className="text-muted-foreground mb-4">
-                Get the latest news and tips from the design world directly to your inbox.
+                Subscribe to get my latest articles and projects.
              </p>
              <form action="#" className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto md:mx-0" aria-labelledby="newsletter-heading">
                 <div className="relative flex-grow">
@@ -69,7 +69,7 @@ export function Footer() {
         </div>
         
         <div className="mt-12 pt-8 border-t border-border/40 text-muted-foreground flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm">&copy; {new Date().getFullYear()} Mustafa Saraçoğlu. All rights reserved.</p>
+            <p className="text-sm">&copy; {new Date().getFullYear()} Olyve Schwarz. All rights reserved.</p>
             <div className="flex items-center space-x-4">
                 {socialLinks.map((link) => (
                     <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={isClient ? link.label : undefined}>
