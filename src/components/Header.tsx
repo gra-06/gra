@@ -19,10 +19,10 @@ export function Header() {
   }, []);
 
   const navLinks = [
-    { href: '/services', label: 'Services' },
-    { href: '/works', label: 'Works' },
     { href: '/about', label: 'About' },
-    { href: '/testimonials', label: 'Testimonials' },
+    { href: '/portfolio', label: 'Portfolio' },
+    { href: '/blog', label: 'Blog' },
+    { href: '/contact', label: 'Contact' },
   ];
 
   return (
