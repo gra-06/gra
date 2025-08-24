@@ -15,12 +15,12 @@ import { createStreamableValue } from 'ai/rsc';
 const getPortfolioInfo = ai.defineTool(
   {
     name: 'getPortfolioInfo',
-    description: 'Use this tool to get information about portfolio projects, blog posts, or general info about the portfolio owner. Specify the type of information you need.',
+    description: "Portfolyo projeleri, blog yazıları veya portfolyo sahibi hakkında bilgi almak için bu aracı kullanın. İhtiyacınız olan bilgi türünü belirtin.",
     inputSchema: z.object({
-      type: z.enum(['projects', 'posts', 'about']).describe("The type of information to query: 'projects' for work portfolio, 'posts' for blog articles, or 'about' for personal information."),
-      query: z.string().describe("A simple keyword query to search for. For example, 'latest', 'design', 'tech leadership', etc."),
+      type: z.enum(['projects', 'posts', 'about']).describe("Sorgulanacak bilgi türü: iş portfolyosu için 'projects', blog makaleleri için 'posts' veya kişisel bilgiler için 'about'."),
+      query: z.string().describe("Aramak için basit bir anahtar kelime sorgusu. Örneğin, 'en son', 'tasarım', 'teknoloji liderliği' vb."),
     }),
-    outputSchema: z.string().describe("A JSON string containing the queried information, or a message indicating no results were found."),
+    outputSchema: z.string().describe("Sorgulanan bilgiyi içeren bir JSON dizesi veya sonuç bulunamadığını belirten bir mesaj."),
   },
   async ({ type, query }) => {
     let groqQuery = '';
@@ -38,24 +38,24 @@ const getPortfolioInfo = ai.defineTool(
         }[0...5]`;
         break;
       case 'about':
-        // For 'about', we can return some static info or query a specific 'about' document if it exists.
-        // For now, let's return a summary. This can be expanded.
+        // 'about' için statik bir bilgi dönebilir veya varsa belirli bir 'about' dokümanını sorgulayabiliriz.
+        // Şimdilik bir özet dönelim. Bu genişletilebilir.
         return JSON.stringify({
-            summary: "Mustafa Saraçoğlu is a creative professional specializing in design and development, turning ideas into reality. You can find more on the /about page."
+            summary: "Mustafa Saraçoğlu, fikirleri gerçeğe dönüştüren, tasarım ve geliştirme alanında uzmanlaşmış yaratıcı bir profesyoneldir. Daha fazlasını /about sayfasında bulabilirsiniz."
         });
       default:
-        return JSON.stringify({ error: 'Invalid information type specified.' });
+        return JSON.stringify({ error: 'Geçersiz bilgi türü belirtildi.' });
     }
 
     try {
         const results = await client.fetch(groqQuery, params);
         if (results.length === 0) {
-            return JSON.stringify({ message: `No ${type} found matching '${query}'.` });
+            return JSON.stringify({ message: `'${query}' ile eşleşen ${type} bulunamadı.` });
         }
         return JSON.stringify(results);
     } catch (error) {
-        console.error("Sanity fetch error:", error);
-        return JSON.stringify({ error: `Failed to fetch ${type} from Sanity.` });
+        console.error("Sanity getirme hatası:", error);
+        return JSON.stringify({ error: `Sanity'den ${type} getirilemedi.` });
     }
   }
 );
@@ -63,14 +63,14 @@ const getPortfolioInfo = ai.defineTool(
 
 const portfolioGuidePrompt = ai.definePrompt({
     name: 'portfolioGuidePrompt',
-    system: `You are a helpful and friendly portfolio guide for Mustafa Saraçoğlu's website. Your name is Olyve.
-    - Your goal is to help users discover projects, blog posts, and learn more about Mustafa.
-    - Keep your answers concise, friendly, and to the point.
-    - Use the 'getPortfolioInfo' tool to answer user questions about projects, blog posts, or Mustafa himself.
-    - When providing information about projects or posts, always include the name/title and a URL to the item.
-    - Do not make up information. If you cannot find an answer using your tools, say so politely.
-    - Always respond in Markdown format.
-    - Introduce yourself in the first message.
+    system: `Sen, Mustafa Saraçoğlu'nun web sitesi için yardımsever ve arkadaş canlısı bir portfolyo rehberisin. Adın Olyve.
+    - Amacın, kullanıcıların projeleri, blog yazılarını keşfetmelerine ve Mustafa hakkında daha fazla bilgi edinmelerine yardımcı olmaktır.
+    - Cevaplarını kısa, samimi ve konuya odaklı tut.
+    - Projeler, blog yazıları veya Mustafa hakkındaki kullanıcı sorularını yanıtlamak için 'getPortfolioInfo' aracını kullan.
+    - Projeler veya yazılar hakkında bilgi verirken, her zaman adı/başlığı ve öğeye bir URL ekle.
+    - Bilgi uydurma. Araçlarını kullanarak bir cevap bulamazsan, bunu kibarca söyle.
+    - Her zaman Markdown formatında yanıt ver.
+    - İlk mesajda kendini tanıt.
     `,
     tools: [getPortfolioInfo],
 });

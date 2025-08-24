@@ -70,9 +70,9 @@ export function Brands() {
         <section className="py-20 bg-background">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
-                    <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Brands I’ve Collaborated With</h2>
+                    <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">İşbirliği Yaptığım Markalar</h2>
                     <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                        I've had the privilege of working with some amazing companies.
+                        Harika şirketlerle çalışma ayrıcalığına sahip oldum.
                     </p>
                 </div>
                 <div className="flex flex-wrap justify-center items-center gap-x-12 sm:gap-x-16 md:gap-x-20 gap-y-8">
@@ -81,7 +81,7 @@ export function Brands() {
                             <div className="relative h-12 w-32 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100">
                                 <Image 
                                     src={brand.logoUrl}
-                                    alt={`${brand.name} logo`}
+                                    alt={`${brand.name} logosu`}
                                     fill
                                     className="object-contain"
                                 />
@@ -107,4 +107,3 @@ export function Brands() {
         </section>
     );
 }
-

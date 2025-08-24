@@ -1,14 +1,7 @@
 
-import Image from 'next/image';
 import type { Project } from '@/types';
-import { PortableText } from '@portabletext/react';
-import { PortableTextComponent } from '@/components/PortableTextComponent';
-import { Badge } from '@/components/ui/badge';
 import { notFound } from 'next/navigation';
 import { client } from '@/lib/sanity';
-import { Calendar, User, Tag } from 'lucide-react';
-import { format } from 'date-fns';
-import { ProjectCard } from '@/components/ProjectCard';
 import type { Metadata } from 'next';
 import { ProjectPageClientFeatures } from '@/components/ProjectPageClient';
 
@@ -88,7 +81,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
   if (!project) {
     return {
-      title: 'Project Not Found'
+      title: 'Proje Bulunamadı'
     };
   }
 
@@ -106,16 +99,16 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   const imageUrl = project.mainImage;
 
   return {
-    title: `${project.name} | DesignFlow Portfolio`,
+    title: `${project.name} | Mustafa Saraçoğlu Portfolyosu`,
     description: overviewText,
     alternates: {
       canonical: pageUrl,
     },
     openGraph: {
-      title: `${project.name} | DesignFlow Portfolio`,
+      title: `${project.name} | Mustafa Saraçoğlu Portfolyosu`,
       description: overviewText,
       url: pageUrl,
-      siteName: 'DesignFlow Portfolio',
+      siteName: 'Mustafa Saraçoğlu Portfolyosu',
       images: [
         {
           url: imageUrl,
@@ -124,12 +117,12 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
           alt: project.name,
         },
       ],
-      locale: 'en_US', // Or your specific locale
+      locale: 'tr_TR',
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${project.name} | DesignFlow Portfolio`,
+      title: `${project.name} | Mustafa Saraçoğlu Portfolyosu`,
       description: overviewText,
       images: [imageUrl],
     },
@@ -169,14 +162,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     datePublished: project.date,
     author: {
         '@type': 'Organization',
-        name: 'DesignFlow',
+        name: 'Grafikerabi',
     },
     publisher: {
         '@type': 'Organization',
-        name: 'DesignFlow',
+        name: 'Grafikerabi',
         logo: {
             '@type': 'ImageObject',
-            url: 'https://placehold.co/100x40.png?text=DesignFlow', // Replace with your actual logo URL
+            url: 'https://placehold.co/100x40.png?text=Grafikerabi', // Replace with your actual logo URL
         },
     },
     description: overviewText,

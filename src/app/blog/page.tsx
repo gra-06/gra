@@ -5,8 +5,8 @@ import type { Metadata } from 'next';
 import { PostCard } from '@/components/PostCard';
 
 export const metadata: Metadata = {
-    title: 'Blog | DesignFlow Portfolio',
-    description: 'Insights on design, development, and creativity from the DesignFlow team.',
+    title: 'Blog | Mustafa Saraçoğlu Portfolyosu',
+    description: 'Tasarım, geliştirme ve yaratıcılık üzerine ekibimden içgörüler.',
 };
 
 async function getPosts(): Promise<Post[]> {
@@ -37,10 +37,10 @@ export default async function BlogPage() {
             <header className="bg-secondary py-20 md:py-28">
                 <div className="container mx-auto px-4 text-center">
                     <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight mb-4">
-                        The DesignFlow Blog
+                        Grafikerabi Blog
                     </h1>
                     <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-                        Insights on design, development, and creativity from our team.
+                        Tasarım, geliştirme ve yaratıcılık üzerine içgörülerim.
                     </p>
                 </div>
             </header>
@@ -52,8 +52,8 @@ export default async function BlogPage() {
                 </div>
                  {posts.length === 0 && (
                     <div className="text-center col-span-full py-16">
-                        <h2 className="font-headline text-3xl mb-4">No posts yet.</h2>
-                        <p className="text-muted-foreground">Check back soon for insights and stories from our team!</p>
+                        <h2 className="font-headline text-3xl mb-4">Henüz yazı yok.</h2>
+                        <p className="text-muted-foreground">İçgörüler ve hikayeler için yakında tekrar kontrol edin!</p>
                     </div>
                  )}
             </main>

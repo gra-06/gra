@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 
-const titles = ["Designer", "Developer", "Creator"];
+const titles = ["Tasarımcı", "Geliştirici", "Yaratıcı"];
 
 export function Hero() {
   const { scrollY } = useScroll();
@@ -94,4 +94,3 @@ export function Hero() {
     </section>
   );
 }
-

@@ -5,8 +5,8 @@ import { client } from '@/lib/sanity';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Portfolio | DesignFlow',
-    description: 'A curated selection of our projects. We specialize in creating beautiful, functional, and user-centered designs that drive results.',
+    title: 'Portfolyo | Mustafa Saraçoğlu',
+    description: 'Projelerimden özenle seçilmiş bir koleksiyon. Sonuç odaklı, güzel, işlevsel ve kullanıcı merkezli tasarımlar yaratma konusunda uzmanım.',
 };
 
 async function getAllProjects(): Promise<Project[]> {
@@ -43,10 +43,10 @@ export default async function PortfolioPage() {
     <div className="container mx-auto px-4 py-16">
       <header className="text-center mb-12">
         <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight mb-4">
-          Our Portfolio
+          Portfolyom
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          A curated selection of our projects. We specialize in creating beautiful, functional, and user-centered designs that drive results.
+          Projelerimden özenle seçilmiş bir koleksiyon. Sonuç odaklı, güzel, işlevsel ve kullanıcı merkezli tasarımlar yaratma konusunda uzmanım.
         </p>
       </header>
       

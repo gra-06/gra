@@ -28,8 +28,8 @@ const teller = Teller({
 
 
 export const metadata: Metadata = {
-  title: 'DesignFlow Portfolio | Creative Digital Studio',
-  description: 'A modern portfolio for creative professionals. We transform ideas into extraordinary digital experiences.',
+  title: 'Grafikerabi | Mustafa Saraçoğlu Portfolyosu',
+  description: 'Fikirleri olağanüstü dijital deneyimlere dönüştüren yaratıcı profesyoneller için modern bir portfolyo.',
 };
 
 export default async function RootLayout({
@@ -40,7 +40,7 @@ export default async function RootLayout({
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'DesignFlow Portfolio',
+    name: 'Mustafa Saraçoğlu Portfolyosu',
     url: 'https://your-domain.com', // Replace with your actual domain
   };
 
@@ -55,7 +55,7 @@ export default async function RootLayout({
   const badges = await getBadges();
 
   return (
-    <html lang="en" className={cn("scroll-smooth", alegreya.variable, teller.variable)} suppressHydrationWarning>
+    <html lang="tr" className={cn("scroll-smooth", alegreya.variable, teller.variable)} suppressHydrationWarning>
        <head>
         <script
           type="application/ld+json"

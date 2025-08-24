@@ -1,3 +1,4 @@
+
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -40,7 +41,11 @@ async function getHomePageData() {
       _id,
       name,
       "slug": slug.current,
-      mainImage,
+      mainImage{
+        asset->{
+          url
+        }
+      },
       categories[]->{_id, title, "slug": slug.current},
       location
     }`;
@@ -96,26 +101,26 @@ export default async function Home() {
     const services = [
         {
             _id: '1',
-            title: 'Digital Branding',
-            description: 'Blend of strategic thinking and creative flair to craft digital identity.',
+            title: 'Dijital Markalaşma',
+            description: 'Dijital kimlik oluşturmak için stratejik düşünce ve yaratıcı yeteneğin birleşimi.',
             Icon: PenTool
         },
         {
             _id: '2',
-            title: 'Visual Design',
-            description: 'Unique product branding and marketing strategies.',
+            title: 'Görsel Tasarım',
+            description: 'Benzersiz ürün markalaması ve pazarlama stratejileri.',
             Icon: Palette
         },
         {
             _id: '3',
-            title: 'UX Research',
-            description: 'User-centered analysis for optimizing usability.',
+            title: 'UX Araştırması',
+            description: 'Kullanılabilirliği optimize etmek için kullanıcı odaklı analiz.',
             Icon: Waypoints
         },
         {
             _id: '4',
-            title: 'Art Direction',
-            description: 'Creative direction with consistent brand language.',
+            title: 'Sanat Yönetmenliği',
+            description: 'Tutarlı marka dili ile yaratıcı yönlendirme.',
             Icon: Camera
         }
     ];
@@ -123,17 +128,17 @@ export default async function Home() {
     const testimonials = [
       {
         _id: '1',
-        name: 'John Doe',
-        role: 'CEO, Company',
-        quote: "Olyve's design work is exceptional. She has a great eye for detail and a deep understanding of user experience. We're thrilled with the results.",
+        name: 'Ahmet Yılmaz',
+        role: 'CEO, Tekno A.Ş.',
+        quote: "Mustafa'nın tasarım çalışmaları olağanüstü. Detaylara karşı harika bir gözü ve kullanıcı deneyimi konusunda derin bir anlayışı var. Sonuçlardan çok memnunuz.",
         avatar: 'https://placehold.co/100x100.png',
         rating: 5,
       },
       {
         _id: '2',
-        name: 'Jane Smith',
-        role: 'Marketing Manager, Another Co',
-        quote: "Working with Olyve was a fantastic experience. She is a true professional and a pleasure to collaborate with. Highly recommended!",
+        name: 'Ayşe Kaya',
+        role: 'Pazarlama Müdürü, Dizayn Co.',
+        quote: "Mustafa ile çalışmak harika bir deneyimdi. Gerçek bir profesyonel ve işbirliği yapması çok keyifli. Kesinlikle tavsiye ederim!",
         avatar: 'https://placehold.co/100x100.png',
         rating: 5,
       }
@@ -142,30 +147,30 @@ export default async function Home() {
     const experiences = [
         {
           company: 'Freelance',
-          role: 'Product Designer',
-          period: '2020 - Present'
+          role: 'Ürün Tasarımcısı',
+          period: '2020 - Günümüz'
         },
         {
           company: 'AKQA',
-          role: 'Senior Product Designer',
+          role: 'Kıdemli Ürün Tasarımcısı',
           period: '2018 - 2020'
         },
         {
           company: 'Google',
-          role: 'Creative Head',
+          role: 'Kreatif Direktör',
           period: '2016 - 2018'
         }
     ];
 
     const educations = [
         {
-            institution: 'University of Arts',
-            degree: 'Master of Arts',
+            institution: 'Sanat Üniversitesi',
+            degree: 'Yüksek Lisans',
             period: '2014 - 2016'
         },
         {
-            institution: 'University of Design',
-            degree: 'Bachelor of Arts',
+            institution: 'Tasarım Üniversitesi',
+            degree: 'Lisans',
             period: '2010 - 2014'
         }
     ];
@@ -177,7 +182,7 @@ export default async function Home() {
       <section className="py-20 bg-secondary">
           <div className="container mx-auto px-4">
               <div className="text-center mb-12">
-                  <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Services</h2>
+                  <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Hizmetler</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                   {services.map((service) => (
@@ -198,9 +203,9 @@ export default async function Home() {
             <section className="py-20 bg-background">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
-                        <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Tools & Stack</h2>
+                        <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Araçlar & Teknolojiler</h2>
                         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                            My favorite arsenal of tools and technologies to bring ideas to life.
+                            Fikirleri hayata geçirmek için kullandığım favori araç ve teknoloji cephaneliğim.
                         </p>
                     </div>
                     <TooltipProvider>
@@ -230,9 +235,9 @@ export default async function Home() {
         <section className="py-20 bg-secondary">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
-                    <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Works</h2>
+                    <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Çalışmalar</h2>
                     <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                        A collection of projects that showcase my passion for creating meaningful digital products.
+                        Anlamlı dijital ürünler yaratma tutkumu sergileyen projelerden bir seçki.
                     </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -242,7 +247,7 @@ export default async function Home() {
                 </div>
                 <div className="text-center mt-12">
                     <Link href="/portfolio">
-                        <Button size="lg">View All Works</Button>
+                        <Button size="lg">Tüm Çalışmaları Görüntüle</Button>
                     </Link>
                 </div>
             </div>
@@ -252,9 +257,9 @@ export default async function Home() {
         <section className="py-20 bg-background">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Global Reach</h2>
+              <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Global Erişim</h2>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                Collaborating with clients and teams from all over the world.
+                Dünyanın dört bir yanından müşteriler ve ekiplerle işbirliği yapıyorum.
               </p>
             </div>
             <div className="relative w-full h-[600px] bg-secondary/30 rounded-lg overflow-hidden shadow-inner">
@@ -273,24 +278,24 @@ export default async function Home() {
                     <div className="md:col-span-5 flex justify-center">
                         <Image
                             src="https://placehold.co/400x400.png"
-                            alt="Olyve Schwarz"
+                            alt="Mustafa Saraçoğlu"
                             width={400}
                             height={400}
                             className="rounded-full object-cover aspect-square"
-                            data-ai-hint="portrait woman"
+                            data-ai-hint="portrait man"
                         />
                     </div>
                     <div className="md:col-span-7">
-                        <h2 className="font-headline text-4xl md:text-6xl font-bold mb-4">I am Olyve Schwarz</h2>
+                        <h2 className="font-headline text-4xl md:text-6xl font-bold mb-4">Ben Mustafa Saraçoğlu</h2>
                         <p className="text-lg text-muted-foreground max-w-2xl">
-                            A product designer who crafts unique and powerful digital experiences. I find joy in solving complex problems and creating interfaces that are both beautiful and intuitive for users.
+                            Benzersiz ve güçlü dijital deneyimler yaratan bir ürün tasarımcısıyım. Karmaşık sorunları çözmekten ve kullanıcılar için hem güzel hem de sezgisel arayüzler oluşturmaktan keyif alıyorum.
                         </p>
                     </div>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-16 mb-16">
                     <div>
-                        <h3 className="font-headline text-3xl font-bold mb-8">My Journey</h3>
+                        <h3 className="font-headline text-3xl font-bold mb-8">Kariyer Yolculuğum</h3>
                         <div className="relative border-l-2 border-primary/20 pl-8 space-y-12">
                             {[...experiences, ...educations].sort((a, b) => parseInt(b.period.slice(0, 4)) - parseInt(a.period.slice(0, 4))).map((item, index) => (
                                 <div key={index} className="relative">
@@ -303,7 +308,7 @@ export default async function Home() {
                         </div>
                     </div>
                     <div>
-                        <h3 className="font-headline text-center text-3xl font-bold mb-8">Skills</h3>
+                        <h3 className="font-headline text-center text-3xl font-bold mb-8">Yetenekler</h3>
                         <SkillsChart />
                     </div>
                 </div>
@@ -311,7 +316,7 @@ export default async function Home() {
                 <div className="text-center mt-16">
                     <Button size="lg" className="text-lg px-8 py-6">
                         <Download className="mr-2 h-5 w-5"/>
-                        Download Resume
+                        Özgeçmişi İndir
                     </Button>
                 </div>
             </div>
@@ -321,9 +326,9 @@ export default async function Home() {
       <section className="py-20 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Testimonials</h2>
+            <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Referanslar</h2>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              What my clients say about me.
+              Müşterilerim benim hakkımda ne diyor?
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -362,9 +367,9 @@ export default async function Home() {
           <section className="py-20 bg-background">
               <div className="container mx-auto px-4">
                   <div className="text-center mb-12">
-                      <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Awards & Recognition</h2>
+                      <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Ödüller & Başarılar</h2>
                       <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                          Recognitions for my dedication to design and excellence.
+                          Tasarım ve mükemmelliğe olan bağlılığımın takdir edildiği anlar.
                       </p>
                   </div>
                   <div className="divide-y divide-border">
@@ -393,9 +398,9 @@ export default async function Home() {
        <section className="py-20 bg-secondary">
           <div className="container mx-auto px-4">
               <div className="text-center mb-12">
-                  <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">From the Blog</h2>
+                  <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Blogdan Yazılar</h2>
                    <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                        Insights on design, development, and creativity from our team.
+                        Tasarım, geliştirme ve yaratıcılık üzerine ekibimden içgörüler.
                     </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -406,7 +411,7 @@ export default async function Home() {
                {recentPosts.length > 0 && (
                 <div className="text-center mt-12">
                     <Link href="/blog">
-                        <Button size="lg">View All Articles</Button>
+                        <Button size="lg">Tüm Yazıları Görüntüle</Button>
                     </Link>
                 </div>
                 )}
@@ -418,9 +423,9 @@ export default async function Home() {
         <section className="py-20 bg-background">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
-                    <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Frequently Asked Questions</h2>
+                    <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Sıkça Sorulan Sorular</h2>
                     <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                        Have questions? We have answers.
+                        Sorularınız mı var? Cevaplarımız var.
                     </p>
                 </div>
                 <div className="max-w-4xl mx-auto">

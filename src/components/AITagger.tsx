@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -26,10 +27,10 @@ function SubmitButton({ imagePreview }: { imagePreview: string | null }) {
       {pending ? (
         <>
           <Bot className="mr-2 h-5 w-5 animate-spin" />
-          Analyzing Image...
+          Resim Analiz Ediliyor...
         </>
       ) : (
-        'Suggest Tags'
+        'Etiketleri Öner'
       )}
     </Button>
   );
@@ -46,7 +47,7 @@ export function AITagger() {
     if (state?.error) {
       toast({
         variant: 'destructive',
-        title: 'An error occurred',
+        title: 'Bir hata oluştu',
         description: state.error,
       });
     }
@@ -103,7 +104,7 @@ export function AITagger() {
             >
               {imagePreview ? (
                 <>
-                  <Image src={imagePreview} alt="Image preview" fill style={{objectFit: "contain"}} className="rounded-md p-2" />
+                  <Image src={imagePreview} alt="Resim önizlemesi" fill style={{objectFit: "contain"}} className="rounded-md p-2" />
                   <Button
                     type="button"
                     variant="destructive"
@@ -120,8 +121,8 @@ export function AITagger() {
               ) : (
                 <div className="text-center text-muted-foreground">
                   <Upload className="mx-auto h-12 w-12 mb-2" />
-                  <p>Click to upload an image</p>
-                  <p className="text-xs">PNG, JPG, GIF up to 10MB</p>
+                  <p>Bir resim yüklemek için tıklayın</p>
+                  <p className="text-xs">PNG, JPG, GIF - 10MB'a kadar</p>
                 </div>
               )}
             </div>
@@ -134,7 +135,7 @@ export function AITagger() {
       <Card className="flex flex-col">
         <CardContent className="p-6 flex-grow flex items-center justify-center">
             <div className="w-full">
-                <h3 className="font-headline text-2xl mb-4 text-center">Suggested Tags</h3>
+                <h3 className="font-headline text-2xl mb-4 text-center">Önerilen Etiketler</h3>
                 <div className="min-h-[200px] bg-secondary/50 rounded-lg p-4 flex items-center justify-center">
                 {state.tags && state.tags.length > 0 ? (
                     <div className="flex flex-wrap gap-3 justify-center">
@@ -143,7 +144,7 @@ export function AITagger() {
                         ))}
                     </div>
                 ) : (
-                    <p className="text-muted-foreground text-center">Tags will appear here after analysis.</p>
+                    <p className="text-muted-foreground text-center">Analizden sonra etiketler burada görünecektir.</p>
                 )}
                 </div>
             </div>

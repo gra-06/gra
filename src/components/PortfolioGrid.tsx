@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -30,7 +31,7 @@ export function PortfolioGrid({ projects, categories }: PortfolioGridProps) {
           onClick={() => setActiveCategory('all')}
           className="rounded-full px-6"
         >
-          All
+          Tümü
         </Button>
         {categories.map((category) => (
           <Button

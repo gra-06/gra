@@ -1,10 +1,11 @@
+
 import Image from 'next/image';
 import { Users, Target, Eye } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'About Us | DesignFlow Portfolio',
-    description: 'Learn more about the creative team, our mission, and our values at DesignFlow.',
+    title: 'Hakkımda | Mustafa Saraçoğlu Portfolyosu',
+    description: 'Yaratıcı ekip, misyonumuz ve değerlerimiz hakkında daha fazla bilgi edinin.',
 };
 
 const teamMembers = [
@@ -38,10 +39,10 @@ export default function AboutPage() {
       <section className="bg-secondary py-20 md:py-28">
         <div className="container mx-auto px-4 text-center">
           <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight mb-4">
-            We are DesignFlow
+            Biz Grafikerabi'yiz
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            A passionate team of creatives, strategists, and innovators dedicated to building extraordinary digital experiences that drive results.
+            Sonuç odaklı olağanüstü dijital deneyimler oluşturmaya adanmış tutkulu bir yaratıcılar, stratejistler ve yenilikçiler ekibi.
           </p>
         </div>
       </section>
@@ -53,26 +54,26 @@ export default function AboutPage() {
             <div>
               <div className="flex items-center gap-4 mb-3">
                 <Target className="h-8 w-8 text-primary" />
-                <h2 className="font-headline text-3xl font-bold">Our Mission</h2>
+                <h2 className="font-headline text-3xl font-bold">Misyonumuz</h2>
               </div>
               <p className="text-muted-foreground text-lg">
-                To empower businesses by creating authentic, engaging, and impactful digital solutions. We believe that great design is not just about aesthetics, but about solving problems and creating meaningful connections between brands and their audiences.
+                Otantik, ilgi çekici ve etkili dijital çözümler yaratarak işletmeleri güçlendirmek. Harika tasarımın sadece estetikle ilgili olmadığına, aynı zamanda sorunları çözmek ve markalar ile hedef kitleleri arasında anlamlı bağlantılar kurmakla ilgili olduğuna inanıyoruz.
               </p>
             </div>
             <div>
               <div className="flex items-center gap-4 mb-3">
                 <Eye className="h-8 w-8 text-primary" />
-                <h2 className="font-headline text-3xl font-bold">Our Vision</h2>
+                <h2 className="font-headline text-3xl font-bold">Vizyonumuz</h2>
               </div>
               <p className="text-muted-foreground text-lg">
-                To be a leading digital design studio recognized for our creativity, strategic thinking, and commitment to excellence. We strive to push the boundaries of design and technology to deliver solutions that are not only visually stunning but also drive growth.
+                Yaratıcılığımız, stratejik düşüncemiz ve mükemmelliğe olan bağlılığımızla tanınan lider bir dijital tasarım stüdyosu olmak. Sadece görsel olarak çarpıcı değil, aynı zamanda büyümeyi de sağlayan çözümler sunmak için tasarım ve teknolojinin sınırlarını zorlamaya çalışıyoruz.
               </p>
             </div>
           </div>
           <div>
             <Image
               src="https://placehold.co/800x900.png"
-              alt="Our team collaborating"
+              alt="Ekibimiz işbirliği yapıyor"
               width={800}
               height={900}
               className="rounded-lg shadow-xl object-cover"
@@ -86,9 +87,9 @@ export default function AboutPage() {
       <section className="py-20 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Meet Our Team</h2>
+            <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Ekibimizle Tanışın</h2>
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-              The creative minds behind our success stories.
+              Başarı hikayelerimizin arkasındaki yaratıcı beyinler.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

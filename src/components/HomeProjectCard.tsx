@@ -29,7 +29,7 @@ export function HomeProjectCard({ project }: HomeProjectCardProps) {
       >
         <Image
           src={imageUrl || 'https://placehold.co/600x450.png'}
-          alt={project.name || 'Project image'}
+          alt={project.name || 'Proje görseli'}
           width={600}
           height={450}
           className="object-cover w-full h-full transform transition-transform duration-500 ease-in-out group-hover:scale-105"
@@ -50,7 +50,7 @@ export function HomeProjectCard({ project }: HomeProjectCardProps) {
              }}
              transition={{ delay: 0.1, duration: 0.3 }}
            >
-             <Button variant="outline" size="lg">View Case Study</Button>
+             <Button variant="outline" size="lg">Projeyi İncele</Button>
            </motion.div>
         </motion.div>
 

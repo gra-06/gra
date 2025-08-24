@@ -46,8 +46,8 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
   const { logEvent } = useGamification();
 
   useEffect(() => {
-    logEvent('PROJECT_VISIT');
-  }, [logEvent]);
+    logEvent('PROJECT_VISIT', project._id);
+  }, [logEvent, project._id]);
 
 
   const containerVariants = {
@@ -117,21 +117,21 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
             <div className="flex items-start gap-3">
               <User className="h-8 w-8 text-primary mt-1" aria-hidden="true" />
               <div>
-                <p className="font-bold text-sm text-muted-foreground">Client</p>
+                <p className="font-bold text-sm text-muted-foreground">Müşteri</p>
                 <p className="font-semibold text-lg">{project.client}</p>
               </div>
             </div>
              <div className="flex items-start gap-3">
               <Calendar className="h-8 w-8 text-primary mt-1" aria-hidden="true" />
               <div>
-                <p className="font-bold text-sm text-muted-foreground">Date</p>
+                <p className="font-bold text-sm text-muted-foreground">Tarih</p>
                 <p className="font-semibold text-lg">{project.date ? format(new Date(project.date), 'MMMM yyyy') : 'N/A'}</p>
               </div>
             </div>
              <div className="flex items-start gap-3 col-span-2">
               <Tag className="h-8 w-8 text-primary mt-1" aria-hidden="true"/>
               <div>
-                <p className="font-bold text-sm text-muted-foreground">Services</p>
+                <p className="font-bold text-sm text-muted-foreground">Hizmetler</p>
                 <div className="flex flex-wrap gap-x-3 gap-y-1">
                   {project.services?.map(s => <p key={s} className="font-semibold text-lg">{s}</p>)}
                 </div>
@@ -140,11 +140,11 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
           </motion.div>
           
           {/* Overview */}
-          {project.overview && <Section title="Overview"><PortableText value={project.overview} components={PortableTextComponent} /></Section>}
+          {project.overview && <Section title="Genel Bakış"><PortableText value={project.overview} components={PortableTextComponent} /></Section>}
           
           {/* Case Study Timeline */}
           {project.caseStudy && project.caseStudy.length > 0 && (
-            <Section title="Case Study" delay={0.3}>
+            <Section title="Vaka İncelemesi" delay={0.3}>
                 <div className="relative">
                     {project.caseStudy.map((item, index) => (
                         <div key={item._key} className="flex">
@@ -181,9 +181,9 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
             </Section>
           )}
 
-          {project.challenge && <Section title="The Challenge" delay={0.2}><PortableText value={project.challenge} components={PortableTextComponent} /></Section>}
-          {project.solution && <Section title="The Solution" delay={0.3}><PortableText value={project.solution} components={PortableTextComponent} /></Section>}
-          {project.result && <Section title="The Result" delay={0.4}><PortableText value={project.result} components={PortableTextComponent} /></Section>}
+          {project.challenge && <Section title="Karşılaşılan Zorluk" delay={0.2}><PortableText value={project.challenge} components={PortableTextComponent} /></Section>}
+          {project.solution && <Section title="Çözüm" delay={0.3}><PortableText value={project.solution} components={PortableTextComponent} /></Section>}
+          {project.result && <Section title="Sonuç" delay={0.4}><PortableText value={project.result} components={PortableTextComponent} /></Section>}
 
           {/* Dynamic Content Sections */}
           <motion.div 
@@ -228,7 +228,7 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
 
           {/* Tags */}
           {project.tags && project.tags.length > 0 && (
-            <Section title="Project Tags" delay={0.2}>
+            <Section title="Proje Etiketleri" delay={0.2}>
               <div className="flex flex-wrap gap-2">
                 {project.tags.map((tag, index) => (
                   <Badge key={index} variant="outline">{tag}</Badge>
@@ -239,7 +239,7 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
 
           {/* Related Projects */}
           {project.relatedProjects && project.relatedProjects.length > 0 && (
-            <Section title="Related Projects" delay={0.3}>
+            <Section title="İlgili Projeler" delay={0.3}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {project.relatedProjects.map((p) => (
                   <ProjectCard key={p._id} project={p as Project} />

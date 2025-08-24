@@ -50,7 +50,7 @@ function PostBody({ slug }: { slug: string }) {
             const fetchedPost = await getPost(slug);
             setPost(fetchedPost);
             if (fetchedPost) {
-                logEvent('POST_VISIT');
+                logEvent('POST_VISIT', fetchedPost._id);
             }
         }
         loadPost();
@@ -58,7 +58,7 @@ function PostBody({ slug }: { slug: string }) {
 
     if (!post) {
         // You can return a loading skeleton here
-        return <div className="container mx-auto px-4 py-16 text-center">Loading post...</div>;
+        return <div className="container mx-auto px-4 py-16 text-center">Yazı yükleniyor...</div>;
     }
     
     if (!post._id) {
@@ -132,7 +132,7 @@ function PostBody({ slug }: { slug: string }) {
                             <div className="flex items-center gap-3">
                                 <Calendar className="w-6 h-6" />
                                 <time dateTime={post.publishedAt} className="font-semibold text-lg text-foreground">
-                                    {format(new Date(post.publishedAt), 'MMMM d, yyyy')}
+                                    {format(new Date(post.publishedAt), 'd MMMM yyyy')}
                                 </time>
                             </div>
                         </div>
@@ -156,13 +156,13 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
   const post = await getPost(params.slug)
   if (!post) {
     return {
-      title: 'Post Not Found'
+      title: 'Yazı Bulunamadı'
     }
   }
 
   return {
-    title: `${post.title} | DesignFlow Blog`,
-    description: post.excerpt || 'A blog post from the DesignFlow team.',
+    title: `${post.title} | Grafikerabi Blog`,
+    description: post.excerpt || 'Grafikerabi ekibinden bir blog yazısı.',
   }
 }
 

@@ -64,16 +64,16 @@ export function PortfolioChatbot() {
     } catch (err) {
         console.error("Error during chat handling:", err);
         const errorMessageId = `model-error-${Date.now()}`;
-        setMessages(prev => [...prev, { id: errorMessageId, role: 'model', content: "Sorry, I'm having trouble connecting. Please try again later." }]);
+        setMessages(prev => [...prev, { id: errorMessageId, role: 'model', content: "Üzgünüm, şu anda bağlantı kurmakta zorlanıyorum. Lütfen daha sonra tekrar deneyin." }]);
     } finally {
         setIsLoading(false);
     }
   };
 
   const quickPrompts = [
-    "Tell me about your latest projects",
-    "What services do you offer?",
-    "Do you have any blog posts about design?",
+    "En son projelerin hakkında bilgi ver",
+    "Hangi hizmetleri sunuyorsun?",
+    "Tasarım hakkında blog yazıların var mı?",
   ];
 
   return (
@@ -88,7 +88,7 @@ export function PortfolioChatbot() {
           onClick={() => setIsOpen(!isOpen)}
           size="icon"
           className="rounded-full w-16 h-16 bg-primary hover:bg-primary/90 shadow-lg"
-          aria-label="Toggle chatbot"
+          aria-label="Chatbot'u aç/kapat"
         >
           {isOpen ? <X className="w-8 h-8" /> : <Bot className="w-8 h-8" />}
         </Button>
@@ -106,14 +106,14 @@ export function PortfolioChatbot() {
             <header className="p-4 border-b flex items-center gap-3 bg-card/80 backdrop-blur-sm">
                 <div className="relative">
                     <Avatar>
-                        <AvatarImage src="https://placehold.co/40x40.png" alt="Olyve AI Assistant" data-ai-hint="bot logo"/>
+                        <AvatarImage src="https://placehold.co/40x40.png" alt="Olyve AI Asistanı" data-ai-hint="bot logo"/>
                         <AvatarFallback>AI</AvatarFallback>
                     </Avatar>
                     <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-400 ring-2 ring-white" />
                 </div>
                 <div>
                     <h3 className="font-bold text-lg">Olyve</h3>
-                    <p className="text-sm text-muted-foreground">AI Portfolio Guide</p>
+                    <p className="text-sm text-muted-foreground">Yapay Zeka Portfolyo Rehberi</p>
                 </div>
             </header>
 
@@ -121,15 +121,15 @@ export function PortfolioChatbot() {
                 {messages.length === 0 && !isLoading && (
                     <div className="text-center text-muted-foreground py-8">
                         <Sparkles className="mx-auto h-12 w-12 text-primary/50 mb-4"/>
-                        <p className="font-semibold">Ask me anything!</p>
-                        <p className="text-sm">Try one of the prompts below to get started.</p>
+                        <p className="font-semibold">Bana her şeyi sorabilirsin!</p>
+                        <p className="text-sm">Başlamak için aşağıdaki komutları deneyebilirsin.</p>
                     </div>
                 )}
               {messages.map((message, index) => (
                 <div key={message.id || index} className={cn('flex items-start gap-3', message.role === 'user' ? 'justify-end' : '')}>
                   {message.role === 'model' && (
                      <Avatar className="w-8 h-8">
-                        <AvatarImage src="https://placehold.co/40x40.png" alt="Olyve AI Assistant" data-ai-hint="bot logo" />
+                        <AvatarImage src="https://placehold.co/40x40.png" alt="Olyve AI Asistanı" data-ai-hint="bot logo" />
                         <AvatarFallback>AI</AvatarFallback>
                     </Avatar>
                   )}
@@ -156,7 +156,7 @@ export function PortfolioChatbot() {
               {isLoading && messages.length > 0 && messages[messages.length-1].role === 'user' && (
                 <div className={cn('flex items-start gap-3')}>
                     <Avatar className="w-8 h-8">
-                      <AvatarImage src="https://placehold.co/40x40.png" alt="Olyve AI Assistant" data-ai-hint="bot logo" />
+                      <AvatarImage src="https://placehold.co/40x40.png" alt="Olyve AI Asistanı" data-ai-hint="bot logo" />
                       <AvatarFallback>AI</AvatarFallback>
                     </Avatar>
                     <div className={cn('max-w-[80%] rounded-xl px-4 py-2 bg-secondary')}>
@@ -184,7 +184,7 @@ export function PortfolioChatbot() {
                 <Textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about projects, skills, or anything else..."
+                  placeholder="Projeler, yetenekler veya herhangi bir şey hakkında soru sor..."
                   className="flex-1 resize-none bg-background pr-16"
                   rows={1}
                   onKeyDown={(e) => {

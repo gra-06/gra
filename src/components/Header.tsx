@@ -32,7 +32,7 @@ export function Header({ navItems }: HeaderProps) {
 
   const mobileNavLinks = [
     ...navItems.filter(item => item.href !== '/contact'),
-    { href: '/contact', label: 'Say Hello' }
+    { href: '/contact', label: 'Merhaba De' }
   ];
   
   return (
@@ -40,7 +40,7 @@ export function Header({ navItems }: HeaderProps) {
       <div className="container flex h-20 items-center justify-between">
         <Link href="/" className="flex items-center space-x-2">
           <Brush className="h-8 w-8 text-primary" />
-          <span className="font-headline text-3xl font-bold">Olyve Schwarz</span>
+          <span className="font-headline text-3xl font-bold">Grafikerabi</span>
         </Link>
 
         <nav className="hidden md:flex items-center space-x-2 relative" aria-label={isClient ? "Ana navigasyon" : undefined}>
@@ -72,7 +72,7 @@ export function Header({ navItems }: HeaderProps) {
               <span className="sr-only">Kazanılan Rozetler</span>
             </Button>
             <Link href="/contact">
-                <Button>Say Hello</Button>
+                <Button>Merhaba De</Button>
             </Link>
             <ThemeToggle />
         </div>
