@@ -16,6 +16,10 @@ export function HomeProjectCard({ project }: HomeProjectCardProps) {
   if (!project.slug) {
     return null;
   }
+
+  // Get image URL from Sanity asset reference if available
+  const imageUrl = project.mainImage ? (project.mainImage as any).asset?.url || project.mainImage : null;
+
   return (
     <Link href={`/projects/${project.slug}`} className="group block overflow-hidden rounded-lg">
       <motion.div
@@ -24,7 +28,7 @@ export function HomeProjectCard({ project }: HomeProjectCardProps) {
         initial="initial"
       >
         <Image
-          src={project.mainImage || 'https://placehold.co/600x450.png'}
+          src={imageUrl || 'https://placehold.co/600x450.png'}
           alt={project.name || 'Project image'}
           width={600}
           height={450}
