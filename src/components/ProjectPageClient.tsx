@@ -39,7 +39,7 @@ const Section: React.FC<{ title: string; children: React.ReactNode, delay?: numb
     </motion.div>
   );
 
-export function ProjectPageClient({ project }: ProjectPageClientProps) {
+export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [lightboxAlt, setLightboxAlt] = useState<string>('');
 
@@ -58,41 +58,6 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 }
   };
-  
-  const overviewText = Array.isArray(project.overview)
-    ? project.overview
-        .map(block => 
-            Array.isArray(block.children) 
-                ? block.children.map(child => child.text).join('')
-                : ''
-        )
-        .join('\n')
-    : project.name;
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    mainEntityOfPage: {
-        '@type': 'WebPage',
-        '@id': typeof window !== 'undefined' ? window.location.href : '',
-    },
-    headline: project.name,
-    image: project.mainImage,
-    datePublished: project.date,
-    author: {
-        '@type': 'Organization',
-        name: 'DesignFlow',
-    },
-    publisher: {
-        '@type': 'Organization',
-        name: 'DesignFlow',
-        logo: {
-            '@type': 'ImageObject',
-            url: 'https://placehold.co/100x40.png?text=DesignFlow', // Replace with your actual logo URL
-        },
-    },
-    description: overviewText,
-  };
 
   const handleImageClick = (imageUrl: string, altText: string = 'Proje görseli') => {
     setLightboxImage(imageUrl);
@@ -101,11 +66,6 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
 
 
   return (
-    <>
-    <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-    />
     <motion.article 
         initial="hidden"
         animate="visible"
@@ -194,7 +154,7 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
                                   <div className="prose prose-lg max-w-none font-body text-muted-foreground">
                                      <PortableText value={item.description} components={PortableTextComponent} />
                                   </div>
-                                  {item.image && (
+                                  {item.image?.asset?.url && (
                                       <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}>
                                         <Image
                                             src={urlFor(item.image).width(800).height(600).url()}
@@ -233,7 +193,7 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
                   <div key={key}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {section.images.map((img) => (
-                        <figure key={img._key}>
+                        img.asset?.url && <figure key={img._key}>
                           <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}>
                             <Image src={urlFor(img).width(800).height(600).url()} alt={img.alt || 'Proje galerisinden bir görsel'} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="portfolio gallery" onClick={() => handleImageClick(urlFor(img).url(), img.alt || 'Proje galerisinden bir görsel')}/>
                           </motion.div>
@@ -244,8 +204,8 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
                   </div>
                 );
               }
-              if (section._type === 'fullWidthImage' && section.image) {
-                return <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}><Image key={key} src={urlFor(section.image).url()} alt={section.alt || 'Tam genişlik proje görseli'} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="project detail" onClick={() => handleImageClick(urlFor(section.image).url(), section.alt || 'Tam genişlik proje görseli')} /></motion.div>;
+              if (section._type === 'fullWidthImage' && section.image?.asset?.url) {
+                return <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}><Image key={key} src={urlFor(section.image).url()} alt={section.image.alt || 'Tam genişlik proje görseli'} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="project detail" onClick={() => handleImageClick(urlFor(section.image).url(), section.image.alt || 'Tam genişlik proje görseli')} /></motion.div>;
               }
               if (section._type === 'twoColumnText' && section.leftContent && section.rightContent) {
                 return (
@@ -289,6 +249,5 @@ export function ProjectPageClient({ project }: ProjectPageClientProps) {
         onClose={() => setLightboxImage(null)}
       />
     </motion.article>
-    </>
   );
 }

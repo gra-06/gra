@@ -6,18 +6,11 @@ import { PortableTextComponent } from '@/components/PortableTextComponent';
 import { Badge } from '@/components/ui/badge';
 import { notFound } from 'next/navigation';
 import { client } from '@/lib/sanity';
-import { Calendar, User, Tag, CheckIcon as Check } from 'lucide-react';
+import { Calendar, User, Tag } from 'lucide-react';
 import { format } from 'date-fns';
 import { ProjectCard } from '@/components/ProjectCard';
-import imageUrlBuilder from '@sanity/image-url';
-import { ProjectPageClient } from '@/components/ProjectPageClient';
 import type { Metadata } from 'next';
-
-const builder = imageUrlBuilder(client);
-
-function urlFor(source: any) {
-  return builder.image(source);
-}
+import { ProjectPageClientFeatures } from '@/components/ProjectPageClient';
 
 interface ProjectPageProps {
   params: { slug: string };
@@ -46,7 +39,9 @@ async function getProject(slug: string): Promise<Project | null> {
       _key,
       stage,
       description,
-      'image': image.asset->url
+      'image': {
+        'asset': asset->{url, alt, metadata}
+       }
     },
     contentSections[]{
       ...,
@@ -54,13 +49,19 @@ async function getProject(slug: string): Promise<Project | null> {
         'images': images[]{
           ...,
           'asset': asset->{
-            url
+            url,
+            alt,
+            metadata
           }
         }
       },
       _type == 'fullWidthImage' => {
-        'image': image.asset->{
-          url
+        'image': {
+          'asset': asset->{
+            url,
+            alt,
+            metadata
+          }
         }
       }
     },
@@ -138,12 +139,57 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const project = await getProject(params.slug);
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
   if (!project) {
     notFound();
   }
 
+  const overviewText = Array.isArray(project.overview)
+    ? project.overview
+        .map(block => 
+            Array.isArray(block.children) 
+                ? block.children.map(child => child.text).join('')
+                : ''
+        )
+        .join('\n')
+    : project.name;
+    
+  const pageUrl = `${BASE_URL}/projects/${project.slug}`;
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': pageUrl,
+    },
+    headline: project.name,
+    image: project.mainImage,
+    datePublished: project.date,
+    author: {
+        '@type': 'Organization',
+        name: 'DesignFlow',
+    },
+    publisher: {
+        '@type': 'Organization',
+        name: 'DesignFlow',
+        logo: {
+            '@type': 'ImageObject',
+            url: 'https://placehold.co/100x40.png?text=DesignFlow', // Replace with your actual logo URL
+        },
+    },
+    description: overviewText,
+  };
+
+
   return (
-    <ProjectPageClient project={project} />
+    <>
+      <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ProjectPageClientFeatures project={project} />
+    </>
   );
 }

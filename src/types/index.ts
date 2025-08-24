@@ -26,6 +26,7 @@ export interface SanityImage {
   asset: {
     _ref?: string;
     url?: string; // May be added by GROQ query
+    alt?: string;
   };
   alt?: string;
   caption?: string;
