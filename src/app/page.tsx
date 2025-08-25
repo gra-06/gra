@@ -17,27 +17,15 @@ import { fetchDocs } from '@/lib/payload';
 
 
 async function getHomePageData() {
-    try {
-        const [projects, recentPosts, awards, faqs, tools] = await Promise.all([
-            fetchDocs<Project>('projects', { limit: 4, depth: 1 }),
-            fetchDocs<Post>('posts', { limit: 3, depth: 1 }),
-            fetchDocs<Award>('awards', { depth: 1 }),
-            fetchDocs<FaqItem>('faqs'),
-            fetchDocs<Tool>('tools', { depth: 1 }),
-        ]);
+    const [projects, recentPosts, awards, faqs, tools] = await Promise.all([
+        fetchDocs<Project>('projects', { limit: 4, depth: 1 }),
+        fetchDocs<Post>('posts', { limit: 3, depth: 2 }),
+        fetchDocs<Award>('awards', { depth: 1 }),
+        fetchDocs<FaqItem>('faqs'),
+        fetchDocs<Tool>('tools', { depth: 1 }),
+    ]);
 
-        return { projects, recentPosts, awards, faqs, tools };
-    } catch (error) {
-        console.error("Error fetching homepage data:", error);
-        // In case of an error, return empty arrays to prevent the page from crashing.
-        return { 
-            projects: [] as Project[], 
-            recentPosts: [] as Post[], 
-            awards: [] as Award[], 
-            faqs: [] as FaqItem[], 
-            tools: [] as Tool[] 
-        };
-    }
+    return { projects, recentPosts, awards, faqs, tools };
 }
 
 

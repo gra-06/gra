@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 async function getPosts(): Promise<Post[]> {
   try {
-    const posts = await fetchDocs<Post>('posts', { depth: 1 });
+    const posts = await fetchDocs<Post>('posts', { depth: 2 });
     return posts;
   } catch (error) {
     console.error("Error fetching posts:", error);

@@ -22,6 +22,8 @@ export function PostCard({ post }: PostCardProps) {
     ? post.mainImage.url
     : 'https://placehold.co/600x400.png';
   
+  const authorName = typeof post.author === 'object' ? post.author.name : 'Bilinmeyen Yazar';
+
   return (
       <Link href={`/blog/${post.slug}`} className="group block">
         <motion.div 
@@ -44,7 +46,7 @@ export function PostCard({ post }: PostCardProps) {
           <div className="p-6 flex flex-col flex-grow">
             <div className="flex flex-wrap gap-2 mb-3">
               {post.categories?.map((category) => (
-                <Badge key={category.id} variant="secondary">
+                typeof category === 'object' && <Badge key={category.id} variant="secondary">
                   {category.title}
                 </Badge>
               ))}
@@ -61,7 +63,7 @@ export function PostCard({ post }: PostCardProps) {
             <div className="mt-auto pt-4 border-t border-border/40 flex items-center text-sm text-muted-foreground gap-4">
                <div className="flex items-center gap-2">
                    <User className="w-4 h-4"/>
-                   <span>{post.author.name}</span>
+                   <span>{authorName}</span>
                </div>
                <div className="flex items-center gap-2">
                    <Calendar className="w-4 h-4"/>

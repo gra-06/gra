@@ -27,14 +27,20 @@ export async function fetchDocs<T>(collection: string, options: FetchDocsOptions
         params.append('where', JSON.stringify(where));
     }
 
-    const response = await fetch(`${API_URL}/api/${collection}?${params.toString()}`);
-    
-    if (!response.ok) {
-        throw new Error(`Failed to fetch ${collection}: ${response.statusText}`);
-    }
+    try {
+        const response = await fetch(`${API_URL}/api/${collection}?${params.toString()}`);
+        
+        if (!response.ok) {
+            console.warn(`Failed to fetch ${collection}: ${response.statusText}`);
+            return [];
+        }
 
-    const data = await response.json();
-    return data.docs;
+        const data = await response.json();
+        return data.docs;
+    } catch (error) {
+        console.error(`Error fetching ${collection}:`, error);
+        return [];
+    }
 }
 
 type FetchDocOptions = {
@@ -59,6 +65,7 @@ export async function fetchDoc<T>({ collection, id, slug, depth = 0 }: FetchDocO
     const docs = await fetchDocs<T>(collection, { limit: 1, depth, where: whereClause });
     
     if (!docs || docs.length === 0) {
+        // This will be caught by getStaticPaths and result in a 404
         throw new Error(`Document not found in ${collection} with ${id ? `id ${id}`: `slug ${slug}`}`);
     }
 
