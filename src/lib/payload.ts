@@ -1,10 +1,10 @@
 
 import type { Query } from 'payload/types';
 
-const API_URL = process.env.PAYLOAD_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_PAYLOAD_API_URL;
 
 if (!API_URL) {
-    throw new Error('PAYLOAD_API_URL environment variable is not set');
+    throw new Error('NEXT_PUBLIC_PAYLOAD_API_URL environment variable is not set');
 }
 
 type FetchDocsOptions = {
