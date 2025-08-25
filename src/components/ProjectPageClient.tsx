@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import type { Project } from '@/types';
+import type { Project, Comment } from '@/types';
 import { PortableText } from '@portabletext/react';
 import { PortableTextComponent } from '@/components/PortableTextComponent';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +13,9 @@ import { format } from 'date-fns';
 import { ProjectCard } from '@/components/ProjectCard';
 import { ImageLightbox } from '@/components/ImageLightbox';
 import { PayloadMedia } from '@/types';
+import { fetchComments } from '@/lib/payload';
+import { CommentSection } from '@/components/CommentSection';
+
 
 const getUrlFromPayloadMedia = (media: any): string => {
     if (typeof media === 'object' && media !== null && media.url) {
@@ -42,6 +45,15 @@ const Section: React.FC<{ title: string; children: React.ReactNode, delay?: numb
 export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [lightboxAlt, setLightboxAlt] = useState<string>('');
+  const [comments, setComments] = useState<Comment[]>([]);
+
+  useEffect(() => {
+    async function loadComments() {
+        const fetchedComments = await fetchComments(project.id);
+        setComments(fetchedComments);
+    }
+    loadComments();
+  }, [project.id]);
 
   const mainImageUrl = getUrlFromPayloadMedia(project.mainImage);
 
@@ -218,6 +230,10 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
               return null;
             })}
           </motion.div>
+
+          <Section title="Yorumlar">
+            <CommentSection projectId={project.id} initialComments={comments} />
+          </Section>
 
           {/* Tags */}
           {project.tags && project.tags.length > 0 && (
