@@ -49,8 +49,10 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
 
   useEffect(() => {
     async function loadComments() {
-        const fetchedComments = await fetchComments(project.id);
-        setComments(fetchedComments);
+        if (project.id) {
+            const fetchedComments = await fetchComments(project.id);
+            setComments(fetchedComments);
+        }
     }
     loadComments();
   }, [project.id]);

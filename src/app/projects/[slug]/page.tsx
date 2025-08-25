@@ -73,12 +73,12 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const project = await getProject(params.slug);
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
   if (!project) {
     notFound();
   }
   
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   const pageUrl = `${BASE_URL}/projects/${project.slug}`;
   const imageUrlField = project.mainImage as { url: string; width?: number; height?: number; } | undefined;
   const imageUrl = imageUrlField?.url || 'https://placehold.co/1200x630.png';
