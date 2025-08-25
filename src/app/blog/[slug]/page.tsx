@@ -1,6 +1,4 @@
 
-'use client';
-
 import type { Post, PayloadMedia } from '@/types';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -10,7 +8,6 @@ import { format } from 'date-fns';
 import { Calendar, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { Metadata } from 'next';
-import { useEffect, useState } from 'react';
 import { fetchDoc, fetchDocs } from '@/lib/payload';
 
 interface PostPageProps {
@@ -31,30 +28,18 @@ async function getPost(slug: string): Promise<Post | null> {
     }
 }
 
-// This needs to be a separate client component to use hooks
-function PostBody({ slug }: { slug: string }) {
-    const [post, setPost] = useState<Post | null>(null);
+export default async function PostPage({ params }: PostPageProps) {
+    const post = await getPost(params.slug);
 
-    useEffect(() => {
-        async function loadPost() {
-            const fetchedPost = await getPost(slug);
-            setPost(fetchedPost);
-        }
-        loadPost();
-    }, [slug]);
-
-    if (!post) {
-        // You can return a loading skeleton here
-        return <div className="container mx-auto px-4 py-16 text-center">Yazı yükleniyor...</div>;
-    }
-    
-    if (!post.id) {
+    if (!post || !post.id) {
         notFound();
     }
 
     const mainImageUrl = typeof post.mainImage === 'object' ? post.mainImage.url : post.mainImage;
-    const authorImage = typeof post.author.image === 'object' ? (post.author.image as PayloadMedia).url : post.author.image;
-    const authorName = typeof post.author === 'object' ? post.author.name : 'Yazar';
+    const authorImage = typeof post.author === 'object' && typeof (post.author as Author).image === 'object' 
+        ? ((post.author as Author).image as PayloadMedia).url 
+        : undefined;
+    const authorName = typeof post.author === 'object' ? (post.author as Author).name : 'Yazar';
 
     const jsonLd = {
         '@context': 'https://schema.org',
@@ -138,10 +123,6 @@ function PostBody({ slug }: { slug: string }) {
     );
 }
 
-
-export default function PostPage({ params }: PostPageProps) {
-    return <PostBody slug={params.slug} />;
-}
 
 export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {
   const post = await getPost(params.slug)
