@@ -115,7 +115,7 @@ export interface Post {
   title?: string;
   slug?: string;
   excerpt?: string;
-  author: Author;
+  author: Author | string;
   mainImage: string | PayloadMedia;
   categories?: (string | PostCategory)[];
   publishedAt: string;
@@ -186,4 +186,27 @@ export interface Brand {
     name: string;
     logo: PayloadMedia;
     website?: string;
+}
+
+export interface Footer {
+  id: string;
+  navItems: {
+    link: {
+      type: 'custom' | 'reference';
+      label: string;
+      url?: string;
+      newTab?: boolean;
+      reference?: {
+        value: string | Page; 
+        relationTo: 'pages';
+      }
+    };
+    id?: string;
+  }[];
+}
+
+export interface Page {
+    id: string;
+    title: string;
+    slug?: string;
 }

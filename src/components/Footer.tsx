@@ -1,16 +1,42 @@
 
+
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Brush, Instagram, Linkedin, Twitter, Facebook, Mail } from 'lucide-react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
+import { fetchGlobal } from '@/lib/payload';
+import type { Footer as FooterType, Page } from '@/types';
+
+function getLinkUrl(link: any): string {
+    if (link.type === 'reference' && typeof link.reference?.value === 'object' && link.reference.value.slug) {
+      return `/${link.reference.value.slug}`;
+    }
+    return link.url || '#';
+}
+
+async function getFooterData(): Promise<FooterType | null> {
+  try {
+    const footer = await fetchGlobal<FooterType>('footer', { depth: 1 });
+    return footer;
+  } catch (error) {
+    console.error("Failed to fetch footer:", error);
+    return null;
+  }
+}
 
 export function Footer() {
   const [isClient, setIsClient] = useState(false);
+  const [footerData, setFooterData] = useState<FooterType | null>(null);
 
   useEffect(() => {
     setIsClient(true);
+    async function loadFooter() {
+      const data = await getFooterData();
+      setFooterData(data);
+    }
+    loadFooter();
   }, []);
   
   const socialLinks = [
@@ -21,6 +47,13 @@ export function Footer() {
   ];
   
   const currentYear = new Date().getFullYear();
+  
+  const navItems = footerData?.navItems?.map(item => ({
+      href: getLinkUrl(item.link),
+      label: item.link.label,
+      newTab: item.link.newTab,
+      id: item.id
+  })) || [];
 
   return (
     <footer className="bg-secondary text-secondary-foreground">
@@ -43,10 +76,17 @@ export function Footer() {
           <div className="md:col-span-2 text-center md:text-left">
             <h3 className="font-headline text-xl font-semibold mb-4">Hızlı Linkler</h3>
             <nav className="flex flex-col space-y-2" aria-label="Alt bilgi hızlı linkleri">
-              <Link href="/about" className="hover:text-primary transition-colors">Hakkımda</Link>
-              <Link href="/portfolio" className="hover:text-primary transition-colors">Portfolyo</Link>
-              <Link href="/contact" className="hover:text-primary transition-colors">İletişim</Link>
-               <Link href="/blog" className="hover:text-primary transition-colors">Blog</Link>
+              {navItems.map((item) => (
+                <Link 
+                  key={item.id} 
+                  href={item.href} 
+                  className="hover:text-primary transition-colors"
+                  target={item.newTab ? '_blank' : undefined}
+                  rel={item.newTab ? 'noopener noreferrer' : undefined}
+                >
+                  {item.label}
+                </Link>
+              ))}
             </nav>
           </div>
           

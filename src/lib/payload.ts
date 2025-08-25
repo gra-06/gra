@@ -50,7 +50,7 @@ type FetchDocOptions = {
     depth?: number;
 }
 
-export async function fetchDoc<T>({ collection, id, slug, depth = 0 }: FetchDocOptions): Promise<T> {
+export async function fetchDoc<T>({ collection, id, slug, depth = 0 }: FetchDocOptions): Promise<T | null> {
     if (!id && !slug) {
         throw new Error('Either id or slug must be provided to fetch a single document.');
     }
@@ -66,8 +66,30 @@ export async function fetchDoc<T>({ collection, id, slug, depth = 0 }: FetchDocO
     
     if (!docs || docs.length === 0) {
         // This will be caught by getStaticPaths and result in a 404
-        throw new Error(`Document not found in ${collection} with ${id ? `id ${id}`: `slug ${slug}`}`);
+        console.error(`Document not found in ${collection} with ${id ? `id ${id}`: `slug ${slug}`}`);
+        return null;
     }
 
     return docs[0];
+}
+
+export async function fetchGlobal<T>(slug: string, options: { depth?: number } = {}): Promise<T | null> {
+    const { depth = 0 } = options;
+    const params = new URLSearchParams({
+        depth: depth.toString(),
+    });
+
+    try {
+        const response = await fetch(`${API_URL}/api/globals/${slug}?${params.toString()}`);
+
+        if (!response.ok) {
+            console.warn(`Failed to fetch global ${slug}: ${response.statusText}`);
+            return null;
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error(`Error fetching global ${slug}:`, error);
+        return null;
+    }
 }
