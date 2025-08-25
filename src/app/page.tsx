@@ -11,92 +11,50 @@ import { CtaBanner } from '@/components/CtaBanner';
 import { Faq } from '@/components/Faq';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Brands } from '@/components/Brands';
-// import { client } from '@/lib/sanity';
 import { Hero } from '@/components/Hero';
 import { ProjectMap } from '@/components/ProjectMap';
+import { fetchDocs } from '@/lib/payload';
 
 interface Award {
-    _id: string;
+    id: string;
     title: string;
     organization: string;
     year: string;
-    logoUrl: string;
+    logo: {
+      url: string;
+    }
 }
 
 interface FaqItem {
-    _id: string;
+    id: string;
     question: string;
     answer: any;
 }
 
 interface Tool {
-    _id: string;
+    id: string;
     name: string;
     description: string;
-    logoUrl: string;
+    logo: {
+      url: string;
+    }
 }
 
 async function getHomePageData() {
-    const projects: Project[] = [];
-    const recentPosts: Post[] = [];
-    const awards: Award[] = [];
-    const faqs: FaqItem[] = [];
-    const tools: Tool[] = [];
-    // const projectsQuery = `*[_type == "project"] | order(date desc){
-    //   _id,
-    //   name,
-    //   "slug": slug.current,
-    //   mainImage{
-    //     asset->{
-    //       url
-    //     }
-    //   },
-    //   categories[]->{_id, title, "slug": slug.current},
-    //   location
-    // }`;
-    // const recentPostsQuery = `*[_type == "post"] | order(publishedAt desc)[0...3]{
-    //   _id,
-    //   title,
-    //   "slug": slug.current,
-    //   "mainImage": mainImage.asset->url,
-    //   publishedAt,
-    //   excerpt,
-    //   author->{
-    //       name
-    //   },
-    //   categories[]->{
-    //       _id,
-    //       title
-    //   }
-    // }`;
-    // const awardsQuery = `*[_type == "award"] | order(year desc) {
-    //     _id,
-    //     title,
-    //     organization,
-    //     year,
-    //     "logoUrl": logo.asset->url
-    // }`;
-    // const faqsQuery = `*[_type == "faq"] | order(_createdAt asc) {
-    //     _id,
-    //     question,
-    //     answer
-    // }`;
-    // const toolsQuery = `*[_type == "tool"] | order(name asc) {
-    //     _id,
-    //     name,
-    //     description,
-    //     "logoUrl": logo.asset->url
-    // }`;
-    
-    // const [projects, recentPosts, awards, faqs, tools] = await Promise.all([
-    //   client.fetch<Project[]>(projectsQuery),
-    //   client.fetch<Post[]>(recentPostsQuery),
-    //   client.fetch<Award[]>(awardsQuery),
-    //   client.fetch<FaqItem[]>(faqsQuery),
-    //   client.fetch<Tool[]>(toolsQuery),
-    // ]);
+    try {
+        const [projects, recentPosts, awards, faqs, tools] = await Promise.all([
+            fetchDocs<Project>('projects', { limit: 4, depth: 1 }),
+            fetchDocs<Post>('posts', { limit: 3, depth: 1 }),
+            fetchDocs<Award>('awards', { depth: 1 }),
+            fetchDocs<FaqItem>('faq'),
+            fetchDocs<Tool>('tools', { depth: 1 }),
+        ]);
 
-    return { projects, recentPosts, awards, faqs, tools };
+        return { projects, recentPosts, awards, faqs, tools };
+    } catch (error) {
+        console.error("Error fetching homepage data:", error);
+        return { projects: [], recentPosts: [], awards: [], faqs: [], tools: [] };
+    }
 }
 
 
@@ -132,7 +90,7 @@ export default async function Home() {
 
     const testimonials = [
       {
-        _id: '1',
+        id: '1',
         name: 'Ahmet Yılmaz',
         role: 'CEO, Tekno A.Ş.',
         quote: "Mustafa'nın tasarım çalışmaları olağanüstü. Detaylara karşı harika bir gözü ve kullanıcı deneyimi konusunda derin bir anlayışı var. Sonuçlardan çok memnunuz.",
@@ -140,7 +98,7 @@ export default async function Home() {
         rating: 5,
       },
       {
-        _id: '2',
+        id: '2',
         name: 'Ayşe Kaya',
         role: 'Pazarlama Müdürü, Dizayn Co.',
         quote: "Mustafa ile çalışmak harika bir deneyimdi. Gerçek bir profesyonel ve işbirliği yapması çok keyifli. Kesinlikle tavsiye ederim!",
@@ -216,11 +174,11 @@ export default async function Home() {
                     <TooltipProvider>
                         <div className="flex flex-wrap justify-center gap-8">
                             {tools.map((tool) => (
-                                <Tooltip key={tool._id}>
+                                <Tooltip key={tool.id}>
                                     <TooltipTrigger asChild>
                                         <div className="bg-card p-4 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 w-32 h-32 flex items-center justify-center">
-                                            {tool.logoUrl && (
-                                                <Image src={tool.logoUrl} alt={`${tool.name} logo`} width={80} height={80} className="object-contain" />
+                                            {tool.logo?.url && (
+                                                <Image src={tool.logo.url} alt={`${tool.name} logo`} width={80} height={80} className="object-contain" />
                                             )}
                                         </div>
                                     </TooltipTrigger>
@@ -246,8 +204,8 @@ export default async function Home() {
                     </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {projects.slice(0, 4).map((project) => (
-                        <HomeProjectCard key={project._id} project={project} />
+                    {projects.map((project) => (
+                        <HomeProjectCard key={project.id} project={project} />
                     ))}
                 </div>
                 <div className="text-center mt-12">
@@ -338,7 +296,7 @@ export default async function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {testimonials.map((testimonial) => (
-              <div key={testimonial._id} className="bg-card p-8 rounded-lg shadow-lg">
+              <div key={testimonial.id} className="bg-card p-8 rounded-lg shadow-lg">
                 <div className="flex items-center mb-4">
                   <Image 
                     src={testimonial.avatar} 
@@ -379,11 +337,11 @@ export default async function Home() {
                   </div>
                   <div className="divide-y divide-border">
                       {awards.map((award) => (
-                          <div key={award._id} className="flex flex-col sm:flex-row items-center justify-between p-6 transition-colors hover:bg-card/50">
+                          <div key={award.id} className="flex flex-col sm:flex-row items-center justify-between p-6 transition-colors hover:bg-card/50">
                              <div className="flex items-center gap-6 mb-4 sm:mb-0">
-                                {award.logoUrl && (
+                                {award.logo?.url && (
                                     <div className="relative w-16 h-16">
-                                        <Image src={award.logoUrl} alt={`${award.organization} logo`} fill className="object-contain" />
+                                        <Image src={award.logo.url} alt={`${award.organization} logo`} fill className="object-contain" />
                                     </div>
                                 )}
                                <div>
@@ -410,7 +368,7 @@ export default async function Home() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {recentPosts.map((post) => (
-                      <PostCard key={post._id} post={post} />
+                      <PostCard key={post.id} post={post} />
                   ))}
               </div>
                {recentPosts.length > 0 && (

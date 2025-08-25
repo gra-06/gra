@@ -1,8 +1,8 @@
 
 import type { Project, Category } from '@/types';
 import { PortfolioGrid } from '@/components/PortfolioGrid';
-// import { client } from '@/lib/sanity';
 import type { Metadata } from 'next';
+import { fetchDocs } from '@/lib/payload';
 
 export const metadata: Metadata = {
     title: 'Portfolyo | Mustafa Saraçoğlu',
@@ -10,31 +10,23 @@ export const metadata: Metadata = {
 };
 
 async function getAllProjects(): Promise<Project[]> {
-  // const query = `*[_type == "project"] | order(date desc){
-  //   _id,
-  //   name,
-  //   "slug": slug.current,
-  //   "mainImage": mainImage.asset->url,
-  //   categories[]->{
-  //     _id,
-  //     title,
-  //     "slug": slug.current
-  //   }
-  // }`;
-  // const projects = await client.fetch(query);
-  // return projects;
-  return [];
+    try {
+        const projects = await fetchDocs<Project>('projects', { depth: 1 });
+        return projects;
+    } catch (error) {
+        console.error("Error fetching projects:", error);
+        return [];
+    }
 }
 
 async function getAllCategories(): Promise<Category[]> {
-  // const query = `*[_type == "category"]{
-  //   _id,
-  //   title,
-  //   "slug": slug.current
-  // }`;
-  // const categories = await client.fetch(query);
-  // return categories;
-  return [];
+    try {
+        const categories = await fetchDocs<Category>('categories');
+        return categories;
+    } catch (error) {
+        console.error("Error fetching categories:", error);
+        return [];
+    }
 }
 
 export default async function PortfolioPage() {

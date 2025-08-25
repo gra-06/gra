@@ -35,7 +35,7 @@ export function PortfolioGrid({ projects, categories }: PortfolioGridProps) {
         </Button>
         {categories.map((category) => (
           <Button
-            key={category._id}
+            key={category.id}
             variant={activeCategory === category.slug ? 'default' : 'secondary'}
             onClick={() => setActiveCategory(category.slug)}
             className="rounded-full px-6"
@@ -47,7 +47,7 @@ export function PortfolioGrid({ projects, categories }: PortfolioGridProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProjects.map((project) => (
-            <ProjectCard key={project._id} project={project} />
+            <ProjectCard key={project.id} project={project} />
           ))}
       </div>
     </div>

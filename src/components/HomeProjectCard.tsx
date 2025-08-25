@@ -17,8 +17,9 @@ export function HomeProjectCard({ project }: HomeProjectCardProps) {
     return null;
   }
 
-  // Directly check for the nested asset URL from Sanity.
-  const imageUrl = (project.mainImage as any)?.asset?.url;
+  const imageUrl = typeof project.mainImage === 'object' && project.mainImage?.url
+    ? project.mainImage.url
+    : 'https://placehold.co/600x450.png';
 
   return (
     <Link href={`/projects/${project.slug}`} className="group block overflow-hidden rounded-lg">
@@ -28,7 +29,7 @@ export function HomeProjectCard({ project }: HomeProjectCardProps) {
         initial="initial"
       >
         <Image
-          src={imageUrl || 'https://placehold.co/600x450.png'}
+          src={imageUrl}
           alt={project.name || 'Proje görseli'}
           width={600}
           height={450}
@@ -64,7 +65,7 @@ export function HomeProjectCard({ project }: HomeProjectCardProps) {
         >
             <div className="flex flex-wrap gap-2 mb-2">
               {project.categories?.map((category) => (
-                <Badge key={category._id} variant="secondary" className="backdrop-blur-sm">
+                <Badge key={category.id} variant="secondary" className="backdrop-blur-sm">
                   {category.title}
                 </Badge>
               ))}

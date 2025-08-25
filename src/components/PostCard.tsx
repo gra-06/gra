@@ -17,6 +17,10 @@ export function PostCard({ post }: PostCardProps) {
   if (!post.slug) {
     return null;
   }
+
+  const imageUrl = typeof post.mainImage === 'object' && post.mainImage?.url
+    ? post.mainImage.url
+    : 'https://placehold.co/600x400.png';
   
   return (
       <Link href={`/blog/${post.slug}`} className="group block">
@@ -27,7 +31,7 @@ export function PostCard({ post }: PostCardProps) {
           
           <div className="relative aspect-w-16 aspect-h-9 w-full overflow-hidden">
             <Image
-              src={post.mainImage || 'https://placehold.co/600x400.png'}
+              src={imageUrl}
               alt={post.title || 'Blog post image'}
               width={600}
               height={338}
@@ -40,7 +44,7 @@ export function PostCard({ post }: PostCardProps) {
           <div className="p-6 flex flex-col flex-grow">
             <div className="flex flex-wrap gap-2 mb-3">
               {post.categories?.map((category) => (
-                <Badge key={category._id} variant="secondary">
+                <Badge key={category.id} variant="secondary">
                   {category.title}
                 </Badge>
               ))}

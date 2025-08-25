@@ -3,14 +3,13 @@
 
 import type { PortableTextComponents } from '@portabletext/react';
 import Image from 'next/image';
-// import { client } from '@/lib/sanity';
-// import imageUrlBuilder from '@sanity/image-url';
 
-// const builder = imageUrlBuilder(client);
-
-// function urlFor(source: any) {
-//   return builder.image(source);
-// }
+const getUrlFromPayloadMedia = (media: any) => {
+    if (typeof media === 'object' && media !== null && media.url) {
+        return media.url;
+    }
+    return 'https://placehold.co/800x600.png'; // Fallback
+};
 
 export const PortableTextComponent: PortableTextComponents = {
   block: {
@@ -48,19 +47,35 @@ export const PortableTextComponent: PortableTextComponents = {
   },
   types: {
     image: ({ value }) => {
-      if (!value?.asset?._ref && !value?.asset?.url) {
+      if (!value?.url) {
         return null;
       }
       return (
         <Image
-          src={value.asset.url} // Directly use URL if available from new CMS
+          src={getUrlFromPayloadMedia(value)}
           alt={value.alt || ' '}
           loading="lazy"
-          width={800}
-          height={600}
+          width={value.width || 800}
+          height={value.height || 600}
           className="my-8 rounded-lg shadow-md w-full object-cover"
         />
       );
     },
+    // Handling Payload's rich text format which is Lexical
+    upload: ({ value }) => {
+        if (!value?.value?.url) {
+            return null;
+        }
+        return (
+             <Image
+                src={getUrlFromPayloadMedia(value.value)}
+                alt={value.value.alt || ' '}
+                loading="lazy"
+                width={value.value.width || 800}
+                height={value.value.height || 600}
+                className="my-8 rounded-lg shadow-md w-full object-cover"
+            />
+        )
+    }
   },
 };

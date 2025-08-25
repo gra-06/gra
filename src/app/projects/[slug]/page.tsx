@@ -1,79 +1,27 @@
 
 import type { Project } from '@/types';
 import { notFound } from 'next/navigation';
-// import { client } from '@/lib/sanity';
 import type { Metadata } from 'next';
 import { ProjectPageClientFeatures } from '@/components/ProjectPageClient';
+import { fetchDoc, fetchDocs } from '@/lib/payload';
+import { payloadRichTextLexicalSerializer } from '@/lib/lexical';
 
 interface ProjectPageProps {
   params: { slug: string };
 }
 
 async function getProject(slug: string): Promise<Project | null> {
-  // const query = `*[_type == "project" && slug.current == $slug][0]{
-  //   _id,
-  //   name,
-  //   "slug": slug.current,
-  //   "mainImage": mainImage.asset->url,
-  //   "mainImageDimensions": mainImage.asset->metadata.dimensions,
-  //   categories[]->{
-  //     _id,
-  //     title,
-  //     "slug": slug.current
-  //   },
-  //   client,
-  //   date,
-  //   services,
-  //   overview,
-  //   challenge,
-  //   solution,
-  //   result,
-  //   caseStudy[]{
-  //     _key,
-  //     stage,
-  //     description,
-  //     'image': {
-  //       'asset': asset->{url, alt, metadata}
-  //      }
-  //   },
-  //   contentSections[]{
-  //     ...,
-  //     _type == 'imageGallery' => {
-  //       'images': images[]{
-  //         ...,
-  //         'asset': asset->{
-  //           url,
-  //           alt,
-  //           metadata
-  //         }
-  //       }
-  //     },
-  //     _type == 'fullWidthImage' => {
-  //       'image': {
-  //         'asset': asset->{
-  //           url,
-  //           alt,
-  //           metadata
-  //         }
-  //       }
-  //     }
-  //   },
-  //   "relatedProjects": *[_type == "project" && slug.current != $slug && count(categories[@._ref in ^.^.categories[]._ref]) > 0] | order(date desc) [0...2] {
-  //     _id,
-  //     name,
-  //     "slug": slug.current,
-  //     "mainImage": mainImage.asset->url,
-  //     categories[]->{
-  //       _id,
-  //       title,
-  //       "slug": slug.current
-  //     }
-  //   },
-  //   tags
-  // }`;
-  // const project = await client.fetch(query, { slug });
-  // return project;
-  return null;
+    try {
+        const project = await fetchDoc<Project>({
+            collection: 'projects',
+            slug,
+            depth: 2,
+        });
+        return project;
+    } catch (error) {
+        console.error('Error fetching project', error);
+        return null;
+    }
 }
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
@@ -86,18 +34,10 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
     };
   }
 
-  const overviewText = Array.isArray(project.overview)
-    ? project.overview
-        .map(block => 
-            Array.isArray(block.children) 
-                ? block.children.map(child => child.text).join('')
-                : ''
-        )
-        .join('\n')
-    : project.name;
-
+  const overviewText = project.overview ? payloadRichTextLexicalSerializer(project.overview) : project.name;
+  
   const pageUrl = `${BASE_URL}/projects/${project.slug}`;
-  const imageUrl = project.mainImage;
+  const imageUrl = typeof project.mainImage === 'object' ? project.mainImage.url : project.mainImage;
 
   return {
     title: `${project.name} | Mustafa Saraçoğlu Portfolyosu`,
@@ -113,8 +53,8 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
       images: [
         {
           url: imageUrl,
-          width: project.mainImageDimensions?.width || 1200,
-          height: project.mainImageDimensions?.height || 630,
+          width: project.mainImage?.width || 1200,
+          height: project.mainImage?.height || 630,
           alt: project.name,
         },
       ],
@@ -139,17 +79,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound();
   }
 
-  const overviewText = Array.isArray(project.overview)
-    ? project.overview
-        .map(block => 
-            Array.isArray(block.children) 
-                ? block.children.map(child => child.text).join('')
-                : ''
-        )
-        .join('\n')
-    : project.name;
+  const overviewText = project.overview ? payloadRichTextLexicalSerializer(project.overview) : project.name;
     
   const pageUrl = `${BASE_URL}/projects/${project.slug}`;
+  const imageUrl = typeof project.mainImage === 'object' ? project.mainImage.url : project.mainImage;
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -159,7 +92,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         '@id': pageUrl,
     },
     headline: project.name,
-    image: project.mainImage,
+    image: imageUrl,
     datePublished: project.date,
     author: {
         '@type': 'Organization',
@@ -186,4 +119,16 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       <ProjectPageClientFeatures project={project} />
     </>
   );
+}
+
+export async function generateStaticParams() {
+    try {
+        const projects = await fetchDocs<Project>('projects');
+        return projects.map((project) => ({
+            slug: project.slug,
+        }));
+    } catch (error) {
+        console.error('Error fetching slugs for projects', error);
+        return [];
+    }
 }

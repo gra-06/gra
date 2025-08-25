@@ -16,6 +16,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
     return null;
   }
   
+  const imageUrl = typeof project.mainImage === 'object' && project.mainImage?.url
+    ? project.mainImage.url
+    : 'https://placehold.co/600x450.png';
+
   return (
       <Link href={`/projects/${project.slug}`} className="group block">
         <motion.div 
@@ -25,7 +29,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           
           <div className="relative aspect-w-4 aspect-h-3 w-full overflow-hidden">
             <Image
-              src={project.mainImage || 'https://placehold.co/600x450.png'}
+              src={imageUrl}
               alt={project.name || 'Proje görseli'}
               width={600}
               height={450}
@@ -35,7 +39,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
             <div className="absolute top-4 left-4 flex flex-wrap gap-2">
               {project.categories?.map((category) => (
-                <Badge key={category._id} variant="secondary" className="backdrop-blur-sm">
+                <Badge key={category.id} variant="secondary" className="backdrop-blur-sm">
                   {category.title}
                 </Badge>
               ))}

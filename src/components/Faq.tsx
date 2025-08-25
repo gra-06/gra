@@ -11,7 +11,7 @@ import { PortableText } from '@portabletext/react';
 import { PortableTextComponent } from './PortableTextComponent';
 
 interface FaqItem {
-  _id: string;
+  id: string;
   question: string;
   answer: any;
 }
@@ -24,7 +24,7 @@ export function Faq({ items }: FaqProps) {
   return (
     <Accordion type="single" collapsible className="w-full">
       {items.map((item) => (
-        <AccordionItem key={item._id} value={item._id}>
+        <AccordionItem key={item.id} value={item.id}>
           <AccordionTrigger className="text-left font-headline text-xl hover:no-underline">
             {item.question}
           </AccordionTrigger>
@@ -36,5 +36,3 @@ export function Faq({ items }: FaqProps) {
     </Accordion>
   );
 }
-
-    

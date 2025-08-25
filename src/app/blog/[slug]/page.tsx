@@ -1,7 +1,6 @@
 
 'use client';
 
-// import { client } from '@/lib/sanity';
 import type { Post } from '@/types';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -13,32 +12,24 @@ import { Badge } from '@/components/ui/badge';
 import type { Metadata } from 'next';
 import { useEffect, useState } from 'react';
 import { useGamification } from '@/hooks/use-gamification';
+import { fetchDoc } from '@/lib/payload';
 
 interface PostPageProps {
   params: { slug: string };
 }
 
 async function getPost(slug: string): Promise<Post | null> {
-    // const query = `*[_type == "post" && slug.current == $slug][0]{
-    //     _id,
-    //     title,
-    //     "slug": slug.current,
-    //     "mainImage": mainImage.asset->url,
-    //     publishedAt,
-    //     body,
-    //     excerpt,
-    //     author->{
-    //         name,
-    //         "image": image.asset->url
-    //     },
-    //     categories[]->{
-    //         _id,
-    //         title
-    //     }
-    // }`;
-    // const post = await client.fetch(query, { slug });
-    // return post;
-    return null;
+    try {
+        const post = await fetchDoc<Post>({
+            collection: 'posts',
+            slug,
+            depth: 2,
+        });
+        return post;
+    } catch (error) {
+        console.error("Error fetching post:", error);
+        return null;
+    }
 }
 
 // This needs to be a separate client component to use hooks
@@ -51,7 +42,7 @@ function PostBody({ slug }: { slug: string }) {
             const fetchedPost = await getPost(slug);
             setPost(fetchedPost);
             if (fetchedPost) {
-                logEvent('POST_VISIT', fetchedPost._id);
+                logEvent('POST_VISIT', fetchedPost.id);
             }
         }
         loadPost();
@@ -62,15 +53,18 @@ function PostBody({ slug }: { slug: string }) {
         return <div className="container mx-auto px-4 py-16 text-center">Yazı yükleniyor...</div>;
     }
     
-    if (!post._id) {
+    if (!post.id) {
         notFound();
     }
+
+    const mainImageUrl = typeof post.mainImage === 'object' ? post.mainImage.url : post.mainImage;
+    const authorImage = typeof post.author.image === 'object' ? post.author.image.url : post.author.image;
 
     const jsonLd = {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
         headline: post.title,
-        image: post.mainImage,
+        image: mainImageUrl,
         author: {
             '@type': 'Person',
             name: post.author.name,
@@ -80,7 +74,7 @@ function PostBody({ slug }: { slug: string }) {
             name: 'Grafikerabi',
             logo: {
                 '@type': 'ImageObject',
-                url: 'https://placehold.co/100x40.png?text=Grafikerabi', // Replace with your actual logo URL
+                url: 'https://placehold.co/100x40.png?text=Grafikerabi',
             },
         },
         datePublished: post.publishedAt,
@@ -96,7 +90,7 @@ function PostBody({ slug }: { slug: string }) {
             <article className="bg-background">
                 <header className="relative h-[60vh] min-h-[400px]">
                     <Image 
-                        src={post.mainImage}
+                        src={mainImageUrl}
                         alt={post.title}
                         fill
                         className="object-cover"
@@ -108,7 +102,7 @@ function PostBody({ slug }: { slug: string }) {
                         <div className="max-w-4xl">
                             <div className="flex flex-wrap gap-2 mb-4">
                                 {post.categories?.map((category) => (
-                                    <Badge key={category._id} variant="secondary">{category.title}</Badge>
+                                    <Badge key={category.id} variant="secondary">{category.title}</Badge>
                                 ))}
                             </div>
                             <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tight text-white">
@@ -121,8 +115,8 @@ function PostBody({ slug }: { slug: string }) {
                     <div className="max-w-4xl mx-auto">
                         <div className="flex flex-wrap items-center gap-x-8 gap-y-4 mb-8 text-muted-foreground border-b pb-4">
                             <div className="flex items-center gap-3">
-                            {post.author.image ? (
-                                    <Image src={post.author.image} alt={post.author.name} width={40} height={40} className="rounded-full" />
+                            {authorImage ? (
+                                    <Image src={authorImage} alt={post.author.name} width={40} height={40} className="rounded-full" />
                             ) : (
                                     <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
                                         <User className="w-6 h-6" />
@@ -139,7 +133,7 @@ function PostBody({ slug }: { slug: string }) {
                         </div>
 
                         <div className="prose prose-lg dark:prose-invert max-w-none font-body">
-                            <PortableText value={post.body} components={PortableTextComponent} />
+                           {post.body && <PortableText value={post.body} components={PortableTextComponent} />}
                         </div>
                     </div>
                 </div>
@@ -167,10 +161,8 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
   }
 }
 
-// Add this to dynamically generate static pages for blog posts
 export async function generateStaticParams() {
-  // const posts = await client.fetch<Post[]>(`*[_type == "post"]{"slug": slug.current}`);
-  const posts: Post[] = [];
+  const posts = await fetchDocs<Post>('posts');
   return posts.map(post => ({
     slug: post.slug,
   }));

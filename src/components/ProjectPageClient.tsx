@@ -8,24 +8,18 @@ import type { Project } from '@/types';
 import { PortableText } from '@portabletext/react';
 import { PortableTextComponent } from '@/components/PortableTextComponent';
 import { Badge } from '@/components/ui/badge';
-// import { client } from '@/lib/sanity';
 import { Calendar, User, Tag, CheckIcon as Check } from 'lucide-react';
 import { format } from 'date-fns';
 import { ProjectCard } from '@/components/ProjectCard';
-// import imageUrlBuilder from '@sanity/image-url';
 import { ImageLightbox } from '@/components/ImageLightbox';
 import { useGamification } from '@/hooks/use-gamification';
 
-// const builder = imageUrlBuilder(client);
-
-// function urlFor(source: any) {
-//   return builder.image(source);
-// }
-
-const urlFor = (image: any): any => {
-    // This will be replaced with Payload logic
-    return image?.url || 'https://placehold.co/800x600.png';
-}
+const getUrlFromPayloadMedia = (media: any): string => {
+    if (typeof media === 'object' && media !== null && media.url) {
+        return media.url;
+    }
+    return 'https://placehold.co/800x600.png'; // Fallback
+};
 
 interface ProjectPageClientProps {
   project: Project;
@@ -51,9 +45,10 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
   const { logEvent } = useGamification();
 
   useEffect(() => {
-    logEvent('PROJECT_VISIT', project._id);
-  }, [logEvent, project._id]);
+    logEvent('PROJECT_VISIT', project.id);
+  }, [logEvent, project.id]);
 
+  const mainImageUrl = getUrlFromPayloadMedia(project.mainImage);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -87,7 +82,7 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
       <header className="relative h-[70vh] min-h-[400px] w-full flex items-end p-8 md:p-12 text-white">
         <div className="absolute inset-0 z-0">
           <Image
-            src={project.mainImage}
+            src={mainImageUrl}
             alt={project.name}
             fill
             style={{objectFit: 'cover'}}
@@ -100,7 +95,7 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
           <div className="max-w-4xl">
             <div className="flex flex-wrap gap-2 mb-3">
               {project.categories?.map((category) => (
-                <Badge key={category._id} variant="secondary" className="text-sm">
+                <Badge key={category.id} variant="secondary" className="text-sm">
                   {category.title}
                 </Badge>
               ))}
@@ -144,7 +139,6 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
             </div>
           </motion.div>
           
-          {/* Overview */}
           {project.overview && <Section title="Genel Bakış"><PortableText value={project.overview} components={PortableTextComponent} /></Section>}
           
           {/* Case Study Timeline */}
@@ -152,7 +146,7 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
             <Section title="Vaka İncelemesi" delay={0.3}>
                 <div className="relative">
                     {project.caseStudy.map((item, index) => (
-                        <div key={item._key} className="flex">
+                        <div key={item.id} className="flex">
                             <div className="flex flex-col items-center mr-6">
                                 <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-full text-primary-foreground font-bold">
                                     <Check className="w-6 h-6" aria-hidden="true"/>
@@ -163,18 +157,18 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
                                 <h3 className="font-headline text-2xl font-bold mb-2">{item.stage}</h3>
                                 <div className="grid md:grid-cols-2 gap-8 items-start">
                                   <div className="prose prose-lg max-w-none font-body text-muted-foreground">
-                                     <PortableText value={item.description} components={PortableTextComponent} />
+                                     {item.description && <PortableText value={item.description} components={PortableTextComponent} />}
                                   </div>
-                                  {item.image?.asset?.url && (
+                                  {item.image?.url && (
                                       <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}>
                                         <Image
-                                            src={urlFor(item.image)}
+                                            src={getUrlFromPayloadMedia(item.image)}
                                             alt={item.image.alt || `${item.stage} aşaması görseli`}
                                             width={800}
                                             height={600}
                                             className="rounded-lg shadow-lg w-full object-cover cursor-pointer"
                                             data-ai-hint="case study step"
-                                            onClick={() => handleImageClick(urlFor(item.image), item.image.alt || `${item.stage} aşaması görseli`)}
+                                            onClick={() => handleImageClick(getUrlFromPayloadMedia(item.image), item.image.alt || `${item.stage} aşaması görseli`)}
                                         />
                                       </motion.div>
                                   )}
@@ -197,16 +191,16 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.5 }}
             className="space-y-16">
-            {project.contentSections?.map((section, index) => {
-              const key = `${section._type}-${index}`;
-              if (section._type === 'imageGallery' && section.images) {
+            {project.layout?.map((section, index) => {
+              const key = `${section.blockType}-${index}`;
+              if (section.blockType === 'imageGallery' && section.images) {
                 return (
                   <div key={key}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {section.images.map((img) => (
-                        img.asset?.url && <figure key={img._key}>
+                        img.image?.url && <figure key={img.id}>
                           <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}>
-                            <Image src={urlFor(img)} alt={img.alt || 'Proje galerisinden bir görsel'} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="portfolio gallery" onClick={() => handleImageClick(urlFor(img), img.alt || 'Proje galerisinden bir görsel')}/>
+                            <Image src={getUrlFromPayloadMedia(img.image)} alt={img.image.alt || 'Proje galerisinden bir görsel'} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="portfolio gallery" onClick={() => handleImageClick(getUrlFromPayloadMedia(img.image), img.image.alt || 'Proje galerisinden bir görsel')}/>
                           </motion.div>
                           {img.caption && <figcaption className="text-center text-sm text-muted-foreground mt-2">{img.caption}</figcaption>}
                         </figure>
@@ -215,10 +209,10 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
                   </div>
                 );
               }
-              if (section._type === 'fullWidthImage' && section.image?.asset?.url) {
-                return <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}><Image key={key} src={urlFor(section.image)} alt={section.image.alt || 'Tam genişlik proje görseli'} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="project detail" onClick={() => handleImageClick(urlFor(section.image), section.image.alt || 'Tam genişlik proje görseli')} /></motion.div>;
+              if (section.blockType === 'fullWidthImage' && section.image?.url) {
+                return <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}><Image key={key} src={getUrlFromPayloadMedia(section.image)} alt={section.image.alt || 'Tam genişlik proje görseli'} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="project detail" onClick={() => handleImageClick(getUrlFromPayloadMedia(section.image), section.image.alt || 'Tam genişlik proje görseli')} /></motion.div>;
               }
-              if (section._type === 'twoColumnText' && section.leftContent && section.rightContent) {
+              if (section.blockType === 'twoColumnText' && section.leftContent && section.rightContent) {
                 return (
                   <div key={key} className="grid md:grid-cols-2 gap-12">
                      <div className="prose prose-lg max-w-none font-body text-muted-foreground"><PortableText value={section.leftContent} components={PortableTextComponent}/></div>
@@ -226,7 +220,6 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
                   </div>
                 )
               }
-              // Add videoBlock renderer when needed
               return null;
             })}
           </motion.div>
@@ -236,7 +229,7 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
             <Section title="Proje Etiketleri" delay={0.2}>
               <div className="flex flex-wrap gap-2">
                 {project.tags.map((tag, index) => (
-                  <Badge key={index} variant="outline">{tag}</Badge>
+                  <Badge key={index} variant="outline">{tag.tag}</Badge>
                 ))}
               </div>
             </Section>
@@ -247,7 +240,7 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
             <Section title="İlgili Projeler" delay={0.3}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {project.relatedProjects.map((p) => (
-                  <ProjectCard key={p._id} project={p as Project} />
+                  <ProjectCard key={p.id} project={p as Project} />
                 ))}
               </div>
             </Section>

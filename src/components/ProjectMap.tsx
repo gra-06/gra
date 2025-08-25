@@ -51,9 +51,9 @@ export function ProjectMap({ projects }: ProjectMapProps) {
           }
         </Geographies>
         {projects.map((project) => (
-          <Marker
-            key={project._id}
-            coordinates={[project.location.lng, project.location.lat]}
+          project.location && <Marker
+            key={project.id}
+            coordinates={[project.location.longitude, project.location.latitude]}
           >
             <Tooltip>
               <TooltipTrigger asChild>

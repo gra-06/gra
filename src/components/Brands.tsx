@@ -3,27 +3,20 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-// import { client } from '@/lib/sanity';
 import { useState, useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { fetchDocs } from '@/lib/payload';
+import type { Brand } from '@/types';
 
-interface Brand {
-    _id: string;
-    name: string;
-    logoUrl: string;
-    website?: string;
-}
 
 async function getBrands(): Promise<Brand[]> {
-    // const query = `*[_type == "brand"]{
-    //     _id,
-    //     name,
-    //     "logoUrl": logo.asset->url,
-    //     website
-    // }`;
-    // const brands = await client.fetch(query);
-    // return brands;
-    return [];
+    try {
+        const brands = await fetchDocs<Brand>('brands', { depth: 1 });
+        return brands;
+    } catch (error) {
+        console.error("Failed to fetch brands:", error);
+        return [];
+    }
 }
 
 
@@ -81,7 +74,7 @@ export function Brands() {
                         const BrandLogo = (
                             <div className="relative h-12 w-32 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100">
                                 <Image 
-                                    src={brand.logoUrl}
+                                    src={brand.logo.url}
                                     alt={`${brand.name} logosu`}
                                     fill
                                     className="object-contain"
@@ -91,14 +84,14 @@ export function Brands() {
 
                         if (brand.website) {
                             return (
-                                <Link key={brand._id} href={brand.website} target="_blank" rel="noopener noreferrer" aria-label={brand.name}>
+                                <Link key={brand.id} href={brand.website} target="_blank" rel="noopener noreferrer" aria-label={brand.name}>
                                     {BrandLogo}
                                 </Link>
                             )
                         }
 
                         return (
-                            <div key={brand._id}>
+                            <div key={brand.id}>
                                 {BrandLogo}
                             </div>
                         )

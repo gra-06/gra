@@ -1,8 +1,8 @@
 
-// import { client } from '@/lib/sanity';
 import type { Post } from '@/types';
 import type { Metadata } from 'next';
 import { PostCard } from '@/components/PostCard';
+import { fetchDocs } from '@/lib/payload';
 
 export const metadata: Metadata = {
     title: 'Blog | Mustafa Saraçoğlu Portfolyosu',
@@ -10,24 +10,13 @@ export const metadata: Metadata = {
 };
 
 async function getPosts(): Promise<Post[]> {
-  // const query = `*[_type == "post"] | order(publishedAt desc){
-  //   _id,
-  //   title,
-  //   "slug": slug.current,
-  //   "mainImage": mainImage.asset->url,
-  //   publishedAt,
-  //   excerpt,
-  //   author->{
-  //       name
-  //   },
-  //   categories[]->{
-  //       _id,
-  //       title
-  //   }
-  // }`;
-  // const posts = await client.fetch(query);
-  // return posts;
-  return [];
+  try {
+    const posts = await fetchDocs<Post>('posts', { depth: 1 });
+    return posts;
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return [];
+  }
 }
 
 export default async function BlogPage() {
@@ -48,7 +37,7 @@ export default async function BlogPage() {
             <main className="container mx-auto px-4 py-16">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {posts.map((post) => (
-                        <PostCard key={post._id} post={post} />
+                        <PostCard key={post.id} post={post} />
                     ))}
                 </div>
                  {posts.length === 0 && (
