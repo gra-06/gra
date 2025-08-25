@@ -8,18 +8,23 @@ import type { Project } from '@/types';
 import { PortableText } from '@portabletext/react';
 import { PortableTextComponent } from '@/components/PortableTextComponent';
 import { Badge } from '@/components/ui/badge';
-import { client } from '@/lib/sanity';
+// import { client } from '@/lib/sanity';
 import { Calendar, User, Tag, CheckIcon as Check } from 'lucide-react';
 import { format } from 'date-fns';
 import { ProjectCard } from '@/components/ProjectCard';
-import imageUrlBuilder from '@sanity/image-url';
+// import imageUrlBuilder from '@sanity/image-url';
 import { ImageLightbox } from '@/components/ImageLightbox';
 import { useGamification } from '@/hooks/use-gamification';
 
-const builder = imageUrlBuilder(client);
+// const builder = imageUrlBuilder(client);
 
-function urlFor(source: any) {
-  return builder.image(source);
+// function urlFor(source: any) {
+//   return builder.image(source);
+// }
+
+const urlFor = (image: any): any => {
+    // This will be replaced with Payload logic
+    return image?.url || 'https://placehold.co/800x600.png';
 }
 
 interface ProjectPageClientProps {
@@ -163,13 +168,13 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
                                   {item.image?.asset?.url && (
                                       <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}>
                                         <Image
-                                            src={urlFor(item.image).width(800).height(600).url()}
+                                            src={urlFor(item.image)}
                                             alt={item.image.alt || `${item.stage} aşaması görseli`}
                                             width={800}
                                             height={600}
                                             className="rounded-lg shadow-lg w-full object-cover cursor-pointer"
                                             data-ai-hint="case study step"
-                                            onClick={() => handleImageClick(urlFor(item.image).url(), item.image.alt || `${item.stage} aşaması görseli`)}
+                                            onClick={() => handleImageClick(urlFor(item.image), item.image.alt || `${item.stage} aşaması görseli`)}
                                         />
                                       </motion.div>
                                   )}
@@ -201,7 +206,7 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
                       {section.images.map((img) => (
                         img.asset?.url && <figure key={img._key}>
                           <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}>
-                            <Image src={urlFor(img).width(800).height(600).url()} alt={img.alt || 'Proje galerisinden bir görsel'} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="portfolio gallery" onClick={() => handleImageClick(urlFor(img).url(), img.alt || 'Proje galerisinden bir görsel')}/>
+                            <Image src={urlFor(img)} alt={img.alt || 'Proje galerisinden bir görsel'} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="portfolio gallery" onClick={() => handleImageClick(urlFor(img), img.alt || 'Proje galerisinden bir görsel')}/>
                           </motion.div>
                           {img.caption && <figcaption className="text-center text-sm text-muted-foreground mt-2">{img.caption}</figcaption>}
                         </figure>
@@ -211,7 +216,7 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
                 );
               }
               if (section._type === 'fullWidthImage' && section.image?.asset?.url) {
-                return <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}><Image key={key} src={urlFor(section.image).url()} alt={section.image.alt || 'Tam genişlik proje görseli'} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="project detail" onClick={() => handleImageClick(urlFor(section.image).url(), section.image.alt || 'Tam genişlik proje görseli')} /></motion.div>;
+                return <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}><Image key={key} src={urlFor(section.image)} alt={section.image.alt || 'Tam genişlik proje görseli'} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="project detail" onClick={() => handleImageClick(urlFor(section.image), section.image.alt || 'Tam genişlik proje görseli')} /></motion.div>;
               }
               if (section._type === 'twoColumnText' && section.leftContent && section.rightContent) {
                 return (

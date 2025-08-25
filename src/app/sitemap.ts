@@ -1,6 +1,6 @@
 
 import { MetadataRoute } from 'next';
-import { client } from '@/lib/sanity';
+// import { client } from '@/lib/sanity';
 import type { Project, Post } from '@/types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
@@ -15,16 +15,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { url: `${BASE_URL}/ai-tagger`, lastModified: new Date() },
     ];
 
-    const projectsQuery = `*[_type == "project"]{"slug": slug.current, "lastModified": _updatedAt}`;
-    const projects = await client.fetch<{slug: string, lastModified: string}[]>(projectsQuery);
+    // const projectsQuery = `*[_type == "project"]{"slug": slug.current, "lastModified": _updatedAt}`;
+    // const projects = await client.fetch<{slug: string, lastModified: string}[]>(projectsQuery);
+    const projects: {slug: string, lastModified: string}[] = [];
+
 
     const projectRoutes = projects.map(project => ({
         url: `${BASE_URL}/projects/${project.slug}`,
         lastModified: new Date(project.lastModified),
     }));
 
-    const postsQuery = `*[_type == "post"]{"slug": slug.current, "lastModified": _updatedAt}`;
-    const posts = await client.fetch<{slug: string, lastModified: string}[]>(postsQuery);
+    // const postsQuery = `*[_type == "post"]{"slug": slug.current, "lastModified": _updatedAt}`;
+    // const posts = await client.fetch<{slug: string, lastModified: string}[]>(postsQuery);
+    const posts: {slug: string, lastModified: string}[] = [];
+
 
     const postRoutes = posts.map(post => ({
         url: `${BASE_URL}/blog/${post.slug}`,

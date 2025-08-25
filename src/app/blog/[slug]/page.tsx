@@ -1,7 +1,7 @@
 
 'use client';
 
-import { client } from '@/lib/sanity';
+// import { client } from '@/lib/sanity';
 import type { Post } from '@/types';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -19,25 +19,26 @@ interface PostPageProps {
 }
 
 async function getPost(slug: string): Promise<Post | null> {
-    const query = `*[_type == "post" && slug.current == $slug][0]{
-        _id,
-        title,
-        "slug": slug.current,
-        "mainImage": mainImage.asset->url,
-        publishedAt,
-        body,
-        excerpt,
-        author->{
-            name,
-            "image": image.asset->url
-        },
-        categories[]->{
-            _id,
-            title
-        }
-    }`;
-    const post = await client.fetch(query, { slug });
-    return post;
+    // const query = `*[_type == "post" && slug.current == $slug][0]{
+    //     _id,
+    //     title,
+    //     "slug": slug.current,
+    //     "mainImage": mainImage.asset->url,
+    //     publishedAt,
+    //     body,
+    //     excerpt,
+    //     author->{
+    //         name,
+    //         "image": image.asset->url
+    //     },
+    //     categories[]->{
+    //         _id,
+    //         title
+    //     }
+    // }`;
+    // const post = await client.fetch(query, { slug });
+    // return post;
+    return null;
 }
 
 // This needs to be a separate client component to use hooks
@@ -168,7 +169,8 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
 
 // Add this to dynamically generate static pages for blog posts
 export async function generateStaticParams() {
-  const posts = await client.fetch<Post[]>(`*[_type == "post"]{"slug": slug.current}`);
+  // const posts = await client.fetch<Post[]>(`*[_type == "post"]{"slug": slug.current}`);
+  const posts: Post[] = [];
   return posts.map(post => ({
     slug: post.slug,
   }));

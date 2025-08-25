@@ -3,7 +3,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { client } from '@/lib/sanity';
+// import { client } from '@/lib/sanity';
 import { useState, useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -15,14 +15,15 @@ interface Brand {
 }
 
 async function getBrands(): Promise<Brand[]> {
-    const query = `*[_type == "brand"]{
-        _id,
-        name,
-        "logoUrl": logo.asset->url,
-        website
-    }`;
-    const brands = await client.fetch(query);
-    return brands;
+    // const query = `*[_type == "brand"]{
+    //     _id,
+    //     name,
+    //     "logoUrl": logo.asset->url,
+    //     website
+    // }`;
+    // const brands = await client.fetch(query);
+    // return brands;
+    return [];
 }
 
 

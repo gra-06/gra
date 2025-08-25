@@ -1,7 +1,7 @@
 
 import type { Project, Category } from '@/types';
 import { PortfolioGrid } from '@/components/PortfolioGrid';
-import { client } from '@/lib/sanity';
+// import { client } from '@/lib/sanity';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -10,29 +10,31 @@ export const metadata: Metadata = {
 };
 
 async function getAllProjects(): Promise<Project[]> {
-  const query = `*[_type == "project"] | order(date desc){
-    _id,
-    name,
-    "slug": slug.current,
-    "mainImage": mainImage.asset->url,
-    categories[]->{
-      _id,
-      title,
-      "slug": slug.current
-    }
-  }`;
-  const projects = await client.fetch(query);
-  return projects;
+  // const query = `*[_type == "project"] | order(date desc){
+  //   _id,
+  //   name,
+  //   "slug": slug.current,
+  //   "mainImage": mainImage.asset->url,
+  //   categories[]->{
+  //     _id,
+  //     title,
+  //     "slug": slug.current
+  //   }
+  // }`;
+  // const projects = await client.fetch(query);
+  // return projects;
+  return [];
 }
 
 async function getAllCategories(): Promise<Category[]> {
-  const query = `*[_type == "category"]{
-    _id,
-    title,
-    "slug": slug.current
-  }`;
-  const categories = await client.fetch(query);
-  return categories;
+  // const query = `*[_type == "category"]{
+  //   _id,
+  //   title,
+  //   "slug": slug.current
+  // }`;
+  // const categories = await client.fetch(query);
+  // return categories;
+  return [];
 }
 
 export default async function PortfolioPage() {

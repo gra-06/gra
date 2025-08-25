@@ -11,7 +11,7 @@ import { CtaBanner } from '@/components/CtaBanner';
 import { Faq } from '@/components/Faq';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Brands } from '@/components/Brands';
-import { client } from '@/lib/sanity';
+// import { client } from '@/lib/sanity';
 import { Hero } from '@/components/Hero';
 import { ProjectMap } from '@/components/ProjectMap';
 
@@ -37,59 +37,64 @@ interface Tool {
 }
 
 async function getHomePageData() {
-    const projectsQuery = `*[_type == "project"] | order(date desc){
-      _id,
-      name,
-      "slug": slug.current,
-      mainImage{
-        asset->{
-          url
-        }
-      },
-      categories[]->{_id, title, "slug": slug.current},
-      location
-    }`;
-    const recentPostsQuery = `*[_type == "post"] | order(publishedAt desc)[0...3]{
-      _id,
-      title,
-      "slug": slug.current,
-      "mainImage": mainImage.asset->url,
-      publishedAt,
-      excerpt,
-      author->{
-          name
-      },
-      categories[]->{
-          _id,
-          title
-      }
-    }`;
-    const awardsQuery = `*[_type == "award"] | order(year desc) {
-        _id,
-        title,
-        organization,
-        year,
-        "logoUrl": logo.asset->url
-    }`;
-    const faqsQuery = `*[_type == "faq"] | order(_createdAt asc) {
-        _id,
-        question,
-        answer
-    }`;
-    const toolsQuery = `*[_type == "tool"] | order(name asc) {
-        _id,
-        name,
-        description,
-        "logoUrl": logo.asset->url
-    }`;
+    const projects: Project[] = [];
+    const recentPosts: Post[] = [];
+    const awards: Award[] = [];
+    const faqs: FaqItem[] = [];
+    const tools: Tool[] = [];
+    // const projectsQuery = `*[_type == "project"] | order(date desc){
+    //   _id,
+    //   name,
+    //   "slug": slug.current,
+    //   mainImage{
+    //     asset->{
+    //       url
+    //     }
+    //   },
+    //   categories[]->{_id, title, "slug": slug.current},
+    //   location
+    // }`;
+    // const recentPostsQuery = `*[_type == "post"] | order(publishedAt desc)[0...3]{
+    //   _id,
+    //   title,
+    //   "slug": slug.current,
+    //   "mainImage": mainImage.asset->url,
+    //   publishedAt,
+    //   excerpt,
+    //   author->{
+    //       name
+    //   },
+    //   categories[]->{
+    //       _id,
+    //       title
+    //   }
+    // }`;
+    // const awardsQuery = `*[_type == "award"] | order(year desc) {
+    //     _id,
+    //     title,
+    //     organization,
+    //     year,
+    //     "logoUrl": logo.asset->url
+    // }`;
+    // const faqsQuery = `*[_type == "faq"] | order(_createdAt asc) {
+    //     _id,
+    //     question,
+    //     answer
+    // }`;
+    // const toolsQuery = `*[_type == "tool"] | order(name asc) {
+    //     _id,
+    //     name,
+    //     description,
+    //     "logoUrl": logo.asset->url
+    // }`;
     
-    const [projects, recentPosts, awards, faqs, tools] = await Promise.all([
-      client.fetch<Project[]>(projectsQuery),
-      client.fetch<Post[]>(recentPostsQuery),
-      client.fetch<Award[]>(awardsQuery),
-      client.fetch<FaqItem[]>(faqsQuery),
-      client.fetch<Tool[]>(toolsQuery),
-    ]);
+    // const [projects, recentPosts, awards, faqs, tools] = await Promise.all([
+    //   client.fetch<Project[]>(projectsQuery),
+    //   client.fetch<Post[]>(recentPostsQuery),
+    //   client.fetch<Award[]>(awardsQuery),
+    //   client.fetch<FaqItem[]>(faqsQuery),
+    //   client.fetch<Tool[]>(toolsQuery),
+    // ]);
 
     return { projects, recentPosts, awards, faqs, tools };
 }

@@ -3,14 +3,14 @@
 
 import type { PortableTextComponents } from '@portabletext/react';
 import Image from 'next/image';
-import { client } from '@/lib/sanity';
-import imageUrlBuilder from '@sanity/image-url';
+// import { client } from '@/lib/sanity';
+// import imageUrlBuilder from '@sanity/image-url';
 
-const builder = imageUrlBuilder(client);
+// const builder = imageUrlBuilder(client);
 
-function urlFor(source: any) {
-  return builder.image(source);
-}
+// function urlFor(source: any) {
+//   return builder.image(source);
+// }
 
 export const PortableTextComponent: PortableTextComponents = {
   block: {
@@ -53,7 +53,7 @@ export const PortableTextComponent: PortableTextComponents = {
       }
       return (
         <Image
-          src={urlFor(value).width(800).url()}
+          src={value.asset.url} // Directly use URL if available from new CMS
           alt={value.alt || ' '}
           loading="lazy"
           width={800}

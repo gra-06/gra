@@ -8,7 +8,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { client } from '@/lib/sanity';
+// import { client } from '@/lib/sanity';
 import { createStreamableValue } from 'ai/rsc';
 
 // Tool to get portfolio information from Sanity
@@ -23,40 +23,46 @@ const getPortfolioInfo = ai.defineTool(
     outputSchema: z.string().describe("Sorgulanan bilgiyi içeren bir JSON dizesi veya sonuç bulunamadığını belirten bir mesaj."),
   },
   async ({ type, query }) => {
-    let groqQuery = '';
-    let params = { query: `%${query}%` };
-
-    switch (type) {
-      case 'projects':
-        groqQuery = `*[_type == "project" && (name match $query || client match $query || services[] match $query || tags[] match $query)] | order(date desc){
-            name, client, "category": categories[]->title, services, "url": "/projects/" + slug.current, overview
-        }[0...5]`;
-        break;
-      case 'posts':
-        groqQuery = `*[_type == "post" && (title match $query || tags[] match $query)] | order(publishedAt desc){
-            title, "category": categories[]->title, excerpt, "url": "/blog/" + slug.current
-        }[0...5]`;
-        break;
-      case 'about':
-        // 'about' için statik bir bilgi dönebilir veya varsa belirli bir 'about' dokümanını sorgulayabiliriz.
-        // Şimdilik bir özet dönelim. Bu genişletilebilir.
+    // This is a placeholder. This will be replaced with the new CMS API call.
+    if (type === 'about') {
         return JSON.stringify({
             summary: "Mustafa Saraçoğlu, fikirleri gerçeğe dönüştüren, tasarım ve geliştirme alanında uzmanlaşmış yaratıcı bir profesyoneldir. Daha fazlasını /about sayfasında bulabilirsiniz."
         });
-      default:
-        return JSON.stringify({ error: 'Geçersiz bilgi türü belirtildi.' });
     }
+    return JSON.stringify({ message: `Arama özelliği geçici olarak devre dışı. '${query}' ile ilgili ${type} listelenemiyor.` });
+    
+    // let groqQuery = '';
+    // let params = { query: `%${query}%` };
 
-    try {
-        const results = await client.fetch(groqQuery, params);
-        if (results.length === 0) {
-            return JSON.stringify({ message: `'${query}' ile eşleşen ${type} bulunamadı.` });
-        }
-        return JSON.stringify(results);
-    } catch (error) {
-        console.error("Sanity getirme hatası:", error);
-        return JSON.stringify({ error: `Sanity'den ${type} getirilemedi.` });
-    }
+    // switch (type) {
+    //   case 'projects':
+    //     groqQuery = `*[_type == "project" && (name match $query || client match $query || services[] match $query || tags[] match $query)] | order(date desc){
+    //         name, client, "category": categories[]->title, services, "url": "/projects/" + slug.current, overview
+    //     }[0...5]`;
+    //     break;
+    //   case 'posts':
+    //     groqQuery = `*[_type == "post" && (title match $query || tags[] match $query)] | order(publishedAt desc){
+    //         title, "category": categories[]->title, excerpt, "url": "/blog/" + slug.current
+    //     }[0...5]`;
+    //     break;
+    //   case 'about':
+    //     return JSON.stringify({
+    //         summary: "Mustafa Saraçoğlu, fikirleri gerçeğe dönüştüren, tasarım ve geliştirme alanında uzmanlaşmış yaratıcı bir profesyoneldir. Daha fazlasını /about sayfasında bulabilirsiniz."
+    //     });
+    //   default:
+    //     return JSON.stringify({ error: 'Geçersiz bilgi türü belirtildi.' });
+    // }
+
+    // try {
+    //     const results = await client.fetch(groqQuery, params);
+    //     if (results.length === 0) {
+    //         return JSON.stringify({ message: `'${query}' ile eşleşen ${type} bulunamadı.` });
+    //     }
+    //     return JSON.stringify(results);
+    // } catch (error) {
+    //     console.error("Sanity getirme hatası:", error);
+    //     return JSON.stringify({ error: `Sanity'den ${type} getirilemedi.` });
+    // }
   }
 );
 

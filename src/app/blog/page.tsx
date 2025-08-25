@@ -1,5 +1,5 @@
 
-import { client } from '@/lib/sanity';
+// import { client } from '@/lib/sanity';
 import type { Post } from '@/types';
 import type { Metadata } from 'next';
 import { PostCard } from '@/components/PostCard';
@@ -10,23 +10,24 @@ export const metadata: Metadata = {
 };
 
 async function getPosts(): Promise<Post[]> {
-  const query = `*[_type == "post"] | order(publishedAt desc){
-    _id,
-    title,
-    "slug": slug.current,
-    "mainImage": mainImage.asset->url,
-    publishedAt,
-    excerpt,
-    author->{
-        name
-    },
-    categories[]->{
-        _id,
-        title
-    }
-  }`;
-  const posts = await client.fetch(query);
-  return posts;
+  // const query = `*[_type == "post"] | order(publishedAt desc){
+  //   _id,
+  //   title,
+  //   "slug": slug.current,
+  //   "mainImage": mainImage.asset->url,
+  //   publishedAt,
+  //   excerpt,
+  //   author->{
+  //       name
+  //   },
+  //   categories[]->{
+  //       _id,
+  //       title
+  //   }
+  // }`;
+  // const posts = await client.fetch(query);
+  // return posts;
+  return [];
 }
 
 export default async function BlogPage() {

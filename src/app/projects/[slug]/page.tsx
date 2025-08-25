@@ -1,7 +1,7 @@
 
 import type { Project } from '@/types';
 import { notFound } from 'next/navigation';
-import { client } from '@/lib/sanity';
+// import { client } from '@/lib/sanity';
 import type { Metadata } from 'next';
 import { ProjectPageClientFeatures } from '@/components/ProjectPageClient';
 
@@ -10,69 +10,70 @@ interface ProjectPageProps {
 }
 
 async function getProject(slug: string): Promise<Project | null> {
-  const query = `*[_type == "project" && slug.current == $slug][0]{
-    _id,
-    name,
-    "slug": slug.current,
-    "mainImage": mainImage.asset->url,
-    "mainImageDimensions": mainImage.asset->metadata.dimensions,
-    categories[]->{
-      _id,
-      title,
-      "slug": slug.current
-    },
-    client,
-    date,
-    services,
-    overview,
-    challenge,
-    solution,
-    result,
-    caseStudy[]{
-      _key,
-      stage,
-      description,
-      'image': {
-        'asset': asset->{url, alt, metadata}
-       }
-    },
-    contentSections[]{
-      ...,
-      _type == 'imageGallery' => {
-        'images': images[]{
-          ...,
-          'asset': asset->{
-            url,
-            alt,
-            metadata
-          }
-        }
-      },
-      _type == 'fullWidthImage' => {
-        'image': {
-          'asset': asset->{
-            url,
-            alt,
-            metadata
-          }
-        }
-      }
-    },
-    "relatedProjects": *[_type == "project" && slug.current != $slug && count(categories[@._ref in ^.^.categories[]._ref]) > 0] | order(date desc) [0...2] {
-      _id,
-      name,
-      "slug": slug.current,
-      "mainImage": mainImage.asset->url,
-      categories[]->{
-        _id,
-        title,
-        "slug": slug.current
-      }
-    },
-    tags
-  }`;
-  const project = await client.fetch(query, { slug });
-  return project;
+  // const query = `*[_type == "project" && slug.current == $slug][0]{
+  //   _id,
+  //   name,
+  //   "slug": slug.current,
+  //   "mainImage": mainImage.asset->url,
+  //   "mainImageDimensions": mainImage.asset->metadata.dimensions,
+  //   categories[]->{
+  //     _id,
+  //     title,
+  //     "slug": slug.current
+  //   },
+  //   client,
+  //   date,
+  //   services,
+  //   overview,
+  //   challenge,
+  //   solution,
+  //   result,
+  //   caseStudy[]{
+  //     _key,
+  //     stage,
+  //     description,
+  //     'image': {
+  //       'asset': asset->{url, alt, metadata}
+  //      }
+  //   },
+  //   contentSections[]{
+  //     ...,
+  //     _type == 'imageGallery' => {
+  //       'images': images[]{
+  //         ...,
+  //         'asset': asset->{
+  //           url,
+  //           alt,
+  //           metadata
+  //         }
+  //       }
+  //     },
+  //     _type == 'fullWidthImage' => {
+  //       'image': {
+  //         'asset': asset->{
+  //           url,
+  //           alt,
+  //           metadata
+  //         }
+  //       }
+  //     }
+  //   },
+  //   "relatedProjects": *[_type == "project" && slug.current != $slug && count(categories[@._ref in ^.^.categories[]._ref]) > 0] | order(date desc) [0...2] {
+  //     _id,
+  //     name,
+  //     "slug": slug.current,
+  //     "mainImage": mainImage.asset->url,
+  //     categories[]->{
+  //       _id,
+  //       title,
+  //       "slug": slug.current
+  //     }
+  //   },
+  //   tags
+  // }`;
+  // const project = await client.fetch(query, { slug });
+  // return project;
+  return null;
 }
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
