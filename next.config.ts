@@ -28,8 +28,20 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: '/:path*',
-        destination: 'http://212.115.41.179:3000/:path*',
+        source: '/admin/:path*',
+        destination: 'http://212.115.41.179:3000/admin/:path*',
+      },
+      {
+        source: '/_payload/:path*',
+        destination: 'http://212.115.41.179:3000/_payload/:path*',
+      },
+       {
+        source: '/assets/:path*',
+        destination: 'http://212.115.41.179:3000/assets/:path*',
+      },
+       {
+        source: '/api/graphql',
+        destination: 'http://212.115.41.179:3000/api/graphql',
       },
     ];
   },

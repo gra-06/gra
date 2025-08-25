@@ -1,4 +1,5 @@
 
+
 import type { Query } from 'payload/types';
 
 const API_URL = process.env.NEXT_PUBLIC_PAYLOAD_API_URL;
@@ -62,15 +63,19 @@ export async function fetchDoc<T>({ collection, id, slug, depth = 0 }: FetchDocO
         whereClause.slug = { equals: slug };
     }
     
-    const docs = await fetchDocs<T>(collection, { limit: 1, depth, where: whereClause });
-    
-    if (!docs || docs.length === 0) {
-        // This will be caught by getStaticPaths and result in a 404
-        console.error(`Document not found in ${collection} with ${id ? `id ${id}`: `slug ${slug}`}`);
+    try {
+        const docs = await fetchDocs<T>(collection, { limit: 1, depth, where: whereClause });
+        
+        if (!docs || docs.length === 0) {
+            console.warn(`Document not found in ${collection} with ${id ? `id ${id}`: `slug ${slug}`}`);
+            return null;
+        }
+
+        return docs[0];
+    } catch (error) {
+        console.error(`Error fetching doc from ${collection}:`, error);
         return null;
     }
-
-    return docs[0];
 }
 
 export async function fetchGlobal<T>(slug: string, options: { depth?: number } = {}): Promise<T | null> {
@@ -92,4 +97,16 @@ export async function fetchGlobal<T>(slug: string, options: { depth?: number } =
         console.error(`Error fetching global ${slug}:`, error);
         return null;
     }
+}
+
+
+export async function fetchComments(projectId: string): Promise<Comment[]> {
+    return fetchDocs<Comment>('comments', {
+        where: {
+            project: { equals: projectId },
+            isApproved: { equals: true },
+        },
+        sort: '-createdAt',
+        depth: 0,
+    });
 }
