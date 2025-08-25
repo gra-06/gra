@@ -12,7 +12,6 @@ import { Calendar, User, Tag, CheckIcon as Check } from 'lucide-react';
 import { format } from 'date-fns';
 import { ProjectCard } from '@/components/ProjectCard';
 import { ImageLightbox } from '@/components/ImageLightbox';
-import { useGamification } from '@/hooks/use-gamification';
 import { PayloadMedia } from '@/types';
 
 const getUrlFromPayloadMedia = (media: any): string => {
@@ -43,11 +42,6 @@ const Section: React.FC<{ title: string; children: React.ReactNode, delay?: numb
 export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [lightboxAlt, setLightboxAlt] = useState<string>('');
-  const { logEvent } = useGamification();
-
-  useEffect(() => {
-    logEvent('PROJECT_VISIT', project.id);
-  }, [logEvent, project.id]);
 
   const mainImageUrl = getUrlFromPayloadMedia(project.mainImage);
 

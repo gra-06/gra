@@ -4,11 +4,10 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Brush, Menu, X, Award } from 'lucide-react';
+import { Brush, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { useGamification } from '@/hooks/use-gamification';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export interface NavItem {
@@ -24,7 +23,6 @@ export function Header({ navItems }: HeaderProps) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
-  const { setSheetOpen } = useGamification();
 
   useEffect(() => {
     setIsClient(true);
@@ -67,10 +65,6 @@ export function Header({ navItems }: HeaderProps) {
         </nav>
 
         <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" size="icon" onClick={() => setSheetOpen(true)}>
-              <Award className="h-5 w-5" />
-              <span className="sr-only">Kazanılan Rozetler</span>
-            </Button>
             <Link href="/contact">
                 <Button>Merhaba De</Button>
             </Link>
@@ -78,10 +72,6 @@ export function Header({ navItems }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
-          <Button variant="ghost" size="icon" onClick={() => setSheetOpen(true)}>
-            <Award className="h-5 w-5" />
-            <span className="sr-only">Kazanılan Rozetler</span>
-          </Button>
           <ThemeToggle />
           <Button 
             onClick={() => setIsMenuOpen(!isMenuOpen)} 

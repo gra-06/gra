@@ -11,7 +11,6 @@ import { Calendar, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { Metadata } from 'next';
 import { useEffect, useState } from 'react';
-import { useGamification } from '@/hooks/use-gamification';
 import { fetchDoc, fetchDocs } from '@/lib/payload';
 
 interface PostPageProps {
@@ -35,18 +34,14 @@ async function getPost(slug: string): Promise<Post | null> {
 // This needs to be a separate client component to use hooks
 function PostBody({ slug }: { slug: string }) {
     const [post, setPost] = useState<Post | null>(null);
-    const { logEvent } = useGamification();
 
     useEffect(() => {
         async function loadPost() {
             const fetchedPost = await getPost(slug);
             setPost(fetchedPost);
-            if (fetchedPost) {
-                logEvent('POST_VISIT', fetchedPost.id);
-            }
         }
         loadPost();
-    }, [slug, logEvent]);
+    }, [slug]);
 
     if (!post) {
         // You can return a loading skeleton here

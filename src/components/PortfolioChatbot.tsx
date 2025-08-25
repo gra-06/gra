@@ -11,7 +11,6 @@ import { cn } from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { readStreamableValue } from 'ai/rsc';
-import { useGamification } from '@/hooks/use-gamification';
 
 interface Message {
   id: string;
@@ -24,8 +23,7 @@ export function PortfolioChatbot() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { logEvent } = useGamification();
-
+  
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -37,8 +35,6 @@ export function PortfolioChatbot() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
-
-    logEvent('CHAT_WITH_AI');
 
     const userMessage: Message = { id: `user-${Date.now()}`, role: 'user', content: input };
     setMessages(prevMessages => [...prevMessages, userMessage]);
