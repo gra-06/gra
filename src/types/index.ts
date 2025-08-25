@@ -188,6 +188,12 @@ export interface Brand {
     website?: string;
 }
 
+export interface Page {
+    id: string;
+    title: string;
+    slug?: string;
+}
+
 export interface Footer {
   id: string;
   navItems: {
@@ -205,8 +211,36 @@ export interface Footer {
   }[];
 }
 
-export interface Page {
-    id: string;
-    title: string;
-    slug?: string;
+export interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  image: PayloadMedia;
+  bio: string;
+  aiHint?: string;
+}
+
+export interface AboutPage {
+  id: string;
+  title: string;
+  subtitle: string;
+  missionTitle: string;
+  missionDescription: string;
+  visionTitle: string;
+  visionDescription: string;
+  teamTitle: string;
+  teamSubtitle: string;
+  missionImage: PayloadMedia;
+  team: TeamMember[];
+}
+
+export interface ContactPage {
+  id: string;
+  title: string;
+  subtitle: string;
+  formTitle: string;
+  detailsTitle: string;
+  email: string;
+  phone: string;
+  address: string;
 }

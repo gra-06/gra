@@ -1,27 +1,75 @@
+'use client';
 
+import { useState, useEffect } from 'react';
 import type { Metadata } from 'next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import type { ContactPage } from '@/types';
+import { fetchDoc } from '@/lib/payload';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export const metadata: Metadata = {
-    title: 'İletişim | Mustafa Saraçoğlu Portfolyosu',
-    description: 'Mustafa Saraçoğlu ile iletişime geçin. Projenizi duymaktan memnuniyet duyarız.',
-};
+// We can't generate Metadata in a client component, but we can have a placeholder
+// export const metadata: Metadata = {
+//     title: 'İletişim | Mustafa Saraçoğlu Portfolyosu',
+//     description: 'Mustafa Saraçoğlu ile iletişime geçin. Projenizi duymaktan memnuniyet duyarız.',
+// };
 
 export default function ContactPage() {
+  const [pageData, setPageData] = useState<ContactPage | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function getContactPageData() {
+      try {
+        const data = await fetchDoc<ContactPage>({
+          collection: 'pages',
+          slug: 'contact',
+        });
+        setPageData(data);
+      } catch (error) {
+        console.error('Error fetching contact page data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    getContactPageData();
+  }, []);
+  
+  if (isLoading) {
+    return (
+      <>
+         {/* Hero Section Skeleton */}
+        <section className="bg-secondary py-20 md:py-28">
+          <div className="container mx-auto px-4 text-center">
+            <Skeleton className="h-16 w-3/4 mx-auto mb-4" />
+            <Skeleton className="h-6 w-1/2 mx-auto" />
+          </div>
+        </section>
+        {/* Content Skeleton */}
+        <div className="container mx-auto px-4 py-16 text-center">Yükleniyor...</div>
+      </>
+    );
+  }
+
+  if (!pageData) {
+    return <div className="container mx-auto px-4 py-16 text-center">Sayfa içeriği yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>;
+  }
+
+  const { title, subtitle, formTitle, detailsTitle, email, phone, address } = pageData;
+
   return (
     <>
       {/* Header Section */}
       <section className="bg-secondary py-20 md:py-28">
         <div className="container mx-auto px-4 text-center">
           <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight mb-4">
-            İletişime Geçin
+            {title}
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Aklınızda bir proje mi var? Sizden haber almayı çok isteriz. Aşağıdaki formu doldurun veya bizimle doğrudan iletişime geçin.
+            {subtitle}
           </p>
         </div>
       </section>
@@ -33,7 +81,7 @@ export default function ContactPage() {
             
             {/* Contact Form */}
             <div className="bg-card p-8 rounded-lg shadow-lg">
-              <h2 className="font-headline text-3xl font-bold mb-6">Bize Mesaj Gönderin</h2>
+              <h2 className="font-headline text-3xl font-bold mb-6">{formTitle}</h2>
               <form action="#" className="space-y-6">
                 <div>
                   <Label htmlFor="name">Ad Soyad</Label>
@@ -61,7 +109,7 @@ export default function ContactPage() {
 
             {/* Contact Details */}
             <div className="pt-8">
-              <h2 className="font-headline text-3xl font-bold mb-8">İletişim Bilgileri</h2>
+              <h2 className="font-headline text-3xl font-bold mb-8">{detailsTitle}</h2>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="bg-primary/10 text-primary p-3 rounded-full">
@@ -69,8 +117,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold">E-posta</h3>
-                    <p className="text-muted-foreground">info@grafikerabi.com</p>
-                    <a href="mailto:info@grafikerabi.com" className="text-primary hover:underline">E-posta gönder</a>
+                    <p className="text-muted-foreground">{email}</p>
+                    <a href={`mailto:${email}`} className="text-primary hover:underline">E-posta gönder</a>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -79,8 +127,8 @@ export default function ContactPage() {
                     </div>
                   <div>
                     <h3 className="text-xl font-semibold">Telefon</h3>
-                    <p className="text-muted-foreground">+90 (123) 456-7890</p>
-                    <a href="tel:+901234567890" className="text-primary hover:underline">Bizi arayın</a>
+                    <p className="text-muted-foreground">{phone}</p>
+                    <a href={`tel:${phone.replace(/\s/g, '')}`} className="text-primary hover:underline">Bizi arayın</a>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -89,7 +137,7 @@ export default function ContactPage() {
                     </div>
                   <div>
                     <h3 className="text-xl font-semibold">Ofis</h3>
-                    <p className="text-muted-foreground">123 Tasarım Sokak, No: 456<br/>Yaratıcı Şehir, 34000</p>
+                    <p className="text-muted-foreground" dangerouslySetInnerHTML={{ __html: address.replace(/\n/g, '<br/>') }} />
                     <a href="#" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Yol tarifi al</a>
                   </div>
                 </div>
