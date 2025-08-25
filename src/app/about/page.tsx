@@ -1,6 +1,4 @@
-'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Users, Target, Eye } from 'lucide-react';
 import type { Metadata } from 'next';
@@ -8,50 +6,27 @@ import { fetchDoc } from '@/lib/payload';
 import type { TeamMember, AboutPage } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
+export const metadata: Metadata = {
+    title: 'Hakkımda | Mustafa Saraçoğlu Portfolyosu',
+    description: 'Yaratıcı ekip, misyonumuz ve değerlerimiz hakkında daha fazla bilgi edinin.',
+};
 
-// We can't generate Metadata in a client component, but we can have a placeholder
-// export const metadata: Metadata = {
-//     title: 'Hakkımda | Mustafa Saraçoğlu Portfolyosu',
-//     description: 'Yaratıcı ekip, misyonumuz ve değerlerimiz hakkında daha fazla bilgi edinin.',
-// };
-
-export default function AboutPage() {
-  const [pageData, setPageData] = useState<AboutPage | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function getAboutPageData() {
-      try {
+async function getAboutPageData(): Promise<AboutPage | null> {
+    try {
         const data = await fetchDoc<AboutPage>({
-          collection: 'pages',
-          slug: 'about',
-          depth: 2,
+            collection: 'pages',
+            slug: 'about',
+            depth: 2,
         });
-        setPageData(data);
-      } catch (error) {
+        return data;
+    } catch (error) {
         console.error('Error fetching about page data:', error);
-      } finally {
-        setIsLoading(false);
-      }
+        return null;
     }
-    getAboutPageData();
-  }, []);
+}
 
-  if (isLoading) {
-    return (
-      <>
-         {/* Hero Section Skeleton */}
-        <section className="bg-secondary py-20 md:py-28">
-          <div className="container mx-auto px-4 text-center">
-            <Skeleton className="h-16 w-3/4 mx-auto mb-4" />
-            <Skeleton className="h-6 w-1/2 mx-auto" />
-          </div>
-        </section>
-        {/* Content Skeleton */}
-        <div className="container mx-auto px-4 py-16 text-center">Yükleniyor...</div>
-      </>
-    );
-  }
+export default async function AboutPage() {
+  const pageData = await getAboutPageData();
 
   if (!pageData) {
     return <div className="container mx-auto px-4 py-16 text-center">Sayfa içeriği yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>;

@@ -1,6 +1,4 @@
-'use client';
 
-import { useState, useEffect } from 'react';
 import type { Metadata } from 'next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,51 +7,28 @@ import { Label } from '@/components/ui/label';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import type { ContactPage } from '@/types';
 import { fetchDoc } from '@/lib/payload';
-import { Skeleton } from '@/components/ui/skeleton';
 
-// We can't generate Metadata in a client component, but we can have a placeholder
-// export const metadata: Metadata = {
-//     title: 'İletişim | Mustafa Saraçoğlu Portfolyosu',
-//     description: 'Mustafa Saraçoğlu ile iletişime geçin. Projenizi duymaktan memnuniyet duyarız.',
-// };
+export const metadata: Metadata = {
+    title: 'İletişim | Mustafa Saraçoğlu Portfolyosu',
+    description: 'Mustafa Saraçoğlu ile iletişime geçin. Projenizi duymaktan memnuniyet duyarız.',
+};
 
-export default function ContactPage() {
-  const [pageData, setPageData] = useState<ContactPage | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function getContactPageData() {
-      try {
+async function getContactPageData(): Promise<ContactPage | null> {
+    try {
         const data = await fetchDoc<ContactPage>({
-          collection: 'pages',
-          slug: 'contact',
+            collection: 'pages',
+            slug: 'contact',
         });
-        setPageData(data);
-      } catch (error) {
+        return data;
+    } catch (error) {
         console.error('Error fetching contact page data:', error);
-      } finally {
-        setIsLoading(false);
-      }
+        return null;
     }
-    getContactPageData();
-  }, []);
-  
-  if (isLoading) {
-    return (
-      <>
-         {/* Hero Section Skeleton */}
-        <section className="bg-secondary py-20 md:py-28">
-          <div className="container mx-auto px-4 text-center">
-            <Skeleton className="h-16 w-3/4 mx-auto mb-4" />
-            <Skeleton className="h-6 w-1/2 mx-auto" />
-          </div>
-        </section>
-        {/* Content Skeleton */}
-        <div className="container mx-auto px-4 py-16 text-center">Yükleniyor...</div>
-      </>
-    );
-  }
+}
 
+export default async function ContactPage() {
+  const pageData = await getContactPageData();
+  
   if (!pageData) {
     return <div className="container mx-auto px-4 py-16 text-center">Sayfa içeriği yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>;
   }
