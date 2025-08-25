@@ -24,6 +24,14 @@ const nextConfig: NextConfig = {
       }
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/admin/:path*',
+        destination: 'http://212.115.41.179:3000/admin/:path*',
+      },
+    ];
+  },
 };
 
 export default nextConfig;
