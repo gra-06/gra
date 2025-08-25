@@ -36,25 +36,25 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
   const overviewText = project.overview ? payloadRichTextLexicalSerializer(project.overview) : project.name;
   
-  const pageUrl = `${BASE_URL}/projects/${project.slug}`;
-  const imageUrl = typeof project.mainImage === 'object' ? project.mainImage.url : project.mainImage;
+  const imageUrlField = project.mainImage as { url: string; width?: number; height?: number; } | undefined;
+  const imageUrl = imageUrlField?.url || 'https://placehold.co/1200x630.png';
 
   return {
     title: `${project.name} | Mustafa Saraçoğlu Portfolyosu`,
     description: overviewText,
     alternates: {
-      canonical: pageUrl,
+      canonical: `${BASE_URL}/projects/${project.slug}`,
     },
     openGraph: {
       title: `${project.name} | Mustafa Saraçoğlu Portfolyosu`,
       description: overviewText,
-      url: pageUrl,
+      url: `${BASE_URL}/projects/${project.slug}`,
       siteName: 'Mustafa Saraçoğlu Portfolyosu',
       images: [
         {
           url: imageUrl,
-          width: project.mainImage?.width || 1200,
-          height: project.mainImage?.height || 630,
+          width: imageUrlField?.width || 1200,
+          height: imageUrlField?.height || 630,
           alt: project.name,
         },
       ],
@@ -78,11 +78,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   if (!project) {
     notFound();
   }
-
-  const overviewText = project.overview ? payloadRichTextLexicalSerializer(project.overview) : project.name;
-    
+  
   const pageUrl = `${BASE_URL}/projects/${project.slug}`;
-  const imageUrl = typeof project.mainImage === 'object' ? project.mainImage.url : project.mainImage;
+  const imageUrlField = project.mainImage as { url: string; width?: number; height?: number; } | undefined;
+  const imageUrl = imageUrlField?.url || 'https://placehold.co/1200x630.png';
+  const overviewText = project.overview ? payloadRichTextLexicalSerializer(project.overview) : project.name;
 
   const jsonLd = {
     '@context': 'https://schema.org',

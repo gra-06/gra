@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 import { ProjectCard } from '@/components/ProjectCard';
 import { ImageLightbox } from '@/components/ImageLightbox';
 import { useGamification } from '@/hooks/use-gamification';
+import { PayloadMedia } from '@/types';
 
 const getUrlFromPayloadMedia = (media: any): string => {
     if (typeof media === 'object' && media !== null && media.url) {
@@ -33,7 +34,7 @@ const Section: React.FC<{ title: string; children: React.ReactNode, delay?: numb
         transition={{ duration: 0.5, delay }}
         className="mb-16">
       <h2 className="font-headline text-3xl font-bold mb-6 border-l-4 border-primary pl-4">{title}</h2>
-      <div className="prose prose-lg max-w-none font-body text-muted-foreground">
+      <div className="prose prose-lg dark:prose-invert max-w-none font-body text-muted-foreground">
         {children}
       </div>
     </motion.div>
@@ -156,19 +157,19 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
                             <div className="pb-16 w-full">
                                 <h3 className="font-headline text-2xl font-bold mb-2">{item.stage}</h3>
                                 <div className="grid md:grid-cols-2 gap-8 items-start">
-                                  <div className="prose prose-lg max-w-none font-body text-muted-foreground">
+                                  <div className="prose prose-lg dark:prose-invert max-w-none font-body text-muted-foreground">
                                      {item.description && <PortableText value={item.description} components={PortableTextComponent} />}
                                   </div>
                                   {item.image?.url && (
                                       <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}>
                                         <Image
                                             src={getUrlFromPayloadMedia(item.image)}
-                                            alt={item.image.alt || `${item.stage} aşaması görseli`}
+                                            alt={(item.image as PayloadMedia).alt || `${item.stage} aşaması görseli`}
                                             width={800}
                                             height={600}
                                             className="rounded-lg shadow-lg w-full object-cover cursor-pointer"
                                             data-ai-hint="case study step"
-                                            onClick={() => handleImageClick(getUrlFromPayloadMedia(item.image), item.image.alt || `${item.stage} aşaması görseli`)}
+                                            onClick={() => handleImageClick(getUrlFromPayloadMedia(item.image), (item.image as PayloadMedia).alt || `${item.stage} aşaması görseli`)}
                                         />
                                       </motion.div>
                                   )}
@@ -200,7 +201,7 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
                       {section.images.map((img) => (
                         img.image?.url && <figure key={img.id}>
                           <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}>
-                            <Image src={getUrlFromPayloadMedia(img.image)} alt={img.image.alt || 'Proje galerisinden bir görsel'} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="portfolio gallery" onClick={() => handleImageClick(getUrlFromPayloadMedia(img.image), img.image.alt || 'Proje galerisinden bir görsel')}/>
+                            <Image src={getUrlFromPayloadMedia(img.image)} alt={(img.image as PayloadMedia).alt || 'Proje galerisinden bir görsel'} width={800} height={600} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="portfolio gallery" onClick={() => handleImageClick(getUrlFromPayloadMedia(img.image), (img.image as PayloadMedia).alt || 'Proje galerisinden bir görsel')}/>
                           </motion.div>
                           {img.caption && <figcaption className="text-center text-sm text-muted-foreground mt-2">{img.caption}</figcaption>}
                         </figure>
@@ -210,13 +211,13 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
                 );
               }
               if (section.blockType === 'fullWidthImage' && section.image?.url) {
-                return <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}><Image key={key} src={getUrlFromPayloadMedia(section.image)} alt={section.image.alt || 'Tam genişlik proje görseli'} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="project detail" onClick={() => handleImageClick(getUrlFromPayloadMedia(section.image), section.image.alt || 'Tam genişlik proje görseli')} /></motion.div>;
+                return <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring' }}><Image key={key} src={getUrlFromPayloadMedia(section.image)} alt={(section.image as PayloadMedia).alt || 'Tam genişlik proje görseli'} width={1200} height={700} className="rounded-lg shadow-lg w-full object-cover cursor-pointer" data-ai-hint="project detail" onClick={() => handleImageClick(getUrlFromPayloadMedia(section.image), (section.image as PayloadMedia).alt || 'Tam genişlik proje görseli')} /></motion.div>;
               }
               if (section.blockType === 'twoColumnText' && section.leftContent && section.rightContent) {
                 return (
                   <div key={key} className="grid md:grid-cols-2 gap-12">
-                     <div className="prose prose-lg max-w-none font-body text-muted-foreground"><PortableText value={section.leftContent} components={PortableTextComponent}/></div>
-                     <div className="prose prose-lg max-w-none font-body text-muted-foreground"><PortableText value={section.rightContent} components={PortableTextComponent}/></div>
+                     <div className="prose prose-lg dark:prose-invert max-w-none font-body text-muted-foreground"><PortableText value={section.leftContent} components={PortableTextComponent}/></div>
+                     <div className="prose prose-lg dark:prose-invert max-w-none font-body text-muted-foreground"><PortableText value={section.rightContent} components={PortableTextComponent}/></div>
                   </div>
                 )
               }
@@ -240,7 +241,7 @@ export function ProjectPageClientFeatures({ project }: ProjectPageClientProps) {
             <Section title="İlgili Projeler" delay={0.3}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {project.relatedProjects.map((p) => (
-                  <ProjectCard key={p.id} project={p as Project} />
+                  <ProjectCard key={(p as Project).id} project={p as Project} />
                 ))}
               </div>
             </Section>

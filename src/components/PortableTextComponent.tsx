@@ -46,33 +46,37 @@ export const PortableTextComponent: PortableTextComponents = {
     },
   },
   types: {
+    // This is for Sanity's default image type
     image: ({ value }) => {
-      if (!value?.url) {
+      if (!value?.asset?._ref) {
         return null;
       }
+      // Basic URL construction for Sanity images, needs improvement for a real app
+      const imageUrl = `https://cdn.sanity.io/images/vyy9j0wj/production/${value.asset._ref.replace('image-', '').replace('-png', '.png')}`;
       return (
         <Image
-          src={getUrlFromPayloadMedia(value)}
+          src={imageUrl}
           alt={value.alt || ' '}
           loading="lazy"
-          width={value.width || 800}
-          height={value.height || 600}
+          width={800}
+          height={600}
           className="my-8 rounded-lg shadow-md w-full object-cover"
         />
       );
     },
-    // Handling Payload's rich text format which is Lexical
+    // This is for Payload's Lexical rich text image type ('upload')
     upload: ({ value }) => {
         if (!value?.value?.url) {
             return null;
         }
+        const imageData = value.value;
         return (
              <Image
-                src={getUrlFromPayloadMedia(value.value)}
-                alt={value.value.alt || ' '}
+                src={getUrlFromPayloadMedia(imageData)}
+                alt={imageData.alt || ' '}
                 loading="lazy"
-                width={value.value.width || 800}
-                height={value.value.height || 600}
+                width={imageData.width || 800}
+                height={imageData.height || 600}
                 className="my-8 rounded-lg shadow-md w-full object-cover"
             />
         )

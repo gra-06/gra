@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Download, PenTool, Palette, Waypoints, Camera, Star } from 'lucide-react';
 import { HomeProjectCard } from '@/components/HomeProjectCard';
 import { SkillsChart } from '@/components/SkillsChart';
-import type { Project, Post } from '@/types';
+import type { Project, Post, Award, FaqItem, Tool } from '@/types';
 import { PostCard } from '@/components/PostCard';
 import { CtaBanner } from '@/components/CtaBanner';
 import { Faq } from '@/components/Faq';
@@ -15,30 +15,6 @@ import { Hero } from '@/components/Hero';
 import { ProjectMap } from '@/components/ProjectMap';
 import { fetchDocs } from '@/lib/payload';
 
-interface Award {
-    id: string;
-    title: string;
-    organization: string;
-    year: string;
-    logo: {
-      url: string;
-    }
-}
-
-interface FaqItem {
-    id: string;
-    question: string;
-    answer: any;
-}
-
-interface Tool {
-    id: string;
-    name: string;
-    description: string;
-    logo: {
-      url: string;
-    }
-}
 
 async function getHomePageData() {
     try {
