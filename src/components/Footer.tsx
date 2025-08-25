@@ -1,7 +1,5 @@
 
-
-'use client';
-import { useState, useEffect } from 'react';
+'use server';
 import Link from 'next/link';
 import { Brush, Instagram, Linkedin, Twitter, Facebook, Mail } from 'lucide-react';
 import { Input } from './ui/input';
@@ -26,18 +24,8 @@ async function getFooterData(): Promise<FooterType | null> {
   }
 }
 
-export function Footer() {
-  const [isClient, setIsClient] = useState(false);
-  const [footerData, setFooterData] = useState<FooterType | null>(null);
-
-  useEffect(() => {
-    setIsClient(true);
-    async function loadFooter() {
-      const data = await getFooterData();
-      setFooterData(data);
-    }
-    loadFooter();
-  }, []);
+export async function Footer() {
+  const footerData = await getFooterData();
   
   const socialLinks = [
     { href: 'https://twitter.com', icon: Twitter, label: 'Twitter' },
@@ -112,7 +100,7 @@ export function Footer() {
             <p className="text-sm">&copy; {new Date().getFullYear()} Mustafa Saraçoğlu. Tüm hakları saklıdır.</p>
             <div className="flex items-center space-x-4">
                 {socialLinks.map((link) => (
-                    <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={isClient ? link.label : undefined}>
+                    <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={link.label}>
                         <link.icon className="h-5 w-5" />
                     </a>
                 ))}
